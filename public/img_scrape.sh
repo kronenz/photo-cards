@@ -1,4 +1,4 @@
-
+#!/bin/bash
 
 FOLDER=$1 
 REMOTE_JSON=$2
@@ -199,13 +199,16 @@ compress() {
 
 
 time ( 
-
+  echo "start";
   create_directories
-
+  echo "create dir done";
   fetch_json
+  echo "fetch_json";
   download_images
-
+  echo "download images";
   upscale
+  echo "upscale";
   compress
+  echo "compress";
 
 )

@@ -6,6 +6,7 @@
   // data / pokemon props
   export let id = undefined;
   export let name = undefined;
+  export let image = undefined;
   export let number = undefined;
   export let set = undefined;
   export let types = undefined;
@@ -91,7 +92,9 @@
     if ( isDefined( set ) && isDefined( number ) ) {
       return `https://images.pokemontcg.io/${ set.toLowerCase() }/${ number }_hires.png`;
     }
-    return "";
+    
+    console.log(image);
+    return image;
   }
   
   function foilMaskImage ( prop, type = "masks" ) {
@@ -233,6 +236,7 @@
 
     id,
     name,
+    image,
     number,
     set,
     types,

@@ -64,18 +64,15 @@
 
 <main>
 	<header>
-		<h1 id="⚓-top">Pokemon Cards <sup>V2</sup></h1>
-
-		<p class="author">By <a href="https://twitter.com/simeydotme"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Twitter</title><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg> @simeydotme</a> |
-			<em><a href="https://github.com/simeydotme/pokemon-cards-css"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg> Simon Goellner</em>
-		</p>
+		<h1 id="⚓-top">KBO 야구카드 <sup>Beta V0.1</sup></h1>
 
 		<section class="intro" id="⚓-intro">
 			<p>
-				A collection of <mark>advanced CSS</mark> styles to create
-				<mark>realistic-looking effects</mark> for the faces of Pokemon cards. 
-				The cards use <mark>3d transforms</mark>, <mark>filters</mark>, <mark>blend modes</mark>,
-				<mark>css gradients</mark> and interactions to provide a unique experience when taking a closer look!
+				KBO 야구카드를 <mark>고급 CSS</mark> 스타일을 사용하여
+				<mark>사실적인 효과</mark>로 만든 컬렉션입니다.
+				카드는 <mark>3D 변환</mark>, <mark>필터</mark>, <mark>블렌드 모드</mark>,
+				<mark>CSS 그라디언트</mark> 및 상호작용을 사용하여 자세히 볼 때 독특한 경험을 제공합니다!
+				향후 10개 구단의 사진가들을 위한 작업이 진행될 예정입니다.
 			</p>
 		</section>
 
@@ -85,6 +82,7 @@
 			{:else}
 				<Card
 					id={showcase.id}
+					img={showcase.image}
 					name={showcase.name}
 					set={showcase.set}
 					number={showcase.number}
@@ -104,16 +102,14 @@
 			<hr />
 
 			<p class="small">
-				I'm using SvelteJS to handle interactivity and state; <strong>
-					assigning values to css custom properties </strong> (variables) which 
-					in-turn drive the effects and 3d transforms. 
-					<br>
-					<a href="https://github.com/simeydotme/pokemon-cards-css">Source code is in the repository</a>.
+				상호작용과 상태를 처리하기 위해 SvelteJS를 사용하고 있습니다; <strong>
+					CSS 사용자 정의 속성</strong>(변수)에 값을 할당하여 
+					효과와 3D 변환을 구동합니다. 
+				
 			</p>
 		</section>
 	</header>
 
-	<Search bind:query />
 
 	{#if query.length < 3}
 
@@ -123,8 +119,8 @@
 			</a>
 		</h2>
 		<p>
-			All cards get a 3d rotation with CSS based on the cursor position.<br /> The default basic
-			non-holo cards simply apply a <mark>flare/glare effect</mark> to the card which follows the mouse.
+			모든 카드는 커서 위치에 따라 CSS로 3D 회전 효과를 얻습니다.<br /> 기본적인
+			비홀로 카드는 단순히 마우스를 따라다니는 <mark>섬광/반사 효과</mark>를 카드에 적용합니다.
 		</p>
 
 		<CardList>
@@ -151,9 +147,9 @@
 			</a>
 		</h2>
 		<p>
-			Reverse holo cards come in <mark>many shapes and sizes</mark> (trainer, stage1, and different energy types). <br /> Therefore
-			there are a few examples here to show the different variations. The <mark>background uses a foil and a mask layer</mark>
-			along with a glare. I also <mark>clip the glare</mark> into the image window to treat the image and the holofoil differently.
+			리버스 홀로 카드는 <mark>다양한 형태와 크기</mark>로 제공됩니다 (트레이너, 1단계, 그리고 다양한 에너지 타입). <br /> 따라서
+			여기에 다양한 변형을 보여주는 몇 가지 예시가 있습니다. <mark>배경은 포일과 마스크 레이어</mark>를
+			글레어와 함께 사용합니다. 또한 <mark>글레어를 이미지 창에 클리핑</mark>하여 이미지와 홀로포일을 다르게 처리합니다.
 		</p>
 
 		<CardList>
@@ -164,6 +160,7 @@
 					<Card
 						id={card.id}
 						name={card.name}
+						img={card.image}
 						number={card.number}
 						set={card.set}
 						types={card.types}
@@ -182,10 +179,10 @@
 			</a>
 		</h2>
 		<p>
-			Holo cards have an additional <mark>vertical beam holo effect</mark>. <br /> This uses a
-			combintation of <mark>repeating gradients and filters</mark>, with <mark>clip-path</mark> to mask
-			the holo areas for each stage. To get the holo effect to change while rotating the card I set the
-			background-position of each gradient layer based on cursor.
+			홀로 카드에는 추가적인 <mark>수직 빔 홀로 효과</mark>가 있습니다. <br /> 이는
+			<mark>반복되는 그라데이션과 필터</mark>의 조합을 사용하며, <mark>clip-path</mark>로
+			각 단계의 홀로 영역을 마스킹합니다. 카드를 회전할 때 홀로 효과가 변하도록 하기 위해
+			커서 위치에 따라 각 그라데이션 레이어의 background-position을 설정합니다.
 		</p>
 
 		<CardList>
@@ -196,6 +193,7 @@
 					<Card
 						id={card.id}
 						name={card.name}
+						img={card.image}
 						number={card.number}
 						set={card.set}
 						types={card.types}
@@ -213,10 +211,10 @@
 			</a>
 		</h2>
 		<p>
-			Similar to the Holofoil, but this uses a special image <mark>background of a galaxy effect</mark>
-			with a <mark>gradient rainbow set to color-dodge &amp; color-burn</mark> on top.
+			홀로포일과 유사하지만, 이것은 특별한 <mark>은하계 효과의 배경 이미지</mark>를 사용하며
+			그 위에 <mark>color-dodge와 color-burn으로 설정된 그라데이션 무지개</mark>가 있습니다.
 		</p>
-		<h3>An instant classic for any PTCG fan!</h3>
+		<h3>포켓몬 카드 게임 팬이라면 누구나 좋아할 고전적인 디자인입니다!</h3>
 
 		<CardList>
 			{#if isLoading}
@@ -226,6 +224,7 @@
 					<Card
 						id={card.id}
 						name={card.name}
+						img={card.image}
 						number={card.number}
 						set={card.set}
 						types={card.types}
@@ -243,8 +242,7 @@
 			</a>
 		</h2>
 		<p>
-			Amazing Rare cards have a <mark>very unique shiny foil</mark> that extends past the frame and is much shinier than
-			a regular holo effect, and textured. We achieve this by using a mask and applying a glitter effect with a lighten filter.
+			어메이징 레어 카드는 프레임을 넘어 확장되는 <mark>매우 독특한 반짝이는 포일</mark>을 가지고 있으며, 일반 홀로 효과보다 훨씬 더 반짝이고 질감이 있습니다. 
 		</p>
 
 		<CardList>
@@ -255,6 +253,7 @@
 					<Card
 						id={card.id}
 						name={card.name}
+						img={card.image}
 						number={card.number}
 						set={card.set}
 						types={card.types}
@@ -272,10 +271,9 @@
 			</a>
 		</h2>
 		<p>
-			The newest holofoil added to the series! <br /> The radiant effect proved
-			<mark>very difficult to emulate</mark>
-			without crazy math, so I settled with a <mark>criss-cross linear gradient pattern</mark> that moves
-			across the card.
+			시리즈에 새롭게 추가된 홀로포일입니다! <br /> 레디언트 효과는
+			<mark>복잡한 수학 없이 모방하기가 매우 어려웠습니다</mark>.
+			그래서 카드를 가로질러 움직이는 <mark>교차하는 선형 그라디언트 패턴</mark>으로 대체했습니다.
 		</p>
 
 		<CardList>
@@ -286,6 +284,7 @@
 					<Card
 						id={card.id}
 						name={card.name}
+						img={card.image}
 						number={card.number}
 						set={card.set}
 						types={card.types}
@@ -303,10 +302,7 @@
 			</a>
 		</h2>
 		<p>
-			The effect for Trainer Gallery holofoils gives it a <mark
-				>kind of metallic effect with iridescent shine</mark
-			>. This is achieved with a <mark>large color dodge linear gradient</mark>, and a
-			<mark>hard-light radial gradient</mark> on top, at the cursor position, to give the shimmer.
+			트레이너 갤러리 홀로포일의 효과는 <mark>일종의 금속성 효과와 무지개빛 광택</mark>을 줍니다. 이는 <mark>큰 색상 닷지 선형 그라디언트</mark>와 커서 위치에 있는 <mark>하드라이트 방사형 그라디언트</mark>를 위에 추가하여 반짝임을 주는 방식으로 구현됩니다.
 		</p>
 
 		<CardList>
@@ -317,6 +313,7 @@
 					<Card
 						id={card.id}
 						name={card.name}
+						img={card.image}
 						number={card.number}
 						set={card.set}
 						types={card.types}
@@ -334,13 +331,10 @@
 			</a>
 		</h2>
 		<p>
-			V cards have a <mark>diagonal holographic effect</mark> which that appears to travel in opposite
-			directions when you tilt the card into the light.
+			V 카드는 <mark>대각선 홀로그래픽 효과</mark>를 가지고 있으며, 카드를 빛에 비춰 기울일 때 반대 방향으로 움직이는 것처럼 보입니다.
 		</p>
 		<p>
-			This effect is achieved with <mark>multiple background gradients</mark> and I change the background
-			positions based on the cursor x/y. The gradients are set to color-dodge, and there's a subtle svg
-			noise effect.
+			이 효과는 <mark>여러 배경 그라디언트</mark>로 구현되며, 커서의 x/y 위치에 따라 배경 위치를 변경합니다. 그라디언트는 color-dodge로 설정되어 있고, 미묘한 svg 노이즈 효과도 있습니다.
 		</p>
 
 		<CardList>
@@ -351,6 +345,7 @@
 					<Card
 						id={card.id}
 						name={card.name}
+						img={card.image}
 						number={card.number}
 						set={card.set}
 						types={card.types}
@@ -368,14 +363,10 @@
 			</a>
 		</h2>
 		<p>
-			Similar to the Pokemon V effect, Full-Art cards <mark>use diagonal gradients</mark>, but they
-			have <mark>additional texture</mark> when looked at from certain angles. This is achieved with
-			an <mark>additional background image with an exclusion filter</mark>. The effect is also more
-			vibrant which adds to the metallic look.
+			포켓몬 V 효과와 유사하게, 풀 아트 카드는 <mark>대각선 그라디언트를 사용</mark>하지만, 특정 각도에서 볼 때 <mark>추가적인 텍스처</mark>가 있습니다. 이는 <mark>제외 필터가 적용된 추가 배경 이미지</mark>로 구현됩니다. 또한 효과가 더 선명하여 금속성 외관을 더해줍니다.
 		</p>
 		<p>
-			The texture effect is not identical to reality as the real cards each have a unique pattern that
-			follows the art.
+			텍스처 효과는 실제와 완전히 동일하지 않습니다. 실제 카드는 각각 아트워크를 따라 고유한 패턴을 가지고 있기 때문입니다.
 		</p>
 
 		<CardList>
@@ -386,6 +377,7 @@
 					<Card
 						id={card.id}
 						name={card.name}
+						img={card.image}
 						number={card.number}
 						set={card.set}
 						types={card.types}
@@ -403,11 +395,11 @@
 			</a>
 		</h2>
 		<p>
-			Alternate Art Pokemon V cards have <mark
-				>practically the same holo effect as the Ultra Rare (Full Art) cards</mark
-			>. The only difference is the pattern texture.
+			대체 아트 포켓몬 V 카드는 <mark
+				>사실상 울트라 레어(풀 아트) 카드와 동일한 홀로 효과를 가지고 있습니다</mark
+			>. 유일한 차이점은 패턴 텍스처입니다.
 		</p>
-		<p>The effect looks somewhat different though due to the type of artwork.</p>
+		<p>하지만 아트워크의 유형으로 인해 효과가 다소 다르게 보입니다.</p>
 
 		<CardList>
 			{#if isLoading}
@@ -417,6 +409,7 @@
 					<Card
 						id={card.id}
 						name={card.name}
+						img={card.image}
 						number={card.number}
 						set={card.set}
 						types={card.types}
@@ -434,10 +427,10 @@
 			</a>
 		</h2>
 		<p>
-			The gradient effect of Pokemon VMax is more subtle, using a <mark
-				>larger background gradient</mark
-			>
-			which moves more slowly. But the <mark>texture effect is more pronounced</mark>.
+			포켓몬 VMax의 그라디언트 효과는 더 미묘합니다. <mark
+				>더 큰 배경 그라디언트</mark
+			>를
+			사용하여 더 천천히 움직입니다. 하지만 <mark>텍스처 효과는 더 두드러집니다</mark>.
 		</p>
 
 		<CardList>
@@ -448,6 +441,7 @@
 					<Card
 						id={card.id}
 						name={card.name}
+						img={card.image}
 						number={card.number}
 						set={card.set}
 						types={card.types}
@@ -465,14 +459,14 @@
 			</a>
 		</h2>
 		<p>
-			There's some VMax cards that show a <mark>full, or alternate artwork</mark>. These are
-			<mark>classed as "rainbow rare"</mark>
-			and have a similar effect to the rainbow cards. It's a really
-			<mark>vibrant and glittery overlay</mark>.
+			일부 VMax 카드는 <mark>전체 또는 대체 아트워크</mark>를 보여줍니다. 이들은
+			<mark>"레인보우 레어"로 분류되며</mark>
+			레인보우 카드와 유사한 효과를 가집니다. 이는 매우
+			<mark>생동감 있고 반짝이는 오버레이</mark>입니다.
 		</p>
 		<p>
-			This is achieved with a <mark>background image of glitter/sparkles</mark>, and a texture pattern
-			background image, sandwiching the usual linear gradients.
+			이는 <mark>반짝이/스파클의 배경 이미지</mark>와 텍스처 패턴
+			배경 이미지를 사용하여 구현되며, 일반적인 선형 그라데이션을 샌드위치 형태로 배치합니다.
 		</p>
 
 		<CardList>
@@ -483,6 +477,7 @@
 					<Card
 						id={card.id}
 						name={card.name}
+						img={card.image}
 						number={card.number}
 						set={card.set}
 						types={card.types}
@@ -500,10 +495,10 @@
 			</a>
 		</h2>
 		<p>
-			Again back to the <mark>diagonal gradients overlaying a texture</mark>, VStar are quite
-			<mark>similar to the Ultra Rare</mark>
-			(Full/Alt) cards. The cards are generally <mark>brighter with a pastel hue</mark>, though, which
-			makes the gradient and texture more subtle.
+			다시 <mark>대각선 그라데이션이 텍스처 위에 겹쳐진</mark> 형태로, VStar 카드는
+			<mark>울트라 레어(풀 아트/얼터너티브 아트) 카드와 매우 유사합니다</mark>.
+			하지만 이 카드들은 일반적으로 <mark>파스텔 색조로 더 밝게</mark> 표현되어 있어,
+			그라데이션과 텍스처가 더 미묘하게 나타납니다.
 		</p>
 
 		<CardList>
@@ -514,6 +509,7 @@
 					<Card
 						id={card.id}
 						name={card.name}
+						img={card.image}
 						number={card.number}
 						set={card.set}
 						types={card.types}
@@ -531,10 +527,10 @@
 			</a>
 		</h2>
 		<p>
-			Again back to the <mark>diagonal gradients overlaying a texture</mark>, VStar are quite
-			<mark>similar to the Ultra Rare</mark>
-			(Full/Alt) cards. The cards are generally <mark>brighter with a pastel hue</mark>, though, which
-			makes the gradient and texture more subtle.
+			다시 <mark>대각선 그라데이션이 텍스처 위에 겹쳐진</mark> 형태로, VStar 카드는
+			<mark>울트라 레어(풀 아트/얼터너티브 아트) 카드와 매우 유사합니다</mark>.
+			하지만 이 카드들은 일반적으로 <mark>파스텔 색조로 더 밝게</mark> 표현되어 있어,
+			그라데이션과 텍스처가 더 미묘하게 나타납니다.
 		</p>
 
 		<CardList>
@@ -545,6 +541,7 @@
 					<Card
 						id={card.id}
 						name={card.name}
+						img={card.image}
 						number={card.number}
 						set={card.set}
 						types={card.types}
@@ -562,9 +559,9 @@
 			</a>
 		</h2>
 		<p>
-			The Rainbow Rare is a <mark>super glittery effect on top of pastel gradients</mark>. This is
-			achieved with a background image of glitter/sparkles and a
-			<mark>color-burn/hard-light background blend</mark> for some pastel gradients.
+			레인보우 레어는 <mark>파스텔 그라데이션 위에 매우 반짝이는 효과</mark>를 가지고 있습니다. 이는
+			반짝이/스파클 배경 이미지와 파스텔 그라데이션을 위한
+			<mark>컬러번/하드라이트 배경 블렌드</mark>를 사용하여 구현됩니다.
 		</p>
 
 		<CardList>
@@ -575,6 +572,7 @@
 					<Card
 						id={card.id}
 						name={card.name}
+						img={card.image}
 						number={card.number}
 						set={card.set}
 						types={card.types}
@@ -592,9 +590,9 @@
 			</a>
 		</h2>
 		<p>
-			<mark>GOLD!</mark> Here we apply two glitter layers on top of each other with a overlay effect and
-		<mark>slide the two layers in opposite directions</mark>. We also <mark>mask the foil image</mark> with a gadient so
-		that foil and glitter layers are mutually exclusive. The resulting effect is a shimmering glitter layer!
+			<mark>골드!</mark> 여기서는 오버레이 효과로 두 개의 반짝이는 레이어를 서로 겹쳐 적용하고
+		<mark>두 레이어를 반대 방향으로 슬라이드</mark>합니다. 또한 <mark>포일 이미지를 그라데이션으로 마스킹</mark>하여
+		포일과 반짝이는 레이어가 서로 배타적이 되도록 합니다. 그 결과로 반짝이는 글리터 효과가 나타납니다!
 		</p>
 
 		<CardList>
@@ -605,6 +603,7 @@
 					<Card
 						id={card.id}
 						name={card.name}
+						img={card.image}
 						number={card.number}
 						set={card.set}
 						types={card.types}
@@ -622,8 +621,8 @@
 			</a>
 		</h2>
 		<p>
-			The V and VMax cards in the Trainer Gallery are generally quite similar to the normal V and VMax
-			cards, so here I've just tweaked the values a little and added a different background texture.
+			트레이너 갤러리의 V와 VMax 카드는 일반적으로 일반 V와 VMax 카드와 매우 유사합니다. 
+			따라서 여기서는 값을 약간 조정하고 다른 배경 텍스처를 추가했습니다.
 		</p>
 
 		<CardList>
@@ -634,6 +633,7 @@
 					<Card
 						id={card.id}
 						name={card.name}
+						img={card.image}
 						number={card.number}
 						set={card.set}
 						types={card.types}
@@ -651,10 +651,10 @@
 			</a>
 		</h2>
 		<p>
-			Shiny Vault cards have quite a unique effect in whereby the foil background is a shiny silver
-			color. To achieve this we apply the foil image with some radial gradients to darken the foil
-			over the background. This creates a slightly silver effect on top of the white card background.
-			This effect works best in Firefox.
+			샤이니 볼트 카드는 포일 배경이 반짝이는 은색인 독특한 효과를 가지고 있습니다.
+			이를 구현하기 위해 포일 이미지에 방사형 그라데이션을 적용하여 배경 위의 포일을 어둡게 만듭니다.
+			이는 흰색 카드 배경 위에 은색 효과를 약간 만들어냅니다.
+			이 효과는 Firefox에서 가장 잘 작동합니다.
 		</p>
 
 		<CardList>
@@ -665,6 +665,7 @@
 					<Card
 						id={card.id}
 						name={card.name}
+						img={card.image}
 						number={card.number}
 						set={card.set}
 						types={card.types}

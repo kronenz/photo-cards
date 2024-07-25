@@ -16,8 +16,8 @@
   export let rarity = "common";
 
   // image props
-  export let img = "";
-  export let back = "https://tcg.pokemon.com/assets/img/global/tcg-card-back-2x.jpg";
+  export let img = ""
+  export let back = "https://i.ibb.co/bd8nxRt/Monosnap-ee6faf9d-4225-409c-9aa5-a38c8fe39eb9-webp-2024-07-25-15-08-38.png";
   export let foil = "";
   export let mask = "";
 
