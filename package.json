@@ -9,10 +9,15 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@sveltejs/kit": "^2.0.0",
+    "@sveltejs/kit": "^1.30.4",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "pokemontcgsdk": "^2.0.0",
     "svelte": "^4.0.0",
-    "vite": "^5.0.0"
+    "vite": "^4.0.0"
+  },
+  "overrides": {
+    "@sveltejs/vite-plugin-svelte": {
+      "svelte": "^4.0.0"
+    }
   }
 }
