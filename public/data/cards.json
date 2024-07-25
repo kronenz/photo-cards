@@ -2,7 +2,7 @@
   {
     "id": "swsh12pt5-160",
     "set": "swsh12pt5",
-    "name": "Pikachu",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Lightning"],
@@ -17,7 +17,7 @@
   {
     "id": "sm10-33",
     "set": "sm10",
-    "name": "Squirtle",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Water"],
@@ -32,28 +32,28 @@
   {
     "id": "sm115-7",
     "set": "sm115",
-    "name": "Charmander",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Fire"],
     "number": "7",
     "rarity": "Common",
-    "image": "https://i.ibb.co/VJVRWK8/BAC-2894.jpg",
+    "image": "https://i.ibb.co/3mwTMns/DSC07914.jpg",
     "images": {
       "small": "https://images.pokemontcg.io/sm115/7.png",
-      "large": "https://i.ibb.co/VJVRWK8/BAC-2894.jpg"
+      "large": "https://i.ibb.co/3mwTMns/DSC07914.jpg"
     }
   },
   {
     "id": "sm35-1",
     "set": "sm35",
-    "name": "Bulbasaur",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Grass"],
     "number": "1",
     "rarity": "Common",
-    "image": "https://i.ibb.co/VJVRWK8/BAC-2894.jpg",
+    "image": "https://i.ibb.co/4ptN0fp/DSC07910.jpg",
     "images": {
       "small": "https://images.pokemontcg.io/sm35/1.png",
       "large": "https://i.ibb.co/VJVRWK8/BAC-2894.jpg"
@@ -62,13 +62,13 @@
   {
     "id": "swsh12-127",
     "set": "swsh12",
-    "name": "Togedemaru",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Metal"],
     "number": "127",
     "rarity": "Common",
-    "image": "https://i.ibb.co/VJVRWK8/BAC-2894.jpg",
+    "image": "https://i.ibb.co/JRg7kxG/DSC07831.jpg",
     "images": {
       "small": "https://images.pokemontcg.io/swsh12/127.png",
       "large": "https://i.ibb.co/VJVRWK8/BAC-2894.jpg",
@@ -79,13 +79,13 @@
   {
     "id": "swsh12-85",
     "set": "swsh12",
-    "name": "Dedenne",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Psychic"],
     "number": "85",
     "rarity": "Uncommon",
-    "image": "https://i.ibb.co/VJVRWK8/BAC-2894.jpg",
+    "image": "https://i.ibb.co/2kTg6Y1/DSC07724.jpg",
     "images": {
       "small": "https://images.pokemontcg.io/swsh12/85.png",
       "large": "https://i.ibb.co/VJVRWK8/BAC-2894.jpg",
@@ -96,7 +96,7 @@
   {
     "id": "swsh12-116",
     "set": "swsh12",
-    "name": "Morpeko",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Darkness"],
@@ -113,13 +113,13 @@
   {
     "id": "pgo-24",
     "set": "pgo",
-    "name": "Articuno",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Water"],
     "number": "24",
     "rarity": "Rare Holo",
-    "image": "https://i.ibb.co/VJVRWK8/BAC-2894.jpg",
+    "image": "https://i.ibb.co/vwrZVQx/DSC07708.jpg",
     "images": {
       "small": "https://images.pokemontcg.io/pgo/24.png",
       "large": "https://i.ibb.co/VJVRWK8/BAC-2894.jpg",
@@ -130,13 +130,13 @@
   {
     "id": "pgo-29",
     "set": "pgo",
-    "name": "Zapdos",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Lightning"],
     "number": "29",
     "rarity": "Rare Holo",
-    "image": "https://i.ibb.co/VJVRWK8/BAC-2894.jpg",
+    "image": "https://i.ibb.co/2yY7ScM/DSC07706.jpg",
     "images": {
       "small": "https://images.pokemontcg.io/pgo/29.png",
       "large": "https://i.ibb.co/VJVRWK8/BAC-2894.jpg",
@@ -147,13 +147,13 @@
   {
     "id": "pgo-12",
     "set": "pgo",
-    "name": "Moltres",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Fire"],
     "number": "12",
     "rarity": "Rare Holo",
-    "image": "https://i.ibb.co/VJVRWK8/BAC-2894.jpg",
+    "image": "https://i.ibb.co/yRSKXky/DSC07701.jpg",
     "images": {
       "small": "https://images.pokemontcg.io/pgo/12.png",
       "large": "https://i.ibb.co/VJVRWK8/BAC-2894.jpg",
@@ -164,13 +164,13 @@
   {
     "id": "swsh1-85",
     "set": "swsh1",
-    "name": "Gengar",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Stage 2"],
     "types": ["Psychic"],
     "number": "85",
     "rarity": "Rare Holo",
-    "image": "https://i.ibb.co/VJVRWK8/BAC-2894.jpg",
+    "image": "https://i.ibb.co/nw0tX0R/DSC07699.jpg",
     "images": {
       "small": "https://images.pokemontcg.io/swsh1/85.png",
       "large": "https://i.ibb.co/VJVRWK8/BAC-2894.jpg",
@@ -181,7 +181,7 @@
   {
     "id": "swsh9-132",
     "set": "swsh9",
-    "name": "Boss's Orders",
+    "name":"원태인",
     "supertype": "Trainer",
     "subtypes": ["Supporter"],
     "number": "132",
@@ -197,7 +197,7 @@
   {
     "id": "pgo-43",
     "set": "pgo",
-    "name": "Tyranitar",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Stage 2"],
     "types": ["Darkness"],
@@ -214,7 +214,7 @@
   {
     "id": "swshp-SWSH012",
     "set": "swshp",
-    "name": "Morpeko",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Lightning"],
@@ -231,7 +231,7 @@
   {
     "id": "swsh45-60",
     "set": "swsh45",
-    "name": "Professor's Research",
+    "name":"원태인",
     "supertype": "Trainer",
     "subtypes": ["Supporter"],
     "number": "60",
@@ -247,7 +247,7 @@
   {
     "id": "swshp-SWSH127",
     "set": "swshp",
-    "name": "Eevee",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Colorless"],
@@ -264,7 +264,7 @@
   {
     "id": "pgo-11",
     "set": "pgo",
-    "name": "Radiant Charizard",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic", "Radiant"],
     "types": ["Fire"],
@@ -281,7 +281,7 @@
   {
     "id": "swsh12-59",
     "set": "swsh12",
-    "name": "Radiant Alakazam",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic", "Radiant"],
     "types": ["Psychic"],
@@ -298,7 +298,7 @@
   {
     "id": "swsh12-120",
     "set": "swsh12",
-    "name": "Radiant Jirachi",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic", "Radiant"],
     "types": ["Metal"],
@@ -315,7 +315,7 @@
   {
     "id": "swsh11tg-TG03",
     "set": "swsh11tg",
-    "name": "Charizard",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Stage 2"],
     "types": ["Fire"],
@@ -332,7 +332,7 @@
   {
     "id": "swsh11tg-TG05",
     "set": "swsh11tg",
-    "name": "Pikachu",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Lightning"],
@@ -349,7 +349,7 @@
   {
     "id": "swsh12tg-TG02",
     "set": "swsh12tg",
-    "name": "Milotic",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Stage 1"],
     "types": ["Water"],
@@ -366,7 +366,7 @@
   {
     "id": "swsh7-110",
     "set": "swsh7",
-    "name": "Rayquaza V",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic", "V", "Rapid Strike"],
     "types": ["Dragon"],
@@ -383,7 +383,7 @@
   {
     "id": "swsh12-138",
     "set": "swsh12",
-    "name": "Lugia V",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic", "V"],
     "types": ["Colorless"],
@@ -400,7 +400,7 @@
   {
     "id": "pgo-49",
     "set": "pgo",
-    "name": "Dragonite V",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic", "V"],
     "types": ["Dragon"],
@@ -417,7 +417,7 @@
   {
     "id": "swsh8-250",
     "set": "swsh8",
-    "name": "Mew V",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic", "V", "Fusion Strike"],
     "types": ["Psychic"],
@@ -434,7 +434,7 @@
   {
     "id": "swsh3-183",
     "set": "swsh3",
-    "name": "Scizor V",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic", "V"],
     "types": ["Metal"],
@@ -451,7 +451,7 @@
   {
     "id": "swsh12-176",
     "set": "swsh12",
-    "name": "Unown V",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic", "V"],
     "types": ["Psychic"],
@@ -468,7 +468,7 @@
   {
     "id": "swshp-SWSH179",
     "set": "swshp",
-    "name": "Flareon V",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic", "V", "Single Strike"],
     "types": ["Fire"],
@@ -485,7 +485,7 @@
   {
     "id": "swshp-SWSH181",
     "set": "swshp",
-    "name": "Vaporeon V",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic", "V", "Rapid Strike"],
     "types": ["Water"],
@@ -502,7 +502,7 @@
   {
     "id": "swshp-SWSH183",
     "set": "swshp",
-    "name": "Jolteon V",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic", "V"],
     "types": ["Lightning"],
@@ -519,7 +519,7 @@
   {
     "id": "swsh8-245",
     "set": "swsh8",
-    "name": "Celebi V",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic", "V"],
     "types": ["Grass"],
@@ -536,7 +536,7 @@
   {
     "id": "swsh11-186",
     "set": "swsh11",
-    "name": "Giratina V",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic", "V"],
     "types": ["Dragon"],
@@ -553,7 +553,7 @@
   {
     "id": "swsh10-177",
     "set": "swsh10",
-    "name": "Origin Forme Dialga V",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic", "V"],
     "types": ["Metal"],
@@ -570,7 +570,7 @@
   {
     "id": "swshp-SWSH180",
     "set": "swshp",
-    "name": "Flareon VMAX",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VMAX", "Single Strike"],
     "types": ["Fire"],
@@ -585,7 +585,7 @@
   {
     "id": "swshp-SWSH182",
     "set": "swshp",
-    "name": "Vaporeon VMAX",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VMAX", "Rapid Strike"],
     "types": ["Water"],
@@ -600,7 +600,7 @@
   {
     "id": "swshp-SWSH184",
     "set": "swshp",
-    "name": "Jolteon VMAX",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VMAX"],
     "types": ["Lightning"],
@@ -615,7 +615,7 @@
   {
     "id": "swsh7-29",
     "set": "swsh7",
-    "name": "Gyarados VMAX",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VMAX"],
     "types": ["Water"],
@@ -632,7 +632,7 @@
   {
     "id": "swsh45-51",
     "set": "swsh45",
-    "name": "Ditto VMAX",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VMAX"],
     "types": ["Colorless"],
@@ -649,7 +649,7 @@
   {
     "id": "swsh9-29",
     "set": "swsh9",
-    "name": "Kingler VMAX",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VMAX"],
     "types": ["Water"],
@@ -666,7 +666,7 @@
   {
     "id": "swsh8-270",
     "set": "swsh8",
-    "name": "Espeon VMAX",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VMAX"],
     "types": ["Psychic"],
@@ -683,7 +683,7 @@
   {
     "id": "swsh8-271",
     "set": "swsh8",
-    "name": "Gengar VMAX",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VMAX", "Single Strike"],
     "types": ["Darkness"],
@@ -700,7 +700,7 @@
   {
     "id": "swsh7-215",
     "set": "swsh7",
-    "name": "Umbreon VMAX",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VMAX", "Single Strike"],
     "types": ["Darkness"],
@@ -717,7 +717,7 @@
   {
     "id": "pgo-31",
     "set": "pgo",
-    "name": "Mewtwo VSTAR",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VSTAR"],
     "types": ["Psychic"],
@@ -734,7 +734,7 @@
   {
     "id": "swshp-SWSH214",
     "set": "swshp",
-    "name": "Lucario VSTAR",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VSTAR"],
     "types": ["Fighting"],
@@ -751,7 +751,7 @@
   {
     "id": "swsh9-18",
     "set": "swsh9",
-    "name": "Charizard VSTAR",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VSTAR"],
     "types": ["Fire"],
@@ -768,7 +768,7 @@
   {
     "id": "swsh6-196",
     "set": "swsh6",
-    "name": "Peonia",
+    "name":"원태인",
     "supertype": "Trainer",
     "subtypes": ["Supporter"],
     "number": "196",
@@ -784,7 +784,7 @@
   {
     "id": "swsh9-167",
     "set": "swsh9",
-    "name": "Barry",
+    "name":"원태인",
     "supertype": "Trainer",
     "subtypes": ["Supporter"],
     "number": "167",
@@ -800,7 +800,7 @@
   {
     "id": "swsh1-200",
     "set": "swsh1",
-    "name": "Marnie",
+    "name":"원태인",
     "supertype": "Trainer",
     "subtypes": ["Supporter"],
     "number": "200",
@@ -816,7 +816,7 @@
   {
     "id": "swsh11tg-TG27",
     "set": "swsh11tg",
-    "name": "Nessa",
+    "name":"원태인",
     "supertype": "Trainer",
     "subtypes": ["Supporter"],
     "number": "TG27",
@@ -832,7 +832,7 @@
   {
     "id": "swsh12tg-TG26",
     "set": "swsh12tg",
-    "name": "Professor Burnet",
+    "name":"원태인",
     "supertype": "Trainer",
     "subtypes": ["Supporter"],
     "number": "TG26",
@@ -848,7 +848,7 @@
   {
     "id": "swsh11tg-TG26",
     "set": "swsh11tg",
-    "name": "Kabu",
+    "name":"원태인",
     "supertype": "Trainer",
     "subtypes": ["Supporter"],
     "number": "TG26",
@@ -864,7 +864,7 @@
   {
     "id": "swsh4-188",
     "set": "swsh4",
-    "name": "Pikachu VMAX",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VMAX"],
     "types": ["Lightning"],
@@ -881,7 +881,7 @@
   {
     "id": "swsh12-197",
     "set": "swsh12",
-    "name": "Alolan Vulpix VSTAR",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VSTAR"],
     "types": ["Water"],
@@ -898,7 +898,7 @@
   {
     "id": "swsh10-204",
     "set": "swsh10",
-    "name": "Irida",
+    "name":"원태인",
     "supertype": "Trainer",
     "subtypes": ["Supporter"],
     "number": "204",
@@ -914,7 +914,7 @@
   {
     "id": "swsh8-268",
     "set": "swsh8",
-    "name": "Mew VMAX",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VMAX", "Fusion Strike"],
     "types": ["Psychic"],
@@ -931,7 +931,7 @@
   {
     "id": "swsh9-175",
     "set": "swsh9",
-    "name": "Whimsicott VSTAR",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VSTAR"],
     "types": ["Psychic"],
@@ -948,7 +948,7 @@
   {
     "id": "swsh12-205",
     "set": "swsh12",
-    "name": "Furisode Girl",
+    "name":"원태인",
     "supertype": "Trainer",
     "subtypes": ["Supporter"],
     "number": "205",
@@ -964,7 +964,7 @@
   {
     "id": "swsh2-209",
     "set": "swsh2",
-    "name": "Twin Energy",
+    "name":"원태인",
     "supertype": "Energy",
     "subtypes": ["Special"],
     "number": "209",
@@ -980,7 +980,7 @@
   {
     "id": "swsh9-186",
     "set": "swsh9",
-    "name": "Ultra Ball",
+    "name":"원태인",
     "supertype": "Trainer",
     "subtypes": ["Item"],
     "number": "186",
@@ -996,7 +996,7 @@
   {
     "id": "swsh10-213",
     "set": "swsh10",
-    "name": "Path to the Peak",
+    "name":"원태인",
     "supertype": "Trainer",
     "subtypes": ["Stadium"],
     "number": "213",
@@ -1012,7 +1012,7 @@
   {
     "id": "swsh8-280",
     "set": "swsh8",
-    "name": "Flaaffy",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Stage 1"],
     "types": ["Lightning"],
@@ -1029,7 +1029,7 @@
   {
     "id": "swsh9-184",
     "set": "swsh9",
-    "name": "Arceus VSTAR",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VSTAR"],
     "types": ["Colorless"],
@@ -1046,7 +1046,7 @@
   {
     "id": "swsh11tg-TG30",
     "set": "swsh11tg",
-    "name": "Mew VMAX",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VMAX", "Fusion Strike"],
     "types": ["Psychic"],
@@ -1063,7 +1063,7 @@
   {
     "id": "swsh9tg-TG16",
     "set": "swsh9tg",
-    "name": "Mimikyu V",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic", "V"],
     "types": ["Psychic"],
@@ -1080,7 +1080,7 @@
   {
     "id": "swsh9tg-TG18",
     "set": "swsh9tg",
-    "name": "Single Strike Urshifu V",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic", "V", "Single Strike"],
     "types": ["Fighting"],
@@ -1097,7 +1097,7 @@
   {
     "id": "swsh11tg-TG16",
     "set": "swsh11tg",
-    "name": "Pikachu V",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic", "V"],
     "types": ["Lightning"],
@@ -1114,7 +1114,7 @@
   {
     "id": "swsh9tg-TG17",
     "set": "swsh9tg",
-    "name": "Mimikyu VMAX",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VMAX"],
     "types": ["Psychic"],
@@ -1131,7 +1131,7 @@
   {
     "id": "swsh9tg-TG19",
     "set": "swsh9tg",
-    "name": "Single Strike Urshifu VMAX",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VMAX", "Single Strike"],
     "types": ["Fighting"],
@@ -1148,7 +1148,7 @@
   {
     "id": "swsh11tg-TG17",
     "set": "swsh11tg",
-    "name": "Pikachu VMAX",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VMAX"],
     "types": ["Lightning"],
@@ -1165,7 +1165,7 @@
   {
     "id": "swsh9-120",
     "set": "swsh9",
-    "name": "Bidoof",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Colorless"],
@@ -1182,7 +1182,7 @@
   {
     "id": "swsh12-49",
     "set": "swsh12",
-    "name": "Pikachu",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Lightning"],
@@ -1199,7 +1199,7 @@
   {
     "id": "swsh8-138",
     "set": "swsh8",
-    "name": "Onix",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Fighting"],
@@ -1216,7 +1216,7 @@
   {
     "id": "pgo-69",
     "set": "pgo",
-    "name": "PokéStop",
+    "name":"원태인",
     "supertype": "Trainer",
     "subtypes": ["Stadium"],
     "number": "68",
@@ -1232,7 +1232,7 @@
   {
     "id": "swsh1-173",
     "set": "swsh1",
-    "name": "Poké Kid",
+    "name":"원태인",
     "supertype": "Trainer",
     "subtypes": ["Supporter"],
     "number": "173",
@@ -1248,7 +1248,7 @@
   {
     "id": "swsh9-150",
     "set": "swsh9",
-    "name": "Ultra Ball",
+    "name":"원태인",
     "supertype": "Trainer",
     "subtypes": ["Item"],
     "number": "150",
@@ -1264,7 +1264,7 @@
   {
     "id": "swsh4-9",
     "set": "swsh4",
-    "name": "Celebi",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Grass"],
@@ -1281,7 +1281,7 @@
   {
     "id": "swsh4-50",
     "set": "swsh4",
-    "name": "Raikou",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Lightning"],
@@ -1298,7 +1298,7 @@
   {
     "id": "swsh4-82",
     "set": "swsh4",
-    "name": "Zacian",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Psychic"],
@@ -1315,7 +1315,7 @@
   {
     "id": "swsh4-102",
     "set": "swsh4",
-    "name": "Zamazenta",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Fighting"],
@@ -1332,7 +1332,7 @@
   {
     "id": "swsh4-119",
     "set": "swsh4",
-    "name": "Jirachi",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Metal"],
@@ -1349,7 +1349,7 @@
   {
     "id": "swsh4-138",
     "set": "swsh4",
-    "name": "Rayquaza",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Colorless"],
@@ -1366,7 +1366,7 @@
   {
     "id": "swsh45-17",
     "set": "swsh45",
-    "name": "Reshiram",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Fire"],
@@ -1383,7 +1383,7 @@
   {
     "id": "swsh45-21",
     "set": "swsh45",
-    "name": "Kyogre",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Water"],
@@ -1400,7 +1400,7 @@
   {
     "id": "swsh45-46",
     "set": "swsh45",
-    "name": "Yveltal",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Darkness"],
@@ -1417,7 +1417,7 @@
   {
     "id": "swsh45sv-SV093",
     "set": "swsh45sv",
-    "name": "Minccino",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Colorless"],
@@ -1434,7 +1434,7 @@
   {
     "id": "swsh45sv-SV094",
     "set": "swsh45sv",
-    "name": "Cinccino",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Stage 1"],
     "types": ["Colorless"],
@@ -1451,7 +1451,7 @@
   {
     "id": "swsh45sv-SV110",
     "set": "swsh45sv",
-    "name": "Lapras V",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic", "V"],
     "types": ["Water"],
@@ -1468,7 +1468,7 @@
   {
     "id": "swsh45sv-SV023",
     "set": "swsh45sv",
-    "name": "Galarian Darumaka",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Water"],
@@ -1485,7 +1485,7 @@
   {
     "id": "swsh45sv-SV076",
     "set": "swsh45sv",
-    "name": "Koffing",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Darkness"],
@@ -1502,7 +1502,7 @@
   {
     "id": "swsh45sv-SV107",
     "set": "swsh45sv",
-    "name": "Charizard VMAX",
+    "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["VMAX"],
     "types": ["Fire"],

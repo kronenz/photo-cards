@@ -410,8 +410,10 @@
 >
   <div 
     class="card__translater">
+    
     <button
       class="card__rotator"
+      style="position: relative"
       on:click={activate}
       on:pointermove={interact}
       on:mouseout={interactEnd}
@@ -419,6 +421,7 @@
       aria-label="Expand the Pokemon Card; {name}."
       tabindex="0"
       >
+
       <img
         class="card__back"
         src={back_img}
@@ -439,6 +442,9 @@
         />
         <div class="card__shine"></div>
         <div class="card__glare"></div>
+        <div class="card__name" style="position: absolute; top: 20px; right: 20px; width: 100%; opacity: 0.6; z-index: 10;">
+          <h2 style="font-size: 2em; color: white; text-align: right; margin: 0; padding-right: 20px;">{name}</h2>
+        </div>
       </div>
     </button>
   </div>
