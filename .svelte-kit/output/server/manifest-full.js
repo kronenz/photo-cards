@@ -10,7 +10,7 @@ return {
 	assets: new Set([]),
 	mimeTypes: {},
 	_: {
-		client: {"start":"_app/immutable/entry/start.f7f7a7a6.js","app":"_app/immutable/entry/app.aee7e813.js","imports":["_app/immutable/entry/start.f7f7a7a6.js","_app/immutable/chunks/scheduler.745dea18.js","_app/immutable/chunks/singletons.edd2f6ee.js","_app/immutable/chunks/index.a342afc0.js","_app/immutable/entry/app.aee7e813.js","_app/immutable/chunks/scheduler.745dea18.js","_app/immutable/chunks/index.9ca1c632.js"],"stylesheets":[],"fonts":[]},
+		client: {"start":"_app/immutable/entry/start.1b784ca0.js","app":"_app/immutable/entry/app.a81a00c7.js","imports":["_app/immutable/entry/start.1b784ca0.js","_app/immutable/chunks/index.9c6289ae.js","_app/immutable/chunks/singletons.865f28da.js","_app/immutable/chunks/index.8d3ee9ed.js","_app/immutable/entry/app.a81a00c7.js","_app/immutable/chunks/index.9c6289ae.js"],"stylesheets":[],"fonts":[]},
 		nodes: [
 			__memo(() => import('./nodes/0.js')),
 			__memo(() => import('./nodes/1.js')),

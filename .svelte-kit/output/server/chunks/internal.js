@@ -1,4 +1,4 @@
-import { c as create_ssr_component, s as setContext, v as validate_component, m as missing_component } from "./ssr.js";
+import { c as create_ssr_component, s as setContext, v as validate_component, m as missing_component } from "./index2.js";
 let base = "";
 let assets = base;
 const initial = { base, assets };
@@ -47,14 +47,16 @@ const Root = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     $$bindings.data_1(data_1);
   let $$settled;
   let $$rendered;
-  let previous_head = $$result.head;
   do {
     $$settled = true;
-    $$result.head = previous_head;
     {
       stores.page.set(page);
     }
-    $$rendered = `  ${constructors[1] ? `${validate_component(constructors[0] || missing_component, "svelte:component").$$render(
+    $$rendered = `
+
+
+
+${constructors[1] ? `${validate_component(constructors[0] || missing_component, "svelte:component").$$render(
       $$result,
       { data: data_0, this: components[0] },
       {
@@ -88,7 +90,9 @@ const Root = create_ssr_component(($$result, $$props, $$bindings, slots) => {
         }
       },
       {}
-    )}`} ${``}`;
+    )}`}
+
+${``}`;
   } while (!$$settled);
   return $$rendered;
 });
@@ -429,7 +433,7 @@ const options = {
 		<div class="error">
 			<span class="status">` + status + '</span>\n			<div class="message">\n				<h1>' + message + "</h1>\n			</div>\n		</div>\n	</body>\n</html>\n"
   },
-  version_hash: "1gveb6"
+  version_hash: "1pb010y"
 };
 function get_hooks() {
   return {};

@@ -10,13 +10,10 @@ function run_all(fns) {
   fns.forEach(run);
 }
 function safe_not_equal(a, b) {
-  return a != a ? b == b : a !== b || a && typeof a === "object" || typeof a === "function";
+  return a != a ? b == b : a !== b || (a && typeof a === "object" || typeof a === "function");
 }
 function subscribe(store, ...callbacks) {
   if (store == null) {
-    for (const callback of callbacks) {
-      callback(void 0);
-    }
     return noop;
   }
   const unsub = store.subscribe(...callbacks);
@@ -61,9 +58,7 @@ function validate_component(component, name) {
   if (!component || !component.$$render) {
     if (name === "svelte:component")
       name += " this={...}";
-    throw new Error(
-      `<${name}> is not a valid SSR component. You may need to review your build config to ensure that dependencies are compiled, rather than imported as pre-compiled modules. Otherwise you may need to fix a <${name}>.`
-    );
+    throw new Error(`<${name}> is not a valid SSR component. You may need to review your build config to ensure that dependencies are compiled, rather than imported as pre-compiled modules. Otherwise you may need to fix a <${name}>.`);
   }
   return component;
 }
