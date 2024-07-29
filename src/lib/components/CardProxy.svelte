@@ -90,10 +90,11 @@
       return img;
     }
     if ( isDefined( set ) && isDefined( number ) ) {
-      return `https://images.pokemontcg.io/${ set.toLowerCase() }/${ number }_hires.png`;
+        const imageUrl = `https://images.pokemontcg.io/${set.toLowerCase()}/${number}_hires.png`;
+        console.log(imageUrl);
+        return imageUrl;
     }
     
-    console.log(image);
     return image;
   }
   

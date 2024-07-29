@@ -13,5 +13,9 @@
     "pokemontcgsdk": "^2.0.0",
     "svelte": "^3.59.2",
     "vite": "^4.0.0"
+  },
+  "dependencies": {
+    "@sveltejs/adapter-auto": "^3.2.2",
+    "pocketbase": "^0.21.4"
   }
 }

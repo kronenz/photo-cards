@@ -1,17 +1,17 @@
 <script>
 	
-	import { activeCard } from "./lib/stores/activeCard.js";
+	import { activeCard } from "../stores/activeCard.js"; // activeCard 스토어를 가져옵니다.
 	
-	let thisGrid;
+	let thisGrid; // 현재 그리드 요소를 참조할 변수를 선언합니다.
 	
-	$: active = thisGrid && thisGrid.contains( $activeCard );
+	$: active = thisGrid && thisGrid.contains( $activeCard ); // thisGrid가 존재하고 activeCard를 포함하면 active를 true로 설정합니다.
 	
 </script>
 
 <section 
 	class="card-grid" 
-	class:active
-	bind:this={thisGrid}
+	class:active  
+	bind:this={thisGrid} 
 >
 
 <slot />

@@ -6,6 +6,18 @@
 			],
 			"$lib/*": [
 				"../src/lib/*"
+			],
+			"$css": [
+				"../public/css"
+			],
+			"$css/*": [
+				"../public/css/*"
+			],
+			"$fonts": [
+				"../src/statics/fonts"
+			],
+			"$fonts/*": [
+				"../src/statics/fonts/*"
 			]
 		},
 		"rootDirs": [

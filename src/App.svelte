@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
 
 	import Search from "./Search.svelte";
-	import CardList from "./Cards.svelte";
+	import CardList from "./lib/components/Cards.svelte";
 	import Card from "./lib/components/CardProxy.svelte";
 
 	let showcase, basics, reverse, holos, cosmos, amazings, radiant, basicGallery, 

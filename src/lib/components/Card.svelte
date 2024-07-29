@@ -346,7 +346,8 @@
     // set the front image on mount so that
     // the lazyloading can work correctly
     front_img = img_base + img;
-
+    console.log("프론트 이미지", front_img)
+    
     // run a cute little animation on load
     // for showcase card
     if (showcase && isVisible) {
@@ -425,7 +426,7 @@
       <img
         class="card__back"
         src={back_img}
-        alt="The back of a Pokemon Card, a Pokeball in the center with Pokemon logo above and below"
+        alt="The back of a Card"
         loading="lazy"
         width="660"
         height="921"
@@ -434,7 +435,7 @@
         style={ staticStyles + foilStyles }>
         <img
           src={front_img}
-          alt="Front design of the {name} Pokemon Card, with the stats and info around the edge"
+          alt="Front design of the {name} Card"
           on:load={imageLoader}
           loading="lazy"
           width="660"

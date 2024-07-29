@@ -1,6 +1,11 @@
 #!/bin/bash
 
+# 첫 번째 명령줄 인자를 FOLDER 변수에 할당
+# 이는 이미지를 저장할 디렉토리 경로를 지정합니다
 FOLDER=$1 
+
+# 두 번째 명령줄 인자를 REMOTE_JSON 변수에 할당
+# 이는 원격 JSON 파일의 URL을 지정합니다
 REMOTE_JSON=$2
 
 _extract() {
@@ -26,8 +31,8 @@ fetch_json() {
     echo "╿  ↯  📃 Fetching JSON ┃ $REMOTE_JSON  "  
     echo "└┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈";
 
-    JSON=$( curl $REMOTE_JSON );     # 🌐 remote JSON file
-    # JSON=$( cat $REMOTE_JSON );      # 💻 local JSON file
+    # JSON=$( curl $REMOTE_JSON );     # 🌐 remote JSON file
+    JSON=$( cat $REMOTE_JSON );      # 💻 local JSON file
 
   else
 
@@ -47,7 +52,8 @@ download_images() {
     local LOOP_COUNT=0;
       
     for row in $( jq -r '.[] | @base64'); do
-
+      echo "현재 처리 중인 row: $row"
+      echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
       local FOIL_TYPE=$( _extract ${row} '._foil_mask' );
       local FOIL_EFFECT=$( _extract ${row} '._foil_effect' );
 
