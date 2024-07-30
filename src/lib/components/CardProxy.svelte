@@ -24,7 +24,13 @@
   // context/environment props
   export let showcase = false;
 
-  const server = import.meta.env.VITE_CDN;
+  const server = "https://poke-holo.b-cdn.net";//import.meta.env.VITE_CDN;
+  // VITE_CDN 환경 변수는 .env 파일에 정의되어 있습니다.
+  // 이 파일에서는 import.meta.env.VITE_CDN을 통해 접근할 수 있습니다.
+  // 따라서 별도의 import 문이나 추가 설정 없이 사용 가능합니다.
+  
+  // 예시 사용:
+  console.log("CDN URL:", import.meta.env.VITE_CDN);
   /**
    * Shiny Vault Card (starts with sv)
    */

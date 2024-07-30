@@ -20,7 +20,8 @@ const config = {
 			$lib: 'src/lib',
 			$css: 'src/lib/styles/css',
 			$fonts: 'src/statics/fonts',
-			$data: 'src/assets/data'
+			$img: 'src/statics/img',
+			$data: 'src/assets/data',
 		},
 		// 정적 자산 처리를 위한 설정
 		paths: {

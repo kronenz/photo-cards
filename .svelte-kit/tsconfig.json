@@ -19,6 +19,12 @@
 			"$fonts/*": [
 				"../src/statics/fonts/*"
 			],
+			"$img": [
+				"../src/statics/img"
+			],
+			"$img/*": [
+				"../src/statics/img/*"
+			],
 			"$data": [
 				"../src/assets/data"
 			],
