@@ -3,7 +3,8 @@
   
     import CardList from "$lib/components/Cards.svelte";
     import Card from "$lib/components/CardProxy.svelte";
-  
+    import cardsData from '$data/cards.json';
+
       let showcase, basics, reverse, holos, cosmos, amazings, radiant, basicGallery, 
               vee, veeUltra, veeAlt, veeMax, veeMaxAlt, veeStar, 
               trainerHolo, rainbow, gold, veeGallery, shinyVault;
@@ -13,8 +14,7 @@
   
       const getCards = async () => {
           let promiseArray = [];
-          let cardFetch = await fetch('/src/assets/data/cards.json');
-          let cards = await cardFetch.json();
+          let cards = cardsData;
           return cards;
       };
   
