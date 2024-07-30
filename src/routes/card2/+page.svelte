@@ -58,7 +58,7 @@
                       <Card
                           id={card.id}
                           name={card.name}
-                          img={card.images.large}
+                          img={card.image}
                           number={card.number}
                           types={card.types}
                           supertype={card.supertype}

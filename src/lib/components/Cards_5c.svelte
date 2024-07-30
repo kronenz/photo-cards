@@ -25,6 +25,7 @@
 		grid-gap: 50px 2vw; /* 행간 50px, 열간 2vw의 간격을 설정합니다 */
 		transform-style: preserve-3d; /* 3D 변환을 위한 스타일을 설정합니다 */
 		height: 100%; /* 그리드의 높이를 부모 요소의 100%로 설정합니다 */
+		width: 95vw; /* 그리드의 너비를 부모 요소의 100%로 설정합니다 */
 		margin: auto; /* 그리드를 수평 중앙에 배치합니다 */
 		padding: 50px; /* 그리드 주변에 50px의 패딩을 추가합니다 */
 		position: relative; /* 자식 요소의 위치 기준점이 됩니다 */
@@ -106,7 +107,7 @@
 
 	}
 	
-	@media screen and (min-width: 600px) and (max-width: 1200px) {
+	@media screen and (min-width: 600px) and (max-width: 1200px) { /* 화면의 너비가 600px 에서 1200px 사이일때 적용 */
 		.card-grid {
 			max-width: 420px; /* 그리드의 최대 너비를 420px로 제한합니다 */
 			margin: auto; /* 그리드를 수평 중앙에 배치합니다 */
