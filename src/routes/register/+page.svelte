@@ -106,10 +106,10 @@
   main {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     min-height: 100vh;
     background-color: #f5f5f5;
-    padding: 68px 1rem 1rem;
+    padding: 120px 1rem 1rem;
   }
 
   .register-container {
@@ -119,6 +119,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 400px;
+    margin-top: -80px;
   }
 
   h1 {

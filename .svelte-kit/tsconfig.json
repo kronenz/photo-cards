@@ -8,10 +8,10 @@
 				"../src/lib/*"
 			],
 			"$css": [
-				"../public/css"
+				"../src/lib/styles/css"
 			],
 			"$css/*": [
-				"../public/css/*"
+				"../src/lib/styles/css/*"
 			],
 			"$fonts": [
 				"../src/statics/fonts"

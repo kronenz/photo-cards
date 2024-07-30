@@ -11,10 +11,24 @@
   "devDependencies": {
     "@sveltejs/kit": "^2.5.18",
     "pokemontcgsdk": "^2.0.0",
+    "svelte": "^4.2.12",
     "vite": "^5.3.5"
   },
   "dependencies": {
     "@sveltejs/adapter-auto": "^3.2.2",
     "pocketbase": "^0.21.4"
-  }
+  },
+  "description": "This is a repository holder for the Pokemon Cards CSS Holographic effect.",
+  "main": "svelte.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kronenz/pokemon-cards-css.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kronenz/pokemon-cards-css/issues"
+  },
+  "homepage": "https://github.com/kronenz/pokemon-cards-css#readme"
 }

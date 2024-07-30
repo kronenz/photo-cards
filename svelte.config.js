@@ -18,7 +18,7 @@ const config = {
 		// 별칭을 정의하여 import 문을 더 간단하게 만듭니다.
 		alias: {
 			$lib: 'src/lib',
-			$css: 'public/css',
+			$css: 'src/lib/styles/css',
 			$fonts: 'src/statics/fonts'
 		},
 		// 정적 자산 처리를 위한 설정

@@ -7,7 +7,34 @@
 <!-- fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,700;1,300;1,700&family=Roboto:ital,wght@0,300;0,700;1,300;1,700&display=swap"> 
+<link rel="stylesheet" href="https://fonts.googleapis.com./src/lib/styles/css/2?family=Roboto+Condensed:ital,wght@0,300;0,700;1,300;1,700&family=Roboto:ital,wght@0,300;0,700;1,300;1,700&display=swap"> 
+
+<link rel="stylesheet" href="./src/lib/styles/css/global.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards.css">
+<link rel="stylesheet" href="../src/lib/styles/css/cards/base.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/basic.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/reverse-holo.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/regular-holo.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/cosmos-holo.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/amazing-rare.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/radiant-holo.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/v-regular.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/v-full-art.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/v-max.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/v-star.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/trainer-full-art.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/rainbow-holo.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/rainbow-alt.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/secret-rare.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/trainer-gallery-holo.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/trainer-gallery-v-regular.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/trainer-gallery-v-max.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/trainer-gallery-secret-rare.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/shiny-rare.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/shiny-v.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/shiny-vmax.css">
+<link rel="stylesheet" href="./src/lib/styles/css/cards/swsh-pikachu.css">
+
 
 <!-- href 속성의 값인 "%sveltekit.assets%/favicon.png"는 SvelteKit에서 제공하는 특별한 플레이스홀더입니다.
      이는 빌드 시 실제 favicon.png 파일의 경로로 대체됩니다. 이렇게 함으로써 개발 환경과 프로덕션 환경에서
@@ -34,10 +61,10 @@
 
 <style>
 	main {
-		margin: 0;
+		margin: 68px 0 0 0;
 		padding: 0;
 		width: 100%;
-		min-height: 100vh;
+		min-height: calc(100vh - 68px);
 	}
 
 	@font-face {

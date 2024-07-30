@@ -59,9 +59,11 @@
               },100);
           }
       });
-  </script>
+</script>
+
+
   
-  <main>
+<main>
       <header>
           <h1 id="⚓-top">KBO 야구카드 <sup>Beta V0.1</sup></h1>
   
@@ -107,33 +109,6 @@
                   
               </p>
           </section>
-
-                    <!-- styles -->
-            <link rel="stylesheet" href="$css/global.css" />
-            <link rel="stylesheet" href="$css/cards/base.css" />
-            <link rel="stylesheet" href="$css/cards.css" />
-            <link rel="stylesheet" href="$css/cards/basic.css" />
-            <link rel="stylesheet" href="$css/cards/reverse-holo.css" />
-            <link rel="stylesheet" href="$css/cards/regular-holo.css" />
-            <link rel="stylesheet" href="$css/cards/cosmos-holo.css" />
-            <link rel="stylesheet" href="$css/cards/amazing-rare.css" />
-            <link rel="stylesheet" href="$css/cards/radiant-holo.css" />
-            <link rel="stylesheet" href="$css/cards/v-regular.css" />
-            <link rel="stylesheet" href="$css/cards/v-full-art.css" />
-            <link rel="stylesheet" href="$css/cards/v-max.css" />
-            <link rel="stylesheet" href="$css/cards/v-star.css" />
-            <link rel="stylesheet" href="$css/cards/trainer-full-art.css" />
-            <link rel="stylesheet" href="$css/cards/rainbow-holo.css" />
-            <link rel="stylesheet" href="$css/cards/rainbow-alt.css" />
-            <link rel="stylesheet" href="$css/cards/secret-rare.css" />
-            <link rel="stylesheet" href="$css/cards/trainer-gallery-holo.css" />
-            <link rel="stylesheet" href="$css/cards/trainer-gallery-v-regular.css" />
-            <link rel="stylesheet" href="$css/cards/trainer-gallery-v-max.css" />
-            <link rel="stylesheet" href="$css/cards/trainer-gallery-secret-rare.css" />
-            <link rel="stylesheet" href="$css/cards/shiny-rare.css" />
-            <link rel="stylesheet" href="$css/cards/shiny-v.css" />
-            <link rel="stylesheet" href="$css/cards/shiny-vmax.css" />
-            <link rel="stylesheet" href="$css/cards/swsh-pikachu.css" />
       </header>
   
   
@@ -716,5 +691,7 @@
       text-decoration: none;
           z-index: 999;
     }
+
+
   </style>
   
