@@ -1,6 +1,5 @@
-import { c as create_ssr_component, a as subscribe, b as add_attribute, v as validate_component } from "../../../chunks/index2.js";
-import "pokemontcgsdk";
-import { w as writable, r as readable } from "../../../chunks/index.js";
+import { c as create_ssr_component, a as subscribe, b as add_attribute, v as validate_component } from "../../../chunks/index3.js";
+import { w as writable, r as readable } from "../../../chunks/index2.js";
 const activeCard = writable(void 0);
 const Cards_svelte_svelte_type_style_lang = "";
 const css$1 = {
@@ -54,7 +53,6 @@ readable(getOrientationObject(), function start(set) {
   };
 });
 const Card_svelte_svelte_type_style_lang = "";
-const Search_svelte_svelte_type_style_lang = "";
 const _page_svelte_svelte_type_style_lang = "";
 const css = {
   code: ".back-to-top.svelte-1i93roe a.svelte-1i93roe{color:inherit;text-decoration:none;z-index:999}",
@@ -81,7 +79,34 @@ const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
               <p class="small">상호작용과 상태를 처리하기 위해 SvelteJS를 사용하고 있습니다; <strong>CSS 사용자 정의 속성</strong>(변수)에 값을 할당하여 
                       효과와 3D 변환을 구동합니다. 
                   
-              </p></section></header>
+              </p></section>
+
+                    
+            <link rel="stylesheet" href="$css/global.css">
+            <link rel="stylesheet" href="$css/cards/base.css">
+            <link rel="stylesheet" href="$css/cards.css">
+            <link rel="stylesheet" href="$css/cards/basic.css">
+            <link rel="stylesheet" href="$css/cards/reverse-holo.css">
+            <link rel="stylesheet" href="$css/cards/regular-holo.css">
+            <link rel="stylesheet" href="$css/cards/cosmos-holo.css">
+            <link rel="stylesheet" href="$css/cards/amazing-rare.css">
+            <link rel="stylesheet" href="$css/cards/radiant-holo.css">
+            <link rel="stylesheet" href="$css/cards/v-regular.css">
+            <link rel="stylesheet" href="$css/cards/v-full-art.css">
+            <link rel="stylesheet" href="$css/cards/v-max.css">
+            <link rel="stylesheet" href="$css/cards/v-star.css">
+            <link rel="stylesheet" href="$css/cards/trainer-full-art.css">
+            <link rel="stylesheet" href="$css/cards/rainbow-holo.css">
+            <link rel="stylesheet" href="$css/cards/rainbow-alt.css">
+            <link rel="stylesheet" href="$css/cards/secret-rare.css">
+            <link rel="stylesheet" href="$css/cards/trainer-gallery-holo.css">
+            <link rel="stylesheet" href="$css/cards/trainer-gallery-v-regular.css">
+            <link rel="stylesheet" href="$css/cards/trainer-gallery-v-max.css">
+            <link rel="stylesheet" href="$css/cards/trainer-gallery-secret-rare.css">
+            <link rel="stylesheet" href="$css/cards/shiny-rare.css">
+            <link rel="stylesheet" href="$css/cards/shiny-v.css">
+            <link rel="stylesheet" href="$css/cards/shiny-vmax.css">
+            <link rel="stylesheet" href="$css/cards/swsh-pikachu.css"></header>
   
   
       ${query.length < 3 ? `<h2 id="⚓-common"><a href="#⚓-common">Common &amp; Uncommon

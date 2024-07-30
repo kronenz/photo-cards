@@ -40,12 +40,12 @@ declare module '$env/static/private' {
 	export const MOTD_SHOWN: string;
 	export const HOME: string;
 	export const CONDA_SHLVL: string;
-	export const OLDPWD: string;
 	export const TERM_PROGRAM_VERSION: string;
 	export const NVM_BIN: string;
 	export const VSCODE_IPC_HOOK_CLI: string;
 	export const npm_package_json: string;
 	export const NVM_INC: string;
+	export const NODE_OPTIONS: string;
 	export const VSCODE_GIT_ASKPASS_MAIN: string;
 	export const VSCODE_GIT_ASKPASS_NODE: string;
 	export const SSL_CERT_FILE: string;
@@ -82,6 +82,7 @@ declare module '$env/static/private' {
 	export const npm_lifecycle_event: string;
 	export const LESSCLOSE: string;
 	export const CONDA_DEFAULT_ENV: string;
+	export const VSCODE_INSPECTOR_OPTIONS: string;
 	export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 	export const npm_config_globalconfig: string;
 	export const npm_config_init_module: string;
@@ -140,12 +141,12 @@ declare module '$env/dynamic/private' {
 		MOTD_SHOWN: string;
 		HOME: string;
 		CONDA_SHLVL: string;
-		OLDPWD: string;
 		TERM_PROGRAM_VERSION: string;
 		NVM_BIN: string;
 		VSCODE_IPC_HOOK_CLI: string;
 		npm_package_json: string;
 		NVM_INC: string;
+		NODE_OPTIONS: string;
 		VSCODE_GIT_ASKPASS_MAIN: string;
 		VSCODE_GIT_ASKPASS_NODE: string;
 		SSL_CERT_FILE: string;
@@ -182,6 +183,7 @@ declare module '$env/dynamic/private' {
 		npm_lifecycle_event: string;
 		LESSCLOSE: string;
 		CONDA_DEFAULT_ENV: string;
+		VSCODE_INSPECTOR_OPTIONS: string;
 		VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 		npm_config_globalconfig: string;
 		npm_config_init_module: string;

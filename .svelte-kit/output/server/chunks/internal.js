@@ -1,4 +1,4 @@
-import { c as create_ssr_component, s as setContext, v as validate_component, m as missing_component } from "./index2.js";
+import { c as create_ssr_component, s as setContext, v as validate_component, m as missing_component } from "./index3.js";
 let base = "";
 let assets = base;
 const initial = { base, assets };
@@ -27,6 +27,7 @@ const Root = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let { form } = $$props;
   let { data_0 = null } = $$props;
   let { data_1 = null } = $$props;
+  let { data_2 = null } = $$props;
   {
     setContext("__svelte__", stores);
   }
@@ -45,6 +46,8 @@ const Root = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     $$bindings.data_0(data_0);
   if ($$props.data_1 === void 0 && $$bindings.data_1 && data_1 !== void 0)
     $$bindings.data_1(data_1);
+  if ($$props.data_2 === void 0 && $$bindings.data_2 && data_2 !== void 0)
+    $$bindings.data_2(data_2);
   let $$settled;
   let $$rendered;
   do {
@@ -67,7 +70,31 @@ ${constructors[1] ? `${validate_component(constructors[0] || missing_component, 
       },
       {
         default: () => {
-          return `${validate_component(constructors[1] || missing_component, "svelte:component").$$render(
+          return `${constructors[2] ? `${validate_component(constructors[1] || missing_component, "svelte:component").$$render(
+            $$result,
+            { data: data_1, this: components[1] },
+            {
+              this: ($$value) => {
+                components[1] = $$value;
+                $$settled = false;
+              }
+            },
+            {
+              default: () => {
+                return `${validate_component(constructors[2] || missing_component, "svelte:component").$$render(
+                  $$result,
+                  { data: data_2, form, this: components[2] },
+                  {
+                    this: ($$value) => {
+                      components[2] = $$value;
+                      $$settled = false;
+                    }
+                  },
+                  {}
+                )}`;
+              }
+            }
+          )}` : `${validate_component(constructors[1] || missing_component, "svelte:component").$$render(
             $$result,
             { data: data_1, form, this: components[1] },
             {
@@ -77,7 +104,7 @@ ${constructors[1] ? `${validate_component(constructors[0] || missing_component, 
               }
             },
             {}
-          )}`;
+          )}`}`;
         }
       }
     )}` : `${validate_component(constructors[0] || missing_component, "svelte:component").$$render(
@@ -99,7 +126,7 @@ ${``}`;
 const options = {
   app_template_contains_nonce: false,
   csp: { "mode": "auto", "directives": { "upgrade-insecure-requests": false, "block-all-mixed-content": false }, "reportOnly": { "upgrade-insecure-requests": false, "block-all-mixed-content": false } },
-  csrf_check_origin: false,
+  csrf_check_origin: true,
   track_server_fetches: false,
   embedded: false,
   env_public_prefix: "PUBLIC_",
@@ -110,11 +137,11 @@ const options = {
   root: Root,
   service_worker: false,
   templates: {
-    app: ({ head, body, assets: assets2, nonce, env }) => '<!DOCTYPE html>\n<html lang="en">\n	<head>\n\n		<meta charset="utf-8" />\n		<meta name="viewport" content="width=device-width, initial-scale=1" />\n\n		<!-- meta -->\n		<title>야구 Cards CSS Holographic Effect</title>\n		<meta name="description" content="야구 카드 온라인" />\n		\n		<link rel="canonical" href="https://30aa-210-113-225-166.ngrok-free.app" />\n		<link rel="icon" href="favicon.png" />\n		<meta name="thumbnail" content="thumb.png" />\n\n		<!-- <meta property="og:url" content="https://30aa-210-113-225-166.ngrok-free.app" />\n		<meta property="og:type" content="website" />\n		<meta property="og:title" content="야구 Cards CSS Holographic Effect" />\n		<meta property="og:description" content="야구 카드 온라인" />\n		<meta property="og:image" content="https://i.ibb.co/dPpfZ1W/Monosnap-Poke-mon-Cards-CSS-Holographic-Effect-2024-07-25-14-37-42.png" />\n\n		<meta name="twitter:title" content="야구 Cards CSS Holographic Effect">\n		<meta name="twitter:description" content="야구 카드 온라인">\n		<meta name="twitter:image" content="https://i.ibb.co/dPpfZ1W/Monosnap-Poke-mon-Cards-CSS-Holographic-Effect-2024-07-25-14-37-42.png">\n		<meta name="twitter:card" content="summary_large_image">\n		<meta name="twitter:site" content="@simeydotme"> -->\n\n		<!-- fonts -->\n		<link rel="preconnect" href="https://fonts.googleapis.com">\n		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,700;1,300;1,700&family=Roboto:ital,wght@0,300;0,700;1,300;1,700&display=swap"> \n		\n		<!-- styles -->\n		<link rel="stylesheet" href="../public/css/global.css" />\n		\n		<link rel="stylesheet" href="../public/css/cards/base.css" />\n		<link rel="stylesheet" href="../public/css/cards.css" />\n		<link rel="stylesheet" href="../public/css/cards/basic.css" />\n		<link rel="stylesheet" href="../public/css/cards/reverse-holo.css" />\n		<link rel="stylesheet" href="../public/css/cards/regular-holo.css" />\n		<link rel="stylesheet" href="../public/css/cards/cosmos-holo.css" />\n		<link rel="stylesheet" href="../public/css/cards/amazing-rare.css" />\n		<link rel="stylesheet" href="../public/css/cards/radiant-holo.css" />\n		<link rel="stylesheet" href="../public/css/cards/v-regular.css" />\n		<link rel="stylesheet" href="../public/css/cards/v-full-art.css" />\n		<link rel="stylesheet" href="../public/css/cards/v-max.css" />\n		<link rel="stylesheet" href="../public/css/cards/v-star.css" />\n		<link rel="stylesheet" href="../public/css/cards/trainer-full-art.css" />\n		<link rel="stylesheet" href="../public/css/cards/rainbow-holo.css" />\n		<link rel="stylesheet" href="../public/css/cards/rainbow-alt.css" />\n		<link rel="stylesheet" href="../public/css/cards/secret-rare.css" />\n		<link rel="stylesheet" href="../public/css/cards/trainer-gallery-holo.css" />\n		<link rel="stylesheet" href="../public/css/cards/trainer-gallery-v-regular.css" />\n		<link rel="stylesheet" href="../public/css/cards/trainer-gallery-v-max.css" />\n		<link rel="stylesheet" href="../public/css/cards/trainer-gallery-secret-rare.css" />\n		<link rel="stylesheet" href="../public/css/cards/shiny-rare.css" />\n		<link rel="stylesheet" href="../public/css/cards/shiny-v.css" />\n		<link rel="stylesheet" href="../public/css/cards/shiny-vmax.css" />\n		<link rel="stylesheet" href="../public/css/cards/swsh-pikachu.css" />\n		<!-- href 속성의 값인 "' + assets2 + '/favicon.png"는 SvelteKit에서 제공하는 특별한 플레이스홀더입니다.\n		     이는 빌드 시 실제 favicon.png 파일의 경로로 대체됩니다. 이렇게 함으로써 개발 환경과 프로덕션 환경에서\n		     일관된 방식으로 파비콘을 참조할 수 있습니다. -->\n		<link rel="icon" href="' + assets2 + '/favicon.png" />\n		<meta name="viewport" content="width=device-width, initial-scale=1" />\n		<meta name="color-scheme" content="dark light" />\n		' + head + `
+    app: ({ head, body, assets: assets2, nonce, env }) => '<!DOCTYPE html>\n<html lang="en">\n	<head>\n\n		<meta charset="utf-8" />\n		<meta name="viewport" content="width=device-width, initial-scale=1" />\n		<!-- meta -->\n		<title>야구 Cards CSS Holographic Effect</title>\n		<meta name="description" content="야구 카드 온라인" />\n		\n		<link rel="canonical" href="https://30aa-210-113-225-166.ngrok-free.app" />\n		<link rel="icon" href="' + assets2 + '/favicon.png" />\n		<meta name="thumbnail" content="thumb.png" />\n\n		<!-- <meta property="og:url" content="https://30aa-210-113-225-166.ngrok-free.app" />\n		<meta property="og:type" content="website" />\n		<meta property="og:title" content="야구 Cards CSS Holographic Effect" />\n		<meta property="og:description" content="야구 카드 온라인" />\n		<meta property="og:image" content="https://i.ibb.co/dPpfZ1W/Monosnap-Poke-mon-Cards-CSS-Holographic-Effect-2024-07-25-14-37-42.png" />\n\n		<meta name="twitter:title" content="야구 Cards CSS Holographic Effect">\n		<meta name="twitter:description" content="야구 카드 온라인">\n		<meta name="twitter:image" content="https://i.ibb.co/dPpfZ1W/Monosnap-Poke-mon-Cards-CSS-Holographic-Effect-2024-07-25-14-37-42.png">\n		<meta name="twitter:card" content="summary_large_image">\n		<meta name="twitter:site" content="@simeydotme"> -->\n\n		<!-- fonts -->\n		<link rel="preconnect" href="https://fonts.googleapis.com">\n		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,700;1,300;1,700&family=Roboto:ital,wght@0,300;0,700;1,300;1,700&display=swap"> \n		\n		<!-- styles -->\n		<link rel="stylesheet" href="../public/css/global.css" />\n		\n		<link rel="stylesheet" href="../public/css/cards/base.css" />\n		<link rel="stylesheet" href="../public/css/cards.css" />\n		<link rel="stylesheet" href="../public/css/cards/basic.css" />\n		<link rel="stylesheet" href="../public/css/cards/reverse-holo.css" />\n		<link rel="stylesheet" href="../public/css/cards/regular-holo.css" />\n		<link rel="stylesheet" href="../public/css/cards/cosmos-holo.css" />\n		<link rel="stylesheet" href="../public/css/cards/amazing-rare.css" />\n		<link rel="stylesheet" href="../public/css/cards/radiant-holo.css" />\n		<link rel="stylesheet" href="../public/css/cards/v-regular.css" />\n		<link rel="stylesheet" href="../public/css/cards/v-full-art.css" />\n		<link rel="stylesheet" href="../public/css/cards/v-max.css" />\n		<link rel="stylesheet" href="../public/css/cards/v-star.css" />\n		<link rel="stylesheet" href="../public/css/cards/trainer-full-art.css" />\n		<link rel="stylesheet" href="../public/css/cards/rainbow-holo.css" />\n		<link rel="stylesheet" href="../public/css/cards/rainbow-alt.css" />\n		<link rel="stylesheet" href="../public/css/cards/secret-rare.css" />\n		<link rel="stylesheet" href="../public/css/cards/trainer-gallery-holo.css" />\n		<link rel="stylesheet" href="../public/css/cards/trainer-gallery-v-regular.css" />\n		<link rel="stylesheet" href="../public/css/cards/trainer-gallery-v-max.css" />\n		<link rel="stylesheet" href="../public/css/cards/trainer-gallery-secret-rare.css" />\n		<link rel="stylesheet" href="../public/css/cards/shiny-rare.css" />\n		<link rel="stylesheet" href="../public/css/cards/shiny-v.css" />\n		<link rel="stylesheet" href="../public/css/cards/shiny-vmax.css" />\n		<link rel="stylesheet" href="../public/css/cards/swsh-pikachu.css" />\n		<!-- href 속성의 값인 "' + assets2 + '/favicon.png"는 SvelteKit에서 제공하는 특별한 플레이스홀더입니다.\n		     이는 빌드 시 실제 favicon.png 파일의 경로로 대체됩니다. 이렇게 함으로써 개발 환경과 프로덕션 환경에서\n		     일관된 방식으로 파비콘을 참조할 수 있습니다. -->\n		<link rel="icon" href="' + assets2 + '/favicon.png" />\n		<meta name="viewport" content="width=device-width, initial-scale=1" />\n		<meta name="color-scheme" content="dark light" />\n		' + head + `
 
 		<style>
 			body {
-				--bg-1: hsl(0, 0%, 30%);
+				--bg-1: hsl(200, 60%, 85%);
 				--bg-2: hsl(206, 20%, 90%);
 				--bg-3: hsl(206, 20%, 80%);
 				--fg-1: hsl(0, 0%, 13%);
@@ -132,8 +159,9 @@ const options = {
 				color: var(--fg-1);
 				font-family: var(--font);
 				line-height: 1.5;
-				margin: 1rem;
+				width: 100%;
 				height: calc(100vh - 2rem);
+				
 			}
 
 			h1,
@@ -433,10 +461,10 @@ const options = {
 		<div class="error">
 			<span class="status">` + status + '</span>\n			<div class="message">\n				<h1>' + message + "</h1>\n			</div>\n		</div>\n	</body>\n</html>\n"
   },
-  version_hash: "1pb010y"
+  version_hash: "szxjhx"
 };
 function get_hooks() {
-  return {};
+  return import("./hooks.server.js");
 }
 export {
   assets as a,
