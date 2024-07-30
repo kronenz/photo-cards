@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@sveltejs/kit": "^1.30.4",
+    "@sveltejs/kit": "^2.5.18",
     "pokemontcgsdk": "^2.0.0",
     "svelte": "^3.59.2",
     "vite": "^4.0.0"
