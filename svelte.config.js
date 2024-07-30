@@ -24,7 +24,14 @@ const config = {
 		// 정적 자산 처리를 위한 설정
 		paths: {
 			assets: ''
-		}
+		},
+		// CSP(Content Security Policy) 설정 (선택사항)
+		csp: {
+			mode: 'auto', //mode: 'auto'는 SvelteKit이 자동으로 적절한 CSP 헤더를 생성하도록 합니다.
+			directives: {
+				'script-src': ['self'] //'script-src': ['self'] 설정은 같은 출처(도메인)에서 제공되는 스크립트만 실행을 허용한다는 의미입니다.
+			}
+		},
 	},
 
 	vitePlugin: {

@@ -1,6 +1,51 @@
 <script>
 	import { page } from '$app/stores';
+	import '$lib/styles/css/global.css';
+	import '$lib/styles/css/cards.css';
+	import '$lib/styles/css/cards/base.css';
+	import '$lib/styles/css/cards/basic.css';
+	import '$lib/styles/css/cards/reverse-holo.css';
+	import '$lib/styles/css/cards/regular-holo.css';
+	import '$lib/styles/css/cards/cosmos-holo.css';
+	import '$lib/styles/css/cards/amazing-rare.css';
+	import '$lib/styles/css/cards/radiant-holo.css';
+	import '$lib/styles/css/cards/v-regular.css';
+	import '$lib/styles/css/cards/v-full-art.css';
+	import '$lib/styles/css/cards/v-max.css';
+	import '$lib/styles/css/cards/v-star.css';
+	import '$lib/styles/css/cards/trainer-full-art.css';
+	import '$lib/styles/css/cards/rainbow-holo.css';
+	import '$lib/styles/css/cards/rainbow-alt.css';
+	import '$lib/styles/css/cards/secret-rare.css';
+	import '$lib/styles/css/cards/trainer-gallery-holo.css';
+	import '$lib/styles/css/cards/trainer-gallery-v-regular.css';
+	import '$lib/styles/css/cards/trainer-gallery-v-max.css';
+	import '$lib/styles/css/cards/trainer-gallery-secret-rare.css';
+	import '$lib/styles/css/cards/shiny-rare.css';
+	import '$lib/styles/css/cards/shiny-v.css';
+	import '$lib/styles/css/cards/shiny-vmax.css';
+	import '$lib/styles/css/cards/swsh-pikachu.css';
 
+	/** 
+CSS 파일이 로컬 네트워크에서는 반영되지만 Vercel에 호스팅 시 불러오지 못하는 이유:
+
+1. 상대 경로 문제: 
+   Vercel과 같은 호스팅 환경에서는 프로젝트 구조가 로컬과 다를 수 있습니다.
+   '/src'로 시작하는 경로는 빌드된 프로덕션 환경에서 존재하지 않을 수 있습니다.
+
+2. 빌드 프로세스:
+   SvelteKit은 빌드 시 정적 자산을 처리하고 최적화합니다.
+   이 과정에서 CSS 파일의 경로가 변경될 수 있습니다.
+
+3. 환경 설정:
+   Vercel의 빌드 설정이 이러한 CSS 파일들을 올바르게 처리하도록 구성되어 있지 않을 수 있습니다.
+
+해결 방법:
+1. 상대 경로 사용: '/src' 대신 상대 경로를 사용합니다.
+2. Svelte의 @import 사용: CSS 파일을 Svelte 컴포넌트 내에서 @import로 가져옵니다.
+3. Vite의 import 기능 활용: JavaScript에서 CSS를 import합니다.
+4. 빌드 설정 확인: Vercel의 빌드 설정을 검토하고 필요한 경우 조정합니다.
+*/
 
 </script>
 
@@ -9,31 +54,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com./src/lib/styles/css/2?family=Roboto+Condensed:ital,wght@0,300;0,700;1,300;1,700&family=Roboto:ital,wght@0,300;0,700;1,300;1,700&display=swap"> 
 
-<link rel="stylesheet" href="./src/lib/styles/css/global.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards.css">
-<link rel="stylesheet" href="../src/lib/styles/css/cards/base.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/basic.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/reverse-holo.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/regular-holo.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/cosmos-holo.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/amazing-rare.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/radiant-holo.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/v-regular.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/v-full-art.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/v-max.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/v-star.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/trainer-full-art.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/rainbow-holo.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/rainbow-alt.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/secret-rare.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/trainer-gallery-holo.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/trainer-gallery-v-regular.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/trainer-gallery-v-max.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/trainer-gallery-secret-rare.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/shiny-rare.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/shiny-v.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/shiny-vmax.css">
-<link rel="stylesheet" href="./src/lib/styles/css/cards/swsh-pikachu.css">
+
+
 
 
 <!-- href 속성의 값인 "%sveltekit.assets%/favicon.png"는 SvelteKit에서 제공하는 특별한 플레이스홀더입니다.
