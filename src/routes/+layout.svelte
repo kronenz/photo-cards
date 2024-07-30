@@ -28,7 +28,7 @@
 	<a href="/register" class:active={$page.url.pathname === '/register'}>가입</a>
 </nav>
 
-<main style="background-color: blue;">
+<main >
 	<slot  />
 </main>
 
