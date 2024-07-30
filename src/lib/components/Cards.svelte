@@ -25,7 +25,6 @@
 		grid-gap: 50px 2vw;
 		transform-style: preserve-3d;
 		height: 100%;
-		max-width: 1200px;
 		margin: auto;
 		padding: 50px;
 		position: relative;
