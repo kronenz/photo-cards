@@ -1,9 +1,9 @@
 import adapter from '@sveltejs/adapter-auto';
-import { vitePreprocess } from '@sveltejs/kit/vite';
+import { sveltekit } from '@sveltejs/kit/vite';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-	preprocess: vitePreprocess(),
+	preprocess: sveltekit(),
 	
 	kit: {
 		// adapter-auto를 사용하여 자동으로 적절한 어댑터를 선택합니다.

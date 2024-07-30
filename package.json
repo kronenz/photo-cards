@@ -11,8 +11,7 @@
   "devDependencies": {
     "@sveltejs/kit": "^2.5.18",
     "pokemontcgsdk": "^2.0.0",
-    "svelte": "^3.59.2",
-    "vite": "^4.0.0"
+    "vite": "^5.3.5"
   },
   "dependencies": {
     "@sveltejs/adapter-auto": "^3.2.2",
