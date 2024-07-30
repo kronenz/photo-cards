@@ -73,6 +73,7 @@ CSS 파일이 로컬 네트워크에서는 반영되지만 Vercel에 호스팅 �
 	-->
 	<a href="/" class:active={$page.url.pathname === '/'}>홈</a>
 	<a href="/card" class:active={$page.url.pathname === '/card'}>카드</a>
+	<a href="/card2" class:active={$page.url.pathname === '/card2'}>카드2</a>
 	<a href="/login" class:active={$page.url.pathname === '/login'}>로그인</a>
 	<a href="/register" class:active={$page.url.pathname === '/register'}>가입</a>
 </nav>
