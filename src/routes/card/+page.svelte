@@ -13,7 +13,7 @@
   
       const getCards = async () => {
           let promiseArray = [];
-          let cardFetch = await fetch('../../public/data/cards.json');
+          let cardFetch = await fetch('/src/assets/data/cards.json');
           let cards = await cardFetch.json();
           return cards;
       };

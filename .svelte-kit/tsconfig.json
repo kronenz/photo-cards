@@ -18,6 +18,12 @@
 			],
 			"$fonts/*": [
 				"../src/statics/fonts/*"
+			],
+			"$data": [
+				"../src/assets/data"
+			],
+			"$data/*": [
+				"../src/assets/data/*"
 			]
 		},
 		"rootDirs": [
