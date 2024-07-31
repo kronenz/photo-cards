@@ -1,6 +1,44 @@
+<script>
+  // @auth/sveltekit/client에서 signIn과 signOut 함수를 가져옵니다.
+  // 이 함수들은 사용자 인증 관련 작업을 수행합니다.
+  import {signIn, signOut} from "@auth/sveltekit/client"
+
+  // $app/stores에서 page 스토어를 가져옵니다.
+  // page 스토어는 현재 페이지의 정보를 포함하고 있습니다.
+  import {page} from "$app/stores";
+
+  // signIn 함수: 사용자 로그인을 처리합니다.
+  // 사용 예: signIn('google')로 구글 로그인을 시작할 수 있습니다.
+
+  // signOut 함수: 사용자 로그아웃을 처리합니다.
+  // 사용 예: signOut()으로 현재 사용자를 로그아웃할 수 있습니다.
+
+  // page 스토어: 현재 페이지의 URL, 파라미터, 쿼리 문자열 등의 정보에 접근할 수 있습니다.
+  // 사용 예: $page.url.searchParams로 URL의 쿼리 파라미터에 접근할 수 있습니다.
+</script>
+
 <main class="community-home">
+  
   <h1>포토 카드 온라인 커뮤니티</h1>
   
+  <section >
+    <h1>Welcome to SvelteKit</h1>
+    <p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+    <p>
+        {#if $page.data.session}
+            <span>
+                <small>Signed in as</small><br/>
+                <strong>{$page.data.session.user?.name ?? "User"}</strong>
+            </span>
+            <button on:click={() => signOut()} class="button">Sign out</button>
+        {:else}
+            <span>You are not signed in</span>
+            <button on:click={() => signIn("google")}>
+                Sign In with Google
+            </button>
+        {/if}
+    </p>
+  </section>
   <section class="featured-posts">
     <h2>인기 게시물</h2>
     <div class="post-grid">

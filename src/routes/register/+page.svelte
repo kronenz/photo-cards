@@ -84,11 +84,12 @@
 
       <div class="divider">또는</div>
 
-      <button class="google-register" on:click={handleGoogleRegister}>
-        <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" alt="Google 로고" width="24" height="24" />
-        Google로 가입하기
-      </button>
-
+      <form class="auth-form" method="post" action="?/OAuth2">
+        <div>
+          <button type="submit" class="btn-auth">Google로 가입하기</button>
+          <img class="btn-auth-icon" src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" alt="Google 로고" width="24" height="24" />
+        </div>
+      </form>
       <button class="kakao-register" on:click={handleKakaoRegister}>
         <img src="https://developers.kakao.com/assets/img/about/logos/kakaologo.png" alt="Kakao 로고" width="24" height="24" />
         카카오로 가입하기

@@ -2,7 +2,7 @@
 import { redirect } from '@sveltejs/kit';
 import { pb } from '$lib/pocketbase';
 
-// SvelteKit의 핸들러 함수입니다. 모든 요청을 처리합니다.
+
 export async function handle({ event, resolve }) {
   // 클라이언트에서 전송한 쿠키로 PocketBase 인증 상태를 복원합니다.
   // 쿠키가 없으면 빈 문자열을 사용합니다.

@@ -18,7 +18,7 @@ export const dictionary = {
 		"/card2": [5],
 		"/card": [4],
 		"/login": [6,[2]],
-		"/register": [7]
+		"/register": [~7]
 	};
 
 export const hooks = {
