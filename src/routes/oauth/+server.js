@@ -37,6 +37,6 @@ export const GET = async ({ url, cookies, locals }) => {
        
     }
 
-    throw redirect(303, '/signup');
+    throw redirect(303, '/login');
 
 }
