@@ -7,10 +7,10 @@ function __memo(fn) {
 return {
 	appDir: "_app",
 	appPath: "_app",
-	assets: new Set(["favicon.png"]),
-	mimeTypes: {".png":"image/png"},
+	assets: new Set(["data/cards.json","data/cards2.json","favicon.png"]),
+	mimeTypes: {".json":"application/json",".png":"image/png"},
 	_: {
-		client: {"start":"_app/immutable/entry/start.291f3108.js","app":"_app/immutable/entry/app.4188fcc3.js","imports":["_app/immutable/entry/start.291f3108.js","_app/immutable/chunks/index.2054b73c.js","_app/immutable/chunks/singletons.9138bde8.js","_app/immutable/chunks/index.aa0c2982.js","_app/immutable/entry/app.4188fcc3.js","_app/immutable/chunks/index.2054b73c.js"],"stylesheets":[],"fonts":[]},
+		client: {"start":"_app/immutable/entry/start.CGDxiwoP.js","app":"_app/immutable/entry/app.24QYUajS.js","imports":["_app/immutable/entry/start.CGDxiwoP.js","_app/immutable/chunks/entry.DxwvArx-.js","_app/immutable/chunks/scheduler.CqjKDTOy.js","_app/immutable/chunks/index.C2vmYAQS.js","_app/immutable/entry/app.24QYUajS.js","_app/immutable/chunks/scheduler.CqjKDTOy.js","_app/immutable/chunks/index.Cb7-gMiR.js"],"stylesheets":[],"fonts":[],"uses_env_dynamic_public":false},
 		nodes: [
 			__memo(() => import('./nodes/0.js')),
 			__memo(() => import('./nodes/1.js')),
@@ -18,7 +18,8 @@ return {
 			__memo(() => import('./nodes/3.js')),
 			__memo(() => import('./nodes/4.js')),
 			__memo(() => import('./nodes/5.js')),
-			__memo(() => import('./nodes/6.js'))
+			__memo(() => import('./nodes/6.js')),
+			__memo(() => import('./nodes/7.js'))
 		],
 		routes: [
 			{
@@ -26,6 +27,13 @@ return {
 				pattern: /^\/$/,
 				params: [],
 				page: { layouts: [0,], errors: [1,], leaf: 3 },
+				endpoint: null
+			},
+			{
+				id: "/card2",
+				pattern: /^\/card2\/?$/,
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 5 },
 				endpoint: null
 			},
 			{
@@ -39,21 +47,29 @@ return {
 				id: "/login",
 				pattern: /^\/login\/?$/,
 				params: [],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 5 },
+				page: { layouts: [0,2,], errors: [1,,], leaf: 6 },
 				endpoint: null
+			},
+			{
+				id: "/oauth",
+				pattern: /^\/oauth\/?$/,
+				params: [],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/oauth/_server.js'))
 			},
 			{
 				id: "/register",
 				pattern: /^\/register\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 6 },
+				page: { layouts: [0,], errors: [1,], leaf: 7 },
 				endpoint: null
 			}
 		],
 		matchers: async () => {
 			
 			return {  };
-		}
+		},
+		server_assets: {}
 	}
 }
 })();

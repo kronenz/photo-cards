@@ -1,6 +1,6 @@
 <script>
 	
-	import { activeCard } from "../stores/activeCard.js"; // activeCard 스토어를 가져옵니다.
+	import { activeCard } from "$stores/activeCard.js"; // activeCard 스토어를 가져옵니다.
 	
 	let thisGrid; // 현재 그리드 요소를 참조할 변수를 선언합니다.
 	

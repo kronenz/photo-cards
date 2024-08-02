@@ -1,4 +1,4 @@
-import { n as noop, d as safe_not_equal } from "./index3.js";
+import { n as noop, f as safe_not_equal } from "./ssr.js";
 const subscriber_queue = [];
 function readable(value, start) {
   return {
@@ -33,7 +33,7 @@ function writable(value, start = noop) {
     const subscriber = [run, invalidate];
     subscribers.add(subscriber);
     if (subscribers.size === 1) {
-      stop = start(set) || noop;
+      stop = start(set, update) || noop;
     }
     run(value);
     return () => {

@@ -15,44 +15,44 @@
     }
   },
   {
-    "id": "sm10-33",
-    "set": "sm10",
+    "id": "swsh12pt5-161",
+    "set": "swsh12pt5",
     "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
-    "types": ["Water"],
-    "number": "33",
-    "rarity": "Common",
-    "image": "https://i.ibb.co/hV98TMV/DSC07910.jpg",
+    "types": ["Lightning"],
+    "number": "160",
+    "rarity": "Rare Secret",
+    "image": "https://i.ibb.co/m5mRX3B/DSC07914.jpg",
     "images": {
-      "small": "https://images.pokemontcg.io/sm10/33.png",
+      "small": "https://images.pokemontcg.io/swsh12pt5/160.png",
       "large": "https://i.ibb.co/VJVRWK8/BAC-2894.jpg"
     }
   },
   {
     "id": "sm115-7",
-    "set": "sm115",
+    "set": "swsh12pt5",
     "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Fire"],
-    "number": "7",
-    "rarity": "Common",
+    "number": "160",
+    "rarity": "Rare Secret",
     "image": "https://i.ibb.co/JRg7kxG/DSC07831.jpg",
     "images": {
-      "small": "https://images.pokemontcg.io/sm115/7.png",
+      "small": "https://images.pokemontcg.io/swsh12pt5/160.png",
       "large": "https://i.ibb.co/3mwTMns/DSC07914.jpg"
     }
   },
   {
     "id": "sm35-1",
-    "set": "sm35",
+    "set": "swsh12pt5",
     "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Grass"],
-    "number": "1",
-    "rarity": "Common",
+    "number": "160",
+    "rarity": "Rare Secret",
     "image": "https://i.ibb.co/2kTg6Y1/DSC07724.jpg",
     "images": {
       "small": "https://images.pokemontcg.io/sm35/1.png",
@@ -67,7 +67,7 @@
     "subtypes": ["Basic"],
     "types": ["Metal"],
     "number": "127",
-    "rarity": "Common",
+    "rarity": "Rare Secret",
     "image": "https://i.ibb.co/vwrZVQx/DSC07708.jpg",
     "images": {
       "small": "https://images.pokemontcg.io/swsh12/127.png",
@@ -84,7 +84,7 @@
     "subtypes": ["Basic"],
     "types": ["Psychic"],
     "number": "85",
-    "rarity": "Uncommon",
+    "rarity": "Rare Secret",
     "image": "https://i.ibb.co/yRSKXky/DSC07701.jpg",
     "images": {
       "small": "https://images.pokemontcg.io/swsh12/85.png",
@@ -95,13 +95,13 @@
   },
   {
     "id": "swsh12-116",
-    "set": "swsh12",
+    "set": "swsh12pt5",
     "name":"원태인",
     "supertype": "Pokémon",
     "subtypes": ["Basic"],
     "types": ["Darkness"],
-    "number": "116",
-    "rarity": "Uncommon",
+    "number": "160",
+    "rarity": "Common",
     "image": "https://i.ibb.co/nw0tX0R/DSC07699.jpg",
     "images": {
       "small": "https://images.pokemontcg.io/swsh12/116.png",

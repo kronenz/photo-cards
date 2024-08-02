@@ -1,34 +1,46 @@
 {
+  // jsconfig.json 파일은 Visual Studio Code와 같은 IDE에서 JavaScript 프로젝트의 설정을 정의하는 데 사용됩니다.
+  // 이 파일은 TypeScript 컴파일러에 의해 해석되며, JavaScript 개발 경험을 향상시키기 위한 설정을 제공합니다.
+  // IDE는 이 파일을 읽어 코드 자동 완성, 타입 체크, 모듈 해석 등의 기능을 제공합니다.
+  // 또한 빌드 도구나 번들러도 이 설정을 참조하여 프로젝트를 구성할 수 있습니다.
+  // ./.svelte-kit/tsconfig.json 파일의 설정을 상속받습니다.
   "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
+    // 모듈 해석 방식을 Node.js 스타일로 설정합니다.
     "moduleResolution": "Node",
+    // 컴파일 대상 ECMAScript 버전을 최신으로 설정합니다.
     "target": "ESNext",
+    // 모듈 시스템을 ECMAScript 모듈로 설정합니다.
     "module": "ESNext",
     /**
-     * svelte-preprocess cannot figure out whether you have
-     * a value or a type, so tell TypeScript to enforce using
-     * `import type` instead of `import` for Types.
+     * svelte-preprocess가 값인지 타입인지 구분할 수 없으므로,
+     * TypeScript에게 타입을 위해 'import type'을 사용하도록 강제합니다.
      */
     "importsNotUsedAsValues": "error",
+    // 각 파일을 별도의 모듈로 처리하도록 설정합니다.
     "isolatedModules": true,
+    // JSON 파일을 모듈로 가져올 수 있게 합니다.
     "resolveJsonModule": true,
     /**
-     * To have warnings / errors of the Svelte compiler at the
-     * correct position, enable source maps by default.
+     * Svelte 컴파일러의 경고/에러를 정확한 위치에 표시하기 위해
+     * 기본적으로 소스 맵을 활성화합니다.
      */
     "sourceMap": true,
+    // CommonJS와 ES 모듈 간의 상호 운용성을 개선합니다.
     "esModuleInterop": true,
+    // 라이브러리 파일의 타입 체크를 건너뜁니다.
     "skipLibCheck": true,
+    // 파일 이름의 대소문자 일관성을 강제합니다.
     "forceConsistentCasingInFileNames": true,
     /**
-     * Typecheck JS in `.svelte` and `.js` files by default.
-     * Disable this if you'd like to use dynamic types.
+     * 기본적으로 .svelte와 .js 파일의 JavaScript를 타입 체크합니다.
+     * 동적 타입을 사용하려면 이 옵션을 비활성화하세요.
      */
     "checkJs": true
   },
   /**
-   * Use global.d.ts instead of compilerOptions.types
-   * to avoid limiting type declarations.
+   * 타입 선언을 제한하지 않기 위해 compilerOptions.types 대신
+   * global.d.ts를 사용합니다.
    */
   "include": ["src/**/*.d.ts", "src/**/*.js", "src/**/*.svelte"]
 }

@@ -64,13 +64,19 @@
   outline: 1px solid transparent;
 }
 
+/* 카드가 'interactive' 클래스를 가지고 있지 않을 때의 스타일 */
 .card:not( .interactive ) .card__translater,
 .card:not( .interactive ) .card__rotator,
 .card:not( .interactive ) .card__shine,
 .card:not( .interactive ) .card__glare {
 
-  /* if this card is not in a framework, we can add simply
-    hover effects when it's not "interactive" */
+  /* 
+    카드의 여러 요소들에 대한 전환(transition) 효과 설정
+    - 모든(all) 속성에 대해 0.3초 동안 부드러운(ease) 전환 적용
+    - 이는 카드가 프레임워크 내에 있지 않을 때, 간단한 호버 효과를 추가하기 위함
+    - 'interactive' 상태가 아닐 때만 이 전환 효과가 적용됨
+    - 이렇게 하면 카드에 마우스를 올렸을 때 부드러운 시각적 변화가 일어남
+  */
   transition: all 0.3s ease;
 
 }
@@ -238,19 +244,19 @@ Shine & Glare Effects
 
 .card__shine {
 
-  display: grid;
-  transform: translateZ(1px);
-  overflow: hidden;
-  z-index: 3;
+  display: grid;                   /* 그리드 레이아웃 사용 */
+  transform: translateZ(1px);      /* Z축으로 1px 이동하여 3D 효과 생성 */
+  overflow: hidden;                /* 내용이 요소를 벗어나면 숨김 처리 */
+  z-index: 3;                      /* z-index 3은 이 요소가 대부분의 다른 요소 위에 표시되도록 합니다. 이는 빛나는 효과가 카드의 다른 부분을 가리지 않도록 하기 위함입니다. */
 
-  background: transparent;
-  background-size: cover;
-  background-position: center;
+  background: transparent;         /* 배경을 투명하게 설정 */
+  background-size: cover;          /* 배경 이미지가 요소를 완전히 덮도록 설정 */
+  background-position: center;     /* 배경 이미지를 중앙에 위치시킴 */
 
-  filter: brightness(.85) contrast(2.75) saturate(.65);
-  mix-blend-mode: color-dodge;
+  filter: brightness(.85) contrast(2.75) saturate(.65);  /* 밝기, 대비, 채도 조정으로 빛나는 효과 생성 */
+  mix-blend-mode: color-dodge;     /* 색상 닷지 혼합 모드로 빛나는 효과 강화 */
 
-  opacity: var(--card-opacity);
+  opacity: var(--card-opacity);    /* 카드의 불투명도를 변수로 제어 */
 
 }
 

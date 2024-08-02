@@ -47,6 +47,7 @@ declare module '$env/static/private' {
 	export const npm_package_json: string;
 	export const NVM_INC: string;
 	export const VSCODE_GIT_ASKPASS_MAIN: string;
+	export const NODE_OPTIONS: string;
 	export const VSCODE_GIT_ASKPASS_NODE: string;
 	export const SSL_CERT_FILE: string;
 	export const npm_config_userconfig: string;
@@ -149,6 +150,7 @@ declare module '$env/dynamic/private' {
 		npm_package_json: string;
 		NVM_INC: string;
 		VSCODE_GIT_ASKPASS_MAIN: string;
+		NODE_OPTIONS: string;
 		VSCODE_GIT_ASKPASS_NODE: string;
 		SSL_CERT_FILE: string;
 		npm_config_userconfig: string;

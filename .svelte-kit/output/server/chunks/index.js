@@ -27,37 +27,37 @@ class Redirect {
     this.location = location;
   }
 }
-class NotFound extends Error {
+class SvelteKitError extends Error {
   /**
-   * @param {string} pathname
+   * @param {number} status
+   * @param {string} text
+   * @param {string} message
    */
-  constructor(pathname) {
-    super();
-    this.status = 404;
-    this.message = `Not found: ${pathname}`;
+  constructor(status, text2, message) {
+    super(message);
+    this.status = status;
+    this.text = text2;
   }
 }
 class ActionFailure {
   /**
    * @param {number} status
-   * @param {T} [data]
+   * @param {T} data
    */
   constructor(status, data) {
     this.status = status;
     this.data = data;
   }
 }
-function error(status, body) {
-  if (isNaN(status) || status < 400 || status > 599) {
-    throw new Error(`HTTP error status codes must be between 400 and 599 — ${status} is invalid`);
-  }
-  return new HttpError(status, body);
-}
 function redirect(status, location) {
   if (isNaN(status) || status < 300 || status > 308) {
     throw new Error("Invalid status code");
   }
-  return new Redirect(status, location.toString());
+  throw new Redirect(
+    // @ts-ignore
+    status,
+    location.toString()
+  );
 }
 function json(data, init) {
   const body = JSON.stringify(data);
@@ -92,9 +92,8 @@ function text(body, init) {
 export {
   ActionFailure as A,
   HttpError as H,
-  NotFound as N,
   Redirect as R,
-  error as e,
+  SvelteKitError as S,
   json as j,
   redirect as r,
   text as t

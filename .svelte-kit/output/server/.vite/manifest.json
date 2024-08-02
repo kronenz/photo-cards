@@ -1,164 +1,274 @@
 {
   ".svelte-kit/generated/server/internal.js": {
     "file": "internal.js",
+    "name": "internal",
+    "src": ".svelte-kit/generated/server/internal.js",
+    "isEntry": true,
     "imports": [
       "_internal.js"
+    ]
+  },
+  "_Card.svelte_svelte_type_style_lang.js": {
+    "file": "chunks/Card.svelte_svelte_type_style_lang.js",
+    "name": "Card.svelte_svelte_type_style_lang",
+    "imports": [
+      "_index2.js"
     ],
-    "isEntry": true,
-    "src": ".svelte-kit/generated/server/internal.js"
+    "css": [
+      "_app/immutable/assets/Card.aiBzuC07.css"
+    ]
+  },
+  "_client.js": {
+    "file": "chunks/client.js",
+    "name": "client",
+    "imports": [
+      "_exports.js"
+    ]
+  },
+  "_exports.js": {
+    "file": "chunks/exports.js",
+    "name": "exports"
   },
   "_index.js": {
-    "file": "chunks/index.js"
+    "file": "chunks/index.js",
+    "name": "index"
   },
   "_index2.js": {
     "file": "chunks/index2.js",
+    "name": "index",
     "imports": [
-      "_index3.js"
+      "_ssr.js"
     ]
   },
-  "_index3.js": {
-    "file": "chunks/index3.js"
-  },
   "_internal.js": {
+    "file": "chunks/internal.js",
+    "name": "internal",
+    "imports": [
+      "_ssr.js"
+    ],
     "dynamicImports": [
       "src/hooks.server.js"
-    ],
-    "file": "chunks/internal.js",
-    "imports": [
-      "_index3.js"
     ]
   },
   "_pocketbase.js": {
-    "file": "chunks/pocketbase.js"
+    "file": "chunks/pocketbase.js",
+    "name": "pocketbase"
+  },
+  "_ssr.js": {
+    "file": "chunks/ssr.js",
+    "name": "ssr"
   },
   "_stores.js": {
     "file": "chunks/stores.js",
+    "name": "stores",
     "imports": [
-      "_index3.js"
+      "_ssr.js",
+      "_client.js"
     ]
   },
   "node_modules/@sveltejs/kit/src/runtime/components/error.svelte": {
     "file": "entries/fallbacks/error.svelte.js",
-    "imports": [
-      "_index3.js",
-      "_stores.js"
-    ],
+    "name": "entries/fallbacks/error.svelte",
+    "src": "node_modules/@sveltejs/kit/src/runtime/components/error.svelte",
     "isEntry": true,
-    "src": "node_modules/@sveltejs/kit/src/runtime/components/error.svelte"
+    "imports": [
+      "_ssr.js",
+      "_stores.js"
+    ]
   },
   "node_modules/@sveltejs/kit/src/runtime/server/index.js": {
     "file": "index.js",
+    "name": "index",
+    "src": "node_modules/@sveltejs/kit/src/runtime/server/index.js",
+    "isEntry": true,
     "imports": [
       "_internal.js",
       "_index.js",
+      "_exports.js",
       "_index2.js"
-    ],
-    "isEntry": true,
-    "src": "node_modules/@sveltejs/kit/src/runtime/server/index.js"
+    ]
   },
   "src/hooks.server.js": {
     "file": "chunks/hooks.server.js",
+    "name": "hooks.server",
+    "src": "src/hooks.server.js",
+    "isDynamicEntry": true,
     "imports": [
       "_index.js",
       "_pocketbase.js"
-    ],
-    "isDynamicEntry": true,
-    "src": "src/hooks.server.js"
-  },
-  "src/routes/+layout.css": {
-    "file": "_app/immutable/assets/_layout.a8b18a50.css",
-    "src": "src/routes/+layout.css"
+    ]
   },
   "src/routes/+layout.svelte": {
-    "assets": [
-      "_app/immutable/assets/NeoDunggeunmoPro-Regular.e4b974b1.ttf"
-    ],
-    "css": [
-      "_app/immutable/assets/_layout.a8b18a50.css"
-    ],
     "file": "entries/pages/_layout.svelte.js",
+    "name": "entries/pages/_layout.svelte",
+    "src": "src/routes/+layout.svelte",
+    "isEntry": true,
     "imports": [
-      "_index3.js",
+      "_ssr.js",
       "_stores.js"
     ],
-    "isEntry": true,
-    "src": "src/routes/+layout.svelte"
-  },
-  "src/routes/+page.css": {
-    "file": "_app/immutable/assets/_page.28a12191.css",
-    "src": "src/routes/+page.css"
+    "css": [
+      "_app/immutable/assets/_layout.DdBvKLv3.css"
+    ],
+    "assets": [
+      "_app/immutable/assets/grain.BWl84MUi.webp",
+      "_app/immutable/assets/glitter.0gk-nuCU.png",
+      "_app/immutable/assets/cosmos-bottom.D83TNPWu.png",
+      "_app/immutable/assets/cosmos-middle-trans.Cho7JpRz.png",
+      "_app/immutable/assets/cosmos-top-trans.DN14DDc0.png",
+      "_app/immutable/assets/trainerbg.D5xqq63o.png",
+      "_app/immutable/assets/illusion.CKHJKhiM.png",
+      "_app/immutable/assets/vmaxbg.CfqOZMdN.jpg",
+      "_app/immutable/assets/ancient.Ci9hYTiU.png",
+      "_app/immutable/assets/illusion-mask.CV2Insva.png",
+      "_app/immutable/assets/geometric.CQlKBuz8.png",
+      "_app/immutable/assets/NeoDunggeunmoPro-Regular.DqKdmThN.ttf"
+    ]
   },
   "src/routes/+page.svelte": {
-    "css": [
-      "_app/immutable/assets/_page.28a12191.css"
-    ],
     "file": "entries/pages/_page.svelte.js",
-    "imports": [
-      "_index3.js"
-    ],
+    "name": "entries/pages/_page.svelte",
+    "src": "src/routes/+page.svelte",
     "isEntry": true,
-    "src": "src/routes/+page.svelte"
-  },
-  "src/routes/card/+page.css": {
-    "file": "_app/immutable/assets/_page.acf77daa.css",
-    "src": "src/routes/card/+page.css"
+    "imports": [
+      "_ssr.js",
+      "_stores.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.BMfX9W2q.css"
+    ]
   },
   "src/routes/card/+page.svelte": {
-    "css": [
-      "_app/immutable/assets/_page.acf77daa.css"
-    ],
     "file": "entries/pages/card/_page.svelte.js",
-    "imports": [
-      "_index3.js",
-      "_index2.js"
-    ],
+    "name": "entries/pages/card/_page.svelte",
+    "src": "src/routes/card/+page.svelte",
     "isEntry": true,
-    "src": "src/routes/card/+page.svelte"
+    "imports": [
+      "_ssr.js",
+      "_Card.svelte_svelte_type_style_lang.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.C72RruFH.css"
+    ]
+  },
+  "src/routes/card2/+page.svelte": {
+    "file": "entries/pages/card2/_page.svelte.js",
+    "name": "entries/pages/card2/_page.svelte",
+    "src": "src/routes/card2/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js",
+      "_Card.svelte_svelte_type_style_lang.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.CizDl4JN.css"
+    ]
   },
   "src/routes/login/+layout.svelte": {
     "file": "entries/pages/login/_layout.svelte.js",
+    "name": "entries/pages/login/_layout.svelte",
+    "src": "src/routes/login/+layout.svelte",
+    "isEntry": true,
     "imports": [
-      "_index3.js",
+      "_ssr.js",
       "_pocketbase.js",
       "_index2.js"
-    ],
-    "isEntry": true,
-    "src": "src/routes/login/+layout.svelte"
-  },
-  "src/routes/login/+page.css": {
-    "file": "_app/immutable/assets/_page.b201568e.css",
-    "src": "src/routes/login/+page.css"
+    ]
   },
   "src/routes/login/+page.svelte": {
-    "css": [
-      "_app/immutable/assets/_page.b201568e.css"
-    ],
     "file": "entries/pages/login/_page.svelte.js",
+    "name": "entries/pages/login/_page.svelte",
+    "src": "src/routes/login/+page.svelte",
+    "isEntry": true,
     "imports": [
-      "_index3.js",
+      "_ssr.js",
+      "_client.js",
       "_pocketbase.js"
     ],
-    "isEntry": true,
-    "src": "src/routes/login/+page.svelte"
+    "css": [
+      "_app/immutable/assets/_page.-wr9Ub0C.css"
+    ]
   },
-  "src/routes/register/+page.css": {
-    "file": "_app/immutable/assets/_page.ea054280.css",
-    "src": "src/routes/register/+page.css"
+  "src/routes/oauth/+server.js": {
+    "file": "entries/endpoints/oauth/_server.js",
+    "name": "entries/endpoints/oauth/_server",
+    "src": "src/routes/oauth/+server.js",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_pocketbase.js"
+    ]
+  },
+  "src/routes/register/+page.server.js": {
+    "file": "entries/pages/register/_page.server.js",
+    "name": "entries/pages/register/_page.server",
+    "src": "src/routes/register/+page.server.js",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_pocketbase.js"
+    ]
   },
   "src/routes/register/+page.svelte": {
-    "css": [
-      "_app/immutable/assets/_page.ea054280.css"
-    ],
     "file": "entries/pages/register/_page.svelte.js",
+    "name": "entries/pages/register/_page.svelte",
+    "src": "src/routes/register/+page.svelte",
+    "isEntry": true,
     "imports": [
-      "_index3.js",
+      "_ssr.js",
+      "_client.js",
       "_pocketbase.js"
     ],
-    "isEntry": true,
-    "src": "src/routes/register/+page.svelte"
+    "css": [
+      "_app/immutable/assets/_page.BZ3TBzxD.css"
+    ]
   },
   "src/statics/fonts/NeoDunggeunmoPro-Regular.ttf": {
-    "file": "_app/immutable/assets/NeoDunggeunmoPro-Regular.e4b974b1.ttf",
+    "file": "_app/immutable/assets/NeoDunggeunmoPro-Regular.DqKdmThN.ttf",
     "src": "src/statics/fonts/NeoDunggeunmoPro-Regular.ttf"
+  },
+  "src/statics/img/ancient.png": {
+    "file": "_app/immutable/assets/ancient.Ci9hYTiU.png",
+    "src": "src/statics/img/ancient.png"
+  },
+  "src/statics/img/cosmos-bottom.png": {
+    "file": "_app/immutable/assets/cosmos-bottom.D83TNPWu.png",
+    "src": "src/statics/img/cosmos-bottom.png"
+  },
+  "src/statics/img/cosmos-middle-trans.png": {
+    "file": "_app/immutable/assets/cosmos-middle-trans.Cho7JpRz.png",
+    "src": "src/statics/img/cosmos-middle-trans.png"
+  },
+  "src/statics/img/cosmos-top-trans.png": {
+    "file": "_app/immutable/assets/cosmos-top-trans.DN14DDc0.png",
+    "src": "src/statics/img/cosmos-top-trans.png"
+  },
+  "src/statics/img/geometric.png": {
+    "file": "_app/immutable/assets/geometric.CQlKBuz8.png",
+    "src": "src/statics/img/geometric.png"
+  },
+  "src/statics/img/glitter.png": {
+    "file": "_app/immutable/assets/glitter.0gk-nuCU.png",
+    "src": "src/statics/img/glitter.png"
+  },
+  "src/statics/img/grain.webp": {
+    "file": "_app/immutable/assets/grain.BWl84MUi.webp",
+    "src": "src/statics/img/grain.webp"
+  },
+  "src/statics/img/illusion-mask.png": {
+    "file": "_app/immutable/assets/illusion-mask.CV2Insva.png",
+    "src": "src/statics/img/illusion-mask.png"
+  },
+  "src/statics/img/illusion.png": {
+    "file": "_app/immutable/assets/illusion.CKHJKhiM.png",
+    "src": "src/statics/img/illusion.png"
+  },
+  "src/statics/img/trainerbg.png": {
+    "file": "_app/immutable/assets/trainerbg.D5xqq63o.png",
+    "src": "src/statics/img/trainerbg.png"
+  },
+  "src/statics/img/vmaxbg.jpg": {
+    "file": "_app/immutable/assets/vmaxbg.CfqOZMdN.jpg",
+    "src": "src/statics/img/vmaxbg.jpg"
   }
 }

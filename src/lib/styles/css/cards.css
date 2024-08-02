@@ -1,35 +1,45 @@
 
 .card {
 
-  --grain: url("$img/grain.webp");
-  --glitter: url("$img/glitter.png");
-  --glittersize: 25%;
+  --grain: url("$img/grain.webp");     /* 카드 질감을 위한 그레인 이미지 */
+  --glitter: url("$img/glitter.png");  /* 홀로그램 효과를 위한 반짝이 이미지 */
+  --glittersize: 25%;                  /* 반짝이 이미지의 크기 */
 
-  --space: 5%;
-  --angle: 133deg;
-  --imgsize: cover;
+  --space: 5%;                /* 카드 내부 여백 */
+  --angle: 133deg;            /* 홀로그램 효과의 각도 */
+  --imgsize: cover;           /* 이미지 크기 조절 방식 */
 
-  --red: #f80e35;
-  --yellow: #eedf10;
-  --green: #21e985;
-  --blue: #0dbde9;
-  --violet: #c929f1;
+  --red: #f80e35;             /* 빨간색 정의 */
+  --yellow: #eedf10;          /* 노란색 정의 */
+  --green: #21e985;           /* 초록색 정의 */
+  --blue: #0dbde9;            /* 파란색 정의 */
+  --violet: #c929f1;          /* 보라색 정의 */
 
-  --clip: inset( 9.85% 8% 52.85% 8% );
-  --clip-invert: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 0 47.15%, 91.5% 47.15%, 91.5% 9.85%, 8% 9.85%, 8% 47.15%, 0 50%);
+  --clip: inset( 9.85% 8% 52.85% 8% );  /* 카드 이미지 영역 클리핑 */
+  --clip-invert: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 0 47.15%, 91.5% 47.15%, 91.5% 9.85%, 8% 9.85%, 8% 47.15%, 0 50%);  /* 카드 이미지 영역 반전 클리핑 */
 
-  --clip-stage: polygon(91.5% 9.85%, 57% 9.85%, 54% 12%, 17% 12%, 16% 14%, 12% 16%, 8% 16%, 8% 47.15%, 92% 47.15%);
-  --clip-stage-invert: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 0 47.15%, 91.5% 47.15%, 91.5% 9.85%, 57% 9.85%, 54% 12%, 17% 12%, 16% 14%, 12% 16%, 8% 16%, 8% 47.15%, 0 50%);
+  --clip-stage: polygon(91.5% 9.85%, 57% 9.85%, 54% 12%, 17% 12%, 16% 14%, 12% 16%, 8% 16%, 8% 47.15%, 92% 47.15%);  /* 스테이지 카드 클리핑 */
+  --clip-stage-invert: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 0 47.15%, 91.5% 47.15%, 91.5% 9.85%, 57% 9.85%, 54% 12%, 17% 12%, 16% 14%, 12% 16%, 8% 16%, 8% 47.15%, 0 50%);  /* 스테이지 카드 반전 클리핑 */
 
-  --clip-trainer: inset(14.5% 8.5% 48.2% 8.5%);
-  --clip-borders: inset(2.8% 4% round 2.55% / 1.5%);
+  --clip-trainer: inset(14.5% 8.5% 48.2% 8.5%);  /* 트레이너 카드 클리핑 */
+  --clip-borders: inset(2.8% 4% round 2.55% / 1.5%);  /* 카드 테두리를 안쪽으로 잘라내어 둥근 모서리 효과를 만듭니다. 상하 2.8%, 좌우 4%를 잘라내고, 가로 방향으로 2.55%, 세로 방향으로 1.5%의 둥근 모서리를 적용합니다. */
 
 }
 
 .card__shine,
 .card__glare {
   
-  will-change: transform, opacity, background-image, background-size,
-    background-position, background-blend-mode, filter;
+  /* 
+    성능 최적화를 위해 브라우저에게 변경될 속성들을 미리 알려줍니다.
+    이는 애니메이션이나 변환 시 더 부드러운 렌더링을 가능하게 합니다.
+  */
+  will-change: 
+    transform,     /* 변형 (예: 회전, 크기 조절) */
+    opacity,       /* 투명도 */
+    background-image,    /* 배경 이미지 */
+    background-size,     /* 배경 크기 */
+    background-position, /* 배경 위치 */
+    background-blend-mode, /* 배경 혼합 모드 */
+    filter;        /* 필터 효과 (예: 흐림, 색상 조정) */
  
 }

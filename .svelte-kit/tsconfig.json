@@ -13,6 +13,12 @@
 			"$css/*": [
 				"../src/lib/styles/css/*"
 			],
+			"$stores": [
+				"../src/lib/stores"
+			],
+			"$stores/*": [
+				"../src/lib/stores/*"
+			],
 			"$fonts": [
 				"../src/statics/fonts"
 			],

@@ -1,7 +1,11 @@
-import { c as create_ssr_component, s as setContext, v as validate_component, m as missing_component } from "./index3.js";
+import { c as create_ssr_component, s as setContext, v as validate_component, m as missing_component } from "./ssr.js";
 let base = "";
 let assets = base;
 const initial = { base, assets };
+function override(paths) {
+  base = paths.base;
+  assets = paths.assets;
+}
 function reset() {
   base = initial.base;
   assets = initial.assets;
@@ -10,14 +14,22 @@ function set_assets(path) {
   assets = initial.assets = path;
 }
 let public_env = {};
+let safe_public_env = {};
 function set_private_env(environment) {
 }
 function set_public_env(environment) {
   public_env = environment;
 }
+function set_safe_public_env(environment) {
+  safe_public_env = environment;
+}
 function afterUpdate() {
 }
+let prerendering = false;
 function set_building() {
+}
+function set_prerendering() {
+  prerendering = true;
 }
 const Root = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let { stores } = $$props;
@@ -32,34 +44,24 @@ const Root = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     setContext("__svelte__", stores);
   }
   afterUpdate(stores.page.notify);
-  if ($$props.stores === void 0 && $$bindings.stores && stores !== void 0)
-    $$bindings.stores(stores);
-  if ($$props.page === void 0 && $$bindings.page && page !== void 0)
-    $$bindings.page(page);
-  if ($$props.constructors === void 0 && $$bindings.constructors && constructors !== void 0)
-    $$bindings.constructors(constructors);
-  if ($$props.components === void 0 && $$bindings.components && components !== void 0)
-    $$bindings.components(components);
-  if ($$props.form === void 0 && $$bindings.form && form !== void 0)
-    $$bindings.form(form);
-  if ($$props.data_0 === void 0 && $$bindings.data_0 && data_0 !== void 0)
-    $$bindings.data_0(data_0);
-  if ($$props.data_1 === void 0 && $$bindings.data_1 && data_1 !== void 0)
-    $$bindings.data_1(data_1);
-  if ($$props.data_2 === void 0 && $$bindings.data_2 && data_2 !== void 0)
-    $$bindings.data_2(data_2);
+  if ($$props.stores === void 0 && $$bindings.stores && stores !== void 0) $$bindings.stores(stores);
+  if ($$props.page === void 0 && $$bindings.page && page !== void 0) $$bindings.page(page);
+  if ($$props.constructors === void 0 && $$bindings.constructors && constructors !== void 0) $$bindings.constructors(constructors);
+  if ($$props.components === void 0 && $$bindings.components && components !== void 0) $$bindings.components(components);
+  if ($$props.form === void 0 && $$bindings.form && form !== void 0) $$bindings.form(form);
+  if ($$props.data_0 === void 0 && $$bindings.data_0 && data_0 !== void 0) $$bindings.data_0(data_0);
+  if ($$props.data_1 === void 0 && $$bindings.data_1 && data_1 !== void 0) $$bindings.data_1(data_1);
+  if ($$props.data_2 === void 0 && $$bindings.data_2 && data_2 !== void 0) $$bindings.data_2(data_2);
   let $$settled;
   let $$rendered;
+  let previous_head = $$result.head;
   do {
     $$settled = true;
+    $$result.head = previous_head;
     {
       stores.page.set(page);
     }
-    $$rendered = `
-
-
-
-${constructors[1] ? `${validate_component(constructors[0] || missing_component, "svelte:component").$$render(
+    $$rendered = `  ${constructors[1] ? `${validate_component(constructors[0] || missing_component, "svelte:component").$$render(
       $$result,
       { data: data_0, this: components[0] },
       {
@@ -117,17 +119,19 @@ ${constructors[1] ? `${validate_component(constructors[0] || missing_component, 
         }
       },
       {}
-    )}`}
-
-${``}`;
+    )}`} ${``}`;
   } while (!$$settled);
   return $$rendered;
 });
+function set_read_implementation(fn) {
+}
+function set_manifest(_) {
+}
 const options = {
+  app_dir: "_app",
   app_template_contains_nonce: false,
-  csp: { "mode": "auto", "directives": { "upgrade-insecure-requests": false, "block-all-mixed-content": false }, "reportOnly": { "upgrade-insecure-requests": false, "block-all-mixed-content": false } },
+  csp: { "mode": "auto", "directives": { "script-src": ["self"], "upgrade-insecure-requests": false, "block-all-mixed-content": false }, "reportOnly": { "upgrade-insecure-requests": false, "block-all-mixed-content": false } },
   csrf_check_origin: true,
-  track_server_fetches: false,
   embedded: false,
   env_public_prefix: "PUBLIC_",
   env_private_prefix: "",
@@ -137,11 +141,11 @@ const options = {
   root: Root,
   service_worker: false,
   templates: {
-    app: ({ head, body, assets: assets2, nonce, env }) => '<!DOCTYPE html>\n<html lang="en">\n	<head>\n\n		<meta charset="utf-8" />\n		<meta name="viewport" content="width=device-width, initial-scale=1" />\n		<!-- meta -->\n		<title>야구 Cards CSS Holographic Effect</title>\n		<meta name="description" content="야구 카드 온라인" />\n		\n		<link rel="canonical" href="https://30aa-210-113-225-166.ngrok-free.app" />\n		<link rel="icon" href="' + assets2 + '/favicon.png" />\n		<meta name="thumbnail" content="thumb.png" />\n\n		<!-- <meta property="og:url" content="https://30aa-210-113-225-166.ngrok-free.app" />\n		<meta property="og:type" content="website" />\n		<meta property="og:title" content="야구 Cards CSS Holographic Effect" />\n		<meta property="og:description" content="야구 카드 온라인" />\n		<meta property="og:image" content="https://i.ibb.co/dPpfZ1W/Monosnap-Poke-mon-Cards-CSS-Holographic-Effect-2024-07-25-14-37-42.png" />\n\n		<meta name="twitter:title" content="야구 Cards CSS Holographic Effect">\n		<meta name="twitter:description" content="야구 카드 온라인">\n		<meta name="twitter:image" content="https://i.ibb.co/dPpfZ1W/Monosnap-Poke-mon-Cards-CSS-Holographic-Effect-2024-07-25-14-37-42.png">\n		<meta name="twitter:card" content="summary_large_image">\n		<meta name="twitter:site" content="@simeydotme"> -->\n\n		<!-- fonts -->\n		<link rel="preconnect" href="https://fonts.googleapis.com">\n		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,700;1,300;1,700&family=Roboto:ital,wght@0,300;0,700;1,300;1,700&display=swap"> \n		\n		<!-- styles -->\n		<link rel="stylesheet" href="../public/css/global.css" />\n		\n		<link rel="stylesheet" href="../public/css/cards/base.css" />\n		<link rel="stylesheet" href="../public/css/cards.css" />\n		<link rel="stylesheet" href="../public/css/cards/basic.css" />\n		<link rel="stylesheet" href="../public/css/cards/reverse-holo.css" />\n		<link rel="stylesheet" href="../public/css/cards/regular-holo.css" />\n		<link rel="stylesheet" href="../public/css/cards/cosmos-holo.css" />\n		<link rel="stylesheet" href="../public/css/cards/amazing-rare.css" />\n		<link rel="stylesheet" href="../public/css/cards/radiant-holo.css" />\n		<link rel="stylesheet" href="../public/css/cards/v-regular.css" />\n		<link rel="stylesheet" href="../public/css/cards/v-full-art.css" />\n		<link rel="stylesheet" href="../public/css/cards/v-max.css" />\n		<link rel="stylesheet" href="../public/css/cards/v-star.css" />\n		<link rel="stylesheet" href="../public/css/cards/trainer-full-art.css" />\n		<link rel="stylesheet" href="../public/css/cards/rainbow-holo.css" />\n		<link rel="stylesheet" href="../public/css/cards/rainbow-alt.css" />\n		<link rel="stylesheet" href="../public/css/cards/secret-rare.css" />\n		<link rel="stylesheet" href="../public/css/cards/trainer-gallery-holo.css" />\n		<link rel="stylesheet" href="../public/css/cards/trainer-gallery-v-regular.css" />\n		<link rel="stylesheet" href="../public/css/cards/trainer-gallery-v-max.css" />\n		<link rel="stylesheet" href="../public/css/cards/trainer-gallery-secret-rare.css" />\n		<link rel="stylesheet" href="../public/css/cards/shiny-rare.css" />\n		<link rel="stylesheet" href="../public/css/cards/shiny-v.css" />\n		<link rel="stylesheet" href="../public/css/cards/shiny-vmax.css" />\n		<link rel="stylesheet" href="../public/css/cards/swsh-pikachu.css" />\n		<!-- href 속성의 값인 "' + assets2 + '/favicon.png"는 SvelteKit에서 제공하는 특별한 플레이스홀더입니다.\n		     이는 빌드 시 실제 favicon.png 파일의 경로로 대체됩니다. 이렇게 함으로써 개발 환경과 프로덕션 환경에서\n		     일관된 방식으로 파비콘을 참조할 수 있습니다. -->\n		<link rel="icon" href="' + assets2 + '/favicon.png" />\n		<meta name="viewport" content="width=device-width, initial-scale=1" />\n		<meta name="color-scheme" content="dark light" />\n		' + head + `
+    app: ({ head, body, assets: assets2, nonce, env }) => '<!DOCTYPE html>\n<html lang="en">\n	<head>\n\n		<meta charset="utf-8" />\n		<meta name="viewport" content="width=device-width, initial-scale=1" />\n		<!-- meta -->\n		<title>야구 Cards CSS Holographic Effect</title>\n		<meta name="description" content="야구 카드 온라인" />\n		\n		<link rel="canonical" href="https://30aa-210-113-225-166.ngrok-free.app" />\n		<link rel="icon" href="' + assets2 + '/favicon.png" />\n		<meta name="thumbnail" content="thumb.png" />\n\n		<!-- <meta property="og:url" content="https://30aa-210-113-225-166.ngrok-free.app" />\n		<meta property="og:type" content="website" />\n		<meta property="og:title" content="야구 Cards CSS Holographic Effect" />\n		<meta property="og:description" content="야구 카드 온라인" />\n		<meta property="og:image" content="https://i.ibb.co/dPpfZ1W/Monosnap-Poke-mon-Cards-CSS-Holographic-Effect-2024-07-25-14-37-42.png" />\n\n		<meta name="twitter:title" content="야구 Cards CSS Holographic Effect">\n		<meta name="twitter:description" content="야구 카드 온라인">\n		<meta name="twitter:image" content="https://i.ibb.co/dPpfZ1W/Monosnap-Poke-mon-Cards-CSS-Holographic-Effect-2024-07-25-14-37-42.png">\n		<meta name="twitter:card" content="summary_large_image">\n		<meta name="twitter:site" content="@simeydotme"> -->\n\n		<!-- fonts -->\n		<link rel="preconnect" href="https://fonts.googleapis.com">\n		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,700;1,300;1,700&family=Roboto:ital,wght@0,300;0,700;1,300;1,700&display=swap"> \n		\n		\n		<!-- href 속성의 값인 "' + assets2 + '/favicon.png"는 SvelteKit에서 제공하는 특별한 플레이스홀더입니다.\n		     이는 빌드 시 실제 favicon.png 파일의 경로로 대체됩니다. 이렇게 함으로써 개발 환경과 프로덕션 환경에서\n		     일관된 방식으로 파비콘을 참조할 수 있습니다. -->\n		<link rel="icon" href="' + assets2 + '/favicon.png" />\n		<meta name="viewport" content="width=device-width, initial-scale=1" />\n		<meta name="color-scheme" content="dark light" />\n		' + head + `
 
 		<style>
 			body {
-				--bg-1: hsl(200, 60%, 85%);
+				--bg-1: hsl(0, 0%, 30%);
 				--bg-2: hsl(206, 20%, 90%);
 				--bg-3: hsl(206, 20%, 80%);
 				--fg-1: hsl(0, 0%, 13%);
@@ -461,20 +465,29 @@ const options = {
 		<div class="error">
 			<span class="status">` + status + '</span>\n			<div class="message">\n				<h1>' + message + "</h1>\n			</div>\n		</div>\n	</body>\n</html>\n"
   },
-  version_hash: "szxjhx"
+  version_hash: "18htmdx"
 };
-function get_hooks() {
-  return import("./hooks.server.js");
+async function get_hooks() {
+  return {
+    ...await import("./hooks.server.js")
+  };
 }
 export {
   assets as a,
   base as b,
-  set_public_env as c,
-  set_assets as d,
-  set_building as e,
+  options as c,
+  set_private_env as d,
+  prerendering as e,
+  set_public_env as f,
   get_hooks as g,
-  options as o,
+  set_safe_public_env as h,
+  set_assets as i,
+  set_building as j,
+  set_manifest as k,
+  set_prerendering as l,
+  set_read_implementation as m,
+  override as o,
   public_env as p,
   reset as r,
-  set_private_env as s
+  safe_public_env as s
 };

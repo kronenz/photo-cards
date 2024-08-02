@@ -19,6 +19,7 @@ const config = {
 		alias: {
 			$lib: 'src/lib',
 			$css: 'src/lib/styles/css',
+			$stores: 'src/lib/stores',
 			$fonts: 'src/statics/fonts',
 			$img: 'src/statics/img',
 			$data: 'src/assets/data',
