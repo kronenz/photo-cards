@@ -19,10 +19,7 @@
     "@auth/sveltekit": "^1.4.2",
     "@sveltejs/adapter-auto": "^3.2.2",
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
-    "bcrypt": "^6.0.0",
-    "better-sqlite3": "^12.4.1",
-    "pocketbase": "^0.21.4",
-    "uuid": "^13.0.0"
+    "pocketbase": "^0.21.4"
   },
   "description": "This is a repository holder for the Pokemon Cards CSS Holographic effect.",
   "main": "svelte.config.js",

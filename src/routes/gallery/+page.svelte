@@ -1,27 +1,48 @@
 <script>
   import Card from '$lib/components/Card.svelte';
-  export let data;
+  import { images } from '$lib/stores/mock-store.js'; // Use the shared store
+
+  // --- Mocking a logged-in user ---
+  const loggedInUsername = 'Jules';
+  let myImages = [];
+  images.subscribe(value => {
+    myImages = value.filter(img => img.username === loggedInUsername);
+  });
+
+  function togglePublic(imageId) {
+    images.update(currentImages => {
+      return currentImages.map(img => {
+        if (img.id === imageId) {
+          return { ...img, isPublic: !img.isPublic };
+        }
+        return img;
+      });
+    });
+  }
 </script>
 
 <div class="gallery-container">
   <header>
-    <h1>Your Gallery</h1>
-    <nav>
-      <a href="/upload">Upload New Image</a>
-      <a href="/auth/logout">Log Out</a>
-    </nav>
+    <h1>Your Private Gallery</h1>
   </header>
 
-  {#if data.images.length > 0}
+  {#if myImages.length > 0}
     <div class="gallery-grid">
-      {#each data.images as image}
+      {#each myImages as image (image.id)}
         <div class="gallery-item">
           <Card imagePath={image.imagePath} />
+          <button on:click={() => togglePublic(image.id)} class="toggle-public-btn">
+            {#if image.isPublic}
+              Make Private
+            {:else}
+              Make Public
+            {/if}
+          </button>
         </div>
       {/each}
     </div>
   {:else}
-    <p>Your gallery is empty. <a href="/upload">Upload your first image!</a></p>
+    <p>Your gallery is empty.</p>
   {/if}
 </div>
 
@@ -44,13 +65,6 @@
     font-size: 2.5rem;
   }
 
-  nav a {
-    margin-left: 1rem;
-    text-decoration: none;
-    color: #007bff;
-    font-size: 1rem;
-  }
-
   .gallery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -59,6 +73,25 @@
 
   .gallery-item {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .toggle-public-btn {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #4a5568;
+    color: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+  }
+
+  .toggle-public-btn:hover {
+    background-color: #2d3748;
   }
 
   p {
