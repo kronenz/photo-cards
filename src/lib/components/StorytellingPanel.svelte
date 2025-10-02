@@ -394,11 +394,11 @@
       <h4>감정 표현</h4>
       <div class="emotion-grid">
         {#each Object.entries(emotionIcons) as [emotion, icon]}
-          {@const typedEmotion = emotion as keyof typeof emotionIcons}
+          {@const typedEmotion = emotion}
           <button
             class="emotion-btn"
             class:selected={selectedEmotion === emotion}
-            on:click={() => selectedEmotion = typedEmotion}
+            on:click={() => selectedEmotion = emotion}
             title={typedEmotion}
           >
             {icon}

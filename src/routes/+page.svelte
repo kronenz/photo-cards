@@ -175,8 +175,8 @@
       <a href="/auth/signup" class="btn-apple btn-primary large">
         무료로 시작하기
       </a>
-      <a href="/demo" class="btn-apple btn-secondary large">
-        데모 체험하기
+      <a href="/realtime-preview-demo" class="btn-apple btn-secondary large">
+        실시간 미리보기 데모
       </a>
     </div>
   </div>

@@ -375,33 +375,33 @@
             class="decoration-btn"
             class:active={textData.textDecoration.includes('underline')}
             on:click={() => {
-              const decorations = textData.textDecoration.split(' ').filter((d: string) => d !== 'underline');
+              const decorations = textData.textDecoration.split(' ').filter(d => d !== 'underline');
               if (!textData.textDecoration.includes('underline')) {
                 decorations.push('underline');
               }
               handleInputChange('textDecoration', decorations.join(' ') || 'none');
             }}
           >
-            U̲
+            <u>U</u>
           </button>
           <button
             class="decoration-btn"
             class:active={textData.textDecoration.includes('line-through')}
             on:click={() => {
-              const decorations = textData.textDecoration.split(' ').filter((d: string) => d !== 'line-through');
+              const decorations = textData.textDecoration.split(' ').filter(d => d !== 'line-through');
               if (!textData.textDecoration.includes('line-through')) {
                 decorations.push('line-through');
               }
               handleInputChange('textDecoration', decorations.join(' ') || 'none');
             }}
           >
-            S̶
+            <s>S</s>
           </button>
           <button
             class="decoration-btn"
             class:active={textData.textDecoration.includes('overline')}
             on:click={() => {
-              const decorations = textData.textDecoration.split(' ').filter((d: string) => d !== 'overline');
+              const decorations = textData.textDecoration.split(' ').filter(d => d !== 'overline');
               if (!textData.textDecoration.includes('overline')) {
                 decorations.push('overline');
               }

@@ -41,21 +41,103 @@
 		</label>
 	{/if}
 	
-	<input
-		bind:this={inputElement}
-		bind:value
-		{type}
-		{id}
-		{placeholder}
-		{disabled}
-		{required}
-		{autocomplete}
-		class="input {label ? 'pt-6 pb-2' : ''} {error ? 'border-dark-accent-error focus:border-dark-accent-error focus:ring-dark-accent-error/20' : ''}"
-		on:focus={handleFocus}
-		on:blur={handleBlur}
-		on:input
-		on:change
-	/>
+	{#if type === 'text'}
+		<input
+			bind:this={inputElement}
+			bind:value
+			type="text"
+			{id}
+			{placeholder}
+			{disabled}
+			{required}
+			{autocomplete}
+			class="input {label ? 'pt-6 pb-2' : ''} {error ? 'border-dark-accent-error focus:border-dark-accent-error focus:ring-dark-accent-error/20' : ''}"
+			on:focus={handleFocus}
+			on:blur={handleBlur}
+			on:input
+			on:change
+		/>
+	{:else if type === 'email'}
+		<input
+			bind:this={inputElement}
+			bind:value
+			type="email"
+			{id}
+			{placeholder}
+			{disabled}
+			{required}
+			{autocomplete}
+			class="input {label ? 'pt-6 pb-2' : ''} {error ? 'border-dark-accent-error focus:border-dark-accent-error focus:ring-dark-accent-error/20' : ''}"
+			on:focus={handleFocus}
+			on:blur={handleBlur}
+			on:input
+			on:change
+		/>
+	{:else if type === 'password'}
+		<input
+			bind:this={inputElement}
+			bind:value
+			type="password"
+			{id}
+			{placeholder}
+			{disabled}
+			{required}
+			{autocomplete}
+			class="input {label ? 'pt-6 pb-2' : ''} {error ? 'border-dark-accent-error focus:border-dark-accent-error focus:ring-dark-accent-error/20' : ''}"
+			on:focus={handleFocus}
+			on:blur={handleBlur}
+			on:input
+			on:change
+		/>
+	{:else if type === 'search'}
+		<input
+			bind:this={inputElement}
+			bind:value
+			type="search"
+			{id}
+			{placeholder}
+			{disabled}
+			{required}
+			{autocomplete}
+			class="input {label ? 'pt-6 pb-2' : ''} {error ? 'border-dark-accent-error focus:border-dark-accent-error focus:ring-dark-accent-error/20' : ''}"
+			on:focus={handleFocus}
+			on:blur={handleBlur}
+			on:input
+			on:change
+		/>
+	{:else if type === 'url'}
+		<input
+			bind:this={inputElement}
+			bind:value
+			type="url"
+			{id}
+			{placeholder}
+			{disabled}
+			{required}
+			{autocomplete}
+			class="input {label ? 'pt-6 pb-2' : ''} {error ? 'border-dark-accent-error focus:border-dark-accent-error focus:ring-dark-accent-error/20' : ''}"
+			on:focus={handleFocus}
+			on:blur={handleBlur}
+			on:input
+			on:change
+		/>
+	{:else}
+		<input
+			bind:this={inputElement}
+			bind:value
+			type="tel"
+			{id}
+			{placeholder}
+			{disabled}
+			{required}
+			{autocomplete}
+			class="input {label ? 'pt-6 pb-2' : ''} {error ? 'border-dark-accent-error focus:border-dark-accent-error focus:ring-dark-accent-error/20' : ''}"
+			on:focus={handleFocus}
+			on:blur={handleBlur}
+			on:input
+			on:change
+		/>
+	{/if}
 	
 	{#if error}
 		<div class="mt-2 flex items-center gap-2 text-sm text-dark-accent-error">
