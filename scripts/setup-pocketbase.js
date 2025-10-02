@@ -44,8 +44,19 @@ try {
 const pbConfig = {
   "settings": {
     "meta": {
-      "appName": "Holographic Card Community",
-      "appUrl": "http://localhost:5173"
+      "appName": "KBO 홀로그래픽 카드 커뮤니티",
+      "appUrl": "http://localhost:5173",
+      "hideControls": false,
+      "senderName": "KBO Cards",
+      "senderAddress": "noreply@kbo-cards.com",
+      "verificationTemplate": {
+        "subject": "KBO 카드 커뮤니티 이메일 인증",
+        "body": "<p>안녕하세요!</p><p>아래 링크를 클릭하여 이메일 인증을 완료해주세요:</p><p><a href='{APP_URL}/_/#/auth/confirm-verification/{TOKEN}'>이메일 인증하기</a></p><p>감사합니다.<br/>KBO 홀로그래픽 카드 커뮤니티</p>"
+      },
+      "resetPasswordTemplate": {
+        "subject": "KBO 카드 커뮤니티 비밀번호 재설정",
+        "body": "<p>안녕하세요!</p><p>아래 링크를 클릭하여 비밀번호를 재설정해주세요:</p><p><a href='{APP_URL}/_/#/auth/confirm-password-reset/{TOKEN}'>비밀번호 재설정하기</a></p><p>감사합니다.<br/>KBO 홀로그래픽 카드 커뮤니티</p>"
+      }
     },
     "logs": {
       "maxDays": 7

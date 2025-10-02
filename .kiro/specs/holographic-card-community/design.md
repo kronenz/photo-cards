@@ -123,6 +123,27 @@ interface SelfHostedServices {
   monitoring: PrometheusConfig
 }
 
+// CSP (Content Security Policy) 보안 강화
+interface SecurityConfig {
+  csp: {
+    // 인라인 스크립트 금지로 XSS 방지
+    scriptSrc: "'self'",
+    styleSrc: "'self' 'unsafe-inline'",
+    imgSrc: "'self' data: https:",
+    connectSrc: "'self' wss:",
+    fontSrc: "'self' https://fonts.gstatic.com",
+    // 외부 리소스 제한
+    defaultSrc: "'self'"
+  },
+  // SvelteKit 컴포넌트 기반 스크립트 관리
+  scriptManagement: {
+    // 모든 JavaScript를 Svelte 컴포넌트 내에서 실행
+    inlineScripts: false,
+    externalScripts: false,
+    componentBasedLogic: true
+  }
+}
+
 const productionConfig: SelfHostedServices = {
   webServer: {
     port: 80,
@@ -157,7 +178,7 @@ const productionConfig: SelfHostedServices = {
 
 #### Authentication Strategy
 ```typescript
-// 최소 비용 인증 전략
+// 최소 비용 인증 전략 + 보안 강화
 interface AuthConfig {
   primary: 'github-oauth'  // 무료
   fallback: 'email-password'  // PocketBase 내장
@@ -166,6 +187,15 @@ interface AuthConfig {
     port: 587
     user: 'your-gmail@gmail.com'
     dailyLimit: 500  // Gmail 무료 한도
+  },
+  // SvelteKit 컴포넌트 기반 초기화
+  initialization: {
+    // AppInit.svelte 컴포넌트로 테마/성능 관리
+    componentBased: true,
+    // CSP 준수를 위한 외부 스크립트 제거
+    inlineScripts: false,
+    // 브라우저 호환성 보장
+    fallbackSupport: true
   }
 }
 
@@ -709,87 +739,187 @@ interface AppError {
 
 ## Design System & Look and Feel
 
-### Civitai-Inspired Modern Design System
+### Apple-Inspired Premium Design System
 
 #### Visual Identity & Brand Guidelines
 
-**Design Philosophy**: 전문적이고 세련된 AI 아트 커뮤니티의 미학을 홀로그래픽 카드 문화에 적용하여, 고급스럽고 현대적인 디지털 경험을 제공합니다.
+**Design Philosophy**: 애플의 미니멀하고 혁신적인 디자인 철학과 Civitai의 세련된 커뮤니티 미학을 결합하여, 사용자들에게 신드롬을 일으킬 수 있는 프리미엄 디지털 경험을 제공합니다. "단순함 속의 완벽함"을 추구하며, 모든 인터랙션이 직관적이고 감동적이 되도록 설계합니다.
 
-#### Color System (Dark Theme Primary)
+#### Apple-Style Design Principles
+
+**1. Simplicity & Clarity (단순함과 명확함)**
+- 불필요한 요소 제거, 핵심 기능에 집중
+- 화이트스페이스를 활용한 여백의 미학
+- 명확한 정보 계층구조와 타이포그래피
+
+**2. Human-Centered Design (인간 중심 설계)**
+- 사용자의 감정과 경험을 최우선으로 고려
+- 직관적인 제스처와 자연스러운 인터랙션
+- 접근성과 포용성을 고려한 디자인
+
+**3. Premium Materials & Craftsmanship (프리미엄 소재와 장인정신)**
+- 고품질 시각적 요소와 정교한 디테일
+- 부드럽고 자연스러운 애니메이션
+- 일관된 브랜드 경험과 품질 유지
+
+**4. Innovation & Surprise (혁신과 놀라움)**
+- 예상을 뛰어넘는 창의적 인터랙션
+- 기술과 예술의 완벽한 조화
+- 사용자에게 감동을 주는 마이크로 인터랙션
+
+#### Apple-Inspired Premium Color System
 ```typescript
 const colorSystem = {
-  // Primary Dark Theme (Civitai-inspired)
-  dark: {
+  // Apple-Style Light Theme (Primary)
+  light: {
     background: {
-      primary: '#0f0f23',      // 메인 배경 (진한 네이비)
-      secondary: '#1a1b3e',    // 카드/섹션 배경
-      tertiary: '#2d2d44',     // 호버/액티브 상태
-      elevated: '#3a3b5c'      // 모달/드롭다운
+      primary: '#ffffff',      // 순백색 배경 (Apple 스타일)
+      secondary: '#f8f9fa',    // 미묘한 그레이 (섹션 구분)
+      tertiary: '#f1f3f4',     // 카드 배경
+      elevated: '#ffffff',     // 모달/드롭다운 (그림자로 구분)
+      glass: 'rgba(255, 255, 255, 0.8)'  // 글래스모피즘
     },
     surface: {
-      primary: '#2d2d44',      // 카드 표면
-      secondary: '#3a3b5c',    // 입력 필드
-      tertiary: '#4a4b6c',     // 비활성 요소
-      glass: 'rgba(45, 45, 68, 0.8)'  // 글래스모피즘
+      primary: '#ffffff',      // 카드 표면
+      secondary: '#f8f9fa',    // 입력 필드
+      tertiary: '#e9ecef',     // 비활성 요소
+      border: 'rgba(0, 0, 0, 0.06)'  // 미묘한 경계선
     },
     text: {
-      primary: '#ffffff',      // 메인 텍스트
-      secondary: '#b4b6cd',    // 보조 텍스트
-      tertiary: '#8b8ca8',     // 비활성 텍스트
-      accent: '#6366f1'        // 강조 텍스트
+      primary: '#1d1d1f',      // Apple 스타일 진한 그레이
+      secondary: '#6e6e73',    // 보조 텍스트
+      tertiary: '#86868b',     // 비활성 텍스트
+      accent: '#007aff'        // Apple 블루
     },
     accent: {
-      primary: '#6366f1',      // 메인 액센트 (인디고)
-      secondary: '#8b5cf6',    // 보조 액센트 (보라)
-      success: '#10b981',      // 성공 상태
-      warning: '#f59e0b',      // 경고 상태
-      error: '#ef4444',        // 오류 상태
-      info: '#3b82f6'          // 정보 상태
+      primary: '#007aff',      // Apple 블루
+      secondary: '#5856d6',    // Apple 퍼플
+      success: '#34c759',      // Apple 그린
+      warning: '#ff9500',      // Apple 오렌지
+      error: '#ff3b30',        // Apple 레드
+      info: '#5ac8fa'          // Apple 라이트 블루
+    }
+  },
+
+  // Premium Dark Theme (Apple Dark Mode Inspired)
+  dark: {
+    background: {
+      primary: '#000000',      // 순흑색 배경 (Apple Dark Mode)
+      secondary: '#1c1c1e',    // 다크 그레이
+      tertiary: '#2c2c2e',     // 카드 배경
+      elevated: '#3a3a3c',     // 모달/드롭다운
+      glass: 'rgba(28, 28, 30, 0.8)'  // 다크 글래스모피즘
+    },
+    surface: {
+      primary: '#1c1c1e',      // 카드 표면
+      secondary: '#2c2c2e',    // 입력 필드
+      tertiary: '#3a3a3c',     // 비활성 요소
+      border: 'rgba(255, 255, 255, 0.1)'  // 미묘한 경계선
+    },
+    text: {
+      primary: '#ffffff',      // 순백색 텍스트
+      secondary: '#ebebf5',    // 보조 텍스트
+      tertiary: '#ebebf599',   // 비활성 텍스트 (60% 투명도)
+      accent: '#0a84ff'        // Apple 다크모드 블루
+    },
+    accent: {
+      primary: '#0a84ff',      // Apple 다크모드 블루
+      secondary: '#5e5ce6',    // Apple 다크모드 퍼플
+      success: '#30d158',      // Apple 다크모드 그린
+      warning: '#ff9f0a',      // Apple 다크모드 오렌지
+      error: '#ff453a',        // Apple 다크모드 레드
+      info: '#64d2ff'          // Apple 다크모드 라이트 블루
     }
   },
   
-  // Holographic Spectrum (기존 유지하되 다크 테마에 최적화)
+  // Premium Holographic Spectrum (Apple 품질 기준)
   holographic: {
-    rainbow: 'linear-gradient(135deg, #ff0080, #ff8c00, #40e0d0, #da70d6, #98fb98)',
-    cosmic: 'linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c)',
-    aurora: 'linear-gradient(135deg, #a8edea, #fed6e3, #d299c2, #fef9d7)',
-    neon: 'linear-gradient(135deg, #12c2e9, #c471ed, #f64f59)',
-    gold: 'linear-gradient(135deg, #ffd700, #ffed4e, #ffc107)',
-    silver: 'linear-gradient(135deg, #c0c0c0, #e8e8e8, #b8b8b8)'
+    // 더욱 정교하고 고급스러운 그라데이션
+    rainbow: 'linear-gradient(135deg, #ff006e, #fb5607, #ffbe0b, #8338ec, #3a86ff)',
+    cosmic: 'linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe)',
+    aurora: 'linear-gradient(135deg, #a8edea, #fed6e3, #d299c2, #fef9d7, #85ffbd)',
+    neon: 'linear-gradient(135deg, #12c2e9, #c471ed, #f64f59, #ff9a9e, #fecfef)',
+    gold: 'linear-gradient(135deg, #ffd700, #ffed4e, #ffc107, #ffb300, #ff8f00)',
+    silver: 'linear-gradient(135deg, #c0c0c0, #e8e8e8, #b8b8b8, #d4d4d4, #f0f0f0)',
+    // KBO 팀 컬러 추가
+    kbo: {
+      lg: 'linear-gradient(135deg, #c41e3a, #ff69b4)',      // LG 트윈스
+      doosan: 'linear-gradient(135deg, #131230, #4169e1)',   // 두산 베어스
+      kt: 'linear-gradient(135deg, #000000, #ff0000)',       // KT 위즈
+      samsung: 'linear-gradient(135deg, #074ca1, #87ceeb)',  // 삼성 라이온즈
+      lotte: 'linear-gradient(135deg, #041e42, #c41e3a)',    // 롯데 자이언츠
+      kia: 'linear-gradient(135deg, #ea002c, #000000)',      // KIA 타이거즈
+      nc: 'linear-gradient(135deg, #315288, #c4a484)',       // NC 다이노스
+      hanwha: 'linear-gradient(135deg, #ff6600, #000000)',   // 한화 이글스
+      ssg: 'linear-gradient(135deg, #ce0e2d, #ffd700)',      // SSG 랜더스
+      kiwoom: 'linear-gradient(135deg, #570514, #ffd700)'    // 키움 히어로즈
+    }
   }
 }
 ```
 
-#### Typography System
+#### Apple-Inspired Typography System
 ```typescript
 const typography = {
   fontFamilies: {
-    primary: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-    secondary: '"Poppins", sans-serif',
-    korean: '"Pretendard", "Noto Sans KR", sans-serif',
-    mono: '"JetBrains Mono", "Fira Code", monospace'
+    // Apple 스타일 시스템 폰트 우선
+    primary: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, sans-serif',
+    secondary: '"SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    korean: '"Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", -apple-system, sans-serif',
+    mono: '"SF Mono", "Monaco", "Cascadia Code", "Roboto Mono", monospace',
+    display: '"SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif'  // 대형 제목용
   },
   
+  // Apple 스타일 타이포그래피 스케일
   scale: {
-    // Fluid typography scale
-    xs: 'clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem)',
-    sm: 'clamp(0.875rem, 0.8rem + 0.375vw, 1rem)',
-    base: 'clamp(1rem, 0.9rem + 0.5vw, 1.125rem)',
-    lg: 'clamp(1.125rem, 1rem + 0.625vw, 1.25rem)',
-    xl: 'clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem)',
-    '2xl': 'clamp(1.5rem, 1.3rem + 1vw, 2rem)',
-    '3xl': 'clamp(1.875rem, 1.6rem + 1.375vw, 2.5rem)',
-    '4xl': 'clamp(2.25rem, 1.9rem + 1.75vw, 3rem)',
-    '5xl': 'clamp(3rem, 2.5rem + 2.5vw, 4rem)'
+    // Apple Human Interface Guidelines 기반
+    caption2: '0.6875rem',    // 11px - 가장 작은 텍스트
+    caption1: '0.75rem',      // 12px - 캡션
+    footnote: '0.8125rem',    // 13px - 각주
+    subheadline: '0.9375rem', // 15px - 서브헤드라인
+    callout: '1rem',          // 16px - 콜아웃
+    body: '1.0625rem',        // 17px - 본문 (Apple 기본)
+    headline: '1.0625rem',    // 17px - 헤드라인
+    title3: '1.25rem',        // 20px - 제목 3
+    title2: '1.375rem',       // 22px - 제목 2
+    title1: '1.75rem',        // 28px - 제목 1
+    largeTitle: '2.125rem',   // 34px - 대형 제목
+    
+    // 추가 디스플레이 사이즈
+    display1: '3rem',         // 48px - 히어로 제목
+    display2: '4rem',         // 64px - 메가 제목
+    display3: '5rem'          // 80px - 초대형 제목
   },
   
+  // Apple 스타일 폰트 웨이트
   weights: {
-    light: 300,
-    normal: 400,
-    medium: 500,
-    semibold: 600,
-    bold: 700,
-    extrabold: 800
+    ultralight: 100,  // SF Pro Ultralight
+    thin: 200,        // SF Pro Thin
+    light: 300,       // SF Pro Light
+    regular: 400,     // SF Pro Regular
+    medium: 500,      // SF Pro Medium
+    semibold: 600,    // SF Pro Semibold
+    bold: 700,        // SF Pro Bold
+    heavy: 800,       // SF Pro Heavy
+    black: 900        // SF Pro Black
+  },
+  
+  // Apple 스타일 라인 하이트
+  lineHeights: {
+    tight: 1.2,       // 제목용
+    normal: 1.4,      // 일반 텍스트
+    relaxed: 1.6,     // 본문용
+    loose: 1.8        // 긴 텍스트용
+  },
+  
+  // Apple 스타일 레터 스페이싱
+  letterSpacing: {
+    tighter: '-0.02em',
+    tight: '-0.01em',
+    normal: '0',
+    wide: '0.01em',
+    wider: '0.02em',
+    widest: '0.1em'
   }
 }
 ```
@@ -946,41 +1076,156 @@ interface ComponentTokens {
 }
 ```
 
-#### Animation & Interaction System
+#### Apple-Inspired Animation & Interaction System
 ```typescript
 const animations = {
-  // Easing functions
+  // Apple 스타일 이징 함수 (iOS/macOS 기반)
   easing: {
-    default: 'cubic-bezier(0.4, 0, 0.2, 1)',
-    smooth: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-    bounce: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-    sharp: 'cubic-bezier(0.4, 0, 1, 1)'
+    // Apple의 표준 이징 커브들
+    standard: 'cubic-bezier(0.4, 0.0, 0.2, 1)',           // Material Design 표준
+    decelerate: 'cubic-bezier(0.0, 0.0, 0.2, 1)',         // 감속
+    accelerate: 'cubic-bezier(0.4, 0.0, 1, 1)',           // 가속
+    sharp: 'cubic-bezier(0.4, 0.0, 0.6, 1)',              // 날카로운
+    
+    // Apple 고유 이징 (iOS 스타일)
+    appleSmooth: 'cubic-bezier(0.25, 0.1, 0.25, 1)',      // 부드러운 Apple 스타일
+    appleSpring: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)', // 스프링 효과
+    appleBounce: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)', // 바운스 효과
+    
+    // 홀로그래픽 전용
+    holographic: 'cubic-bezier(0.23, 1, 0.32, 1)',        // 홀로그래픽 카드용
+    cardFlip: 'cubic-bezier(0.645, 0.045, 0.355, 1)'      // 카드 뒤집기용
   },
   
-  // Duration scale
+  // Apple 스타일 지속시간 (60fps 기준)
   duration: {
-    fast: '150ms',
-    normal: '250ms',
-    slow: '350ms',
-    slower: '500ms'
+    instant: '0ms',       // 즉시
+    fast: '200ms',        // 빠름 (12 frames)
+    normal: '300ms',      // 보통 (18 frames)
+    slow: '500ms',        // 느림 (30 frames)
+    slower: '800ms',      // 더 느림 (48 frames)
+    
+    // 특수 애니메이션용
+    cardFlip: '600ms',    // 카드 뒤집기
+    holographic: '1200ms', // 홀로그래픽 효과
+    pageTransition: '400ms' // 페이지 전환
   },
   
-  // Micro-interactions
+  // Apple 스타일 마이크로 인터랙션
   microInteractions: {
+    // 버튼 인터랙션 (Apple 스타일)
+    buttonPress: {
+      transform: 'scale(0.95)',
+      transition: `transform ${animations.duration.fast} ${animations.easing.appleSmooth}`,
+      filter: 'brightness(0.9)'
+    },
+    
     buttonHover: {
-      transform: 'translateY(-1px)',
-      transition: `all ${animations.duration.fast} ${animations.easing.smooth}`
+      transform: 'translateY(-1px) scale(1.02)',
+      transition: `all ${animations.duration.normal} ${animations.easing.appleSmooth}`,
+      boxShadow: '0 8px 25px rgba(0, 0, 0, 0.15)'
     },
+    
+    // 카드 인터랙션 (프리미엄 느낌)
     cardHover: {
-      transform: 'translateY(-4px) scale(1.02)',
-      transition: `all ${animations.duration.normal} ${animations.easing.smooth}`
+      transform: 'translateY(-8px) scale(1.03)',
+      transition: `all ${animations.duration.slow} ${animations.easing.appleSpring}`,
+      boxShadow: '0 20px 40px rgba(0, 0, 0, 0.2)',
+      filter: 'brightness(1.05)'
     },
+    
+    cardPress: {
+      transform: 'scale(0.98)',
+      transition: `transform ${animations.duration.fast} ${animations.easing.sharp}`
+    },
+    
+    // 홀로그래픽 효과
     holographicShimmer: {
-      animation: 'shimmer 2s linear infinite',
+      animation: 'shimmer 3s ease-in-out infinite',
       backgroundSize: '200% 200%'
+    },
+    
+    holographicGlow: {
+      animation: 'glow 2s ease-in-out infinite alternate',
+      filter: 'drop-shadow(0 0 20px rgba(99, 102, 241, 0.5))'
+    },
+    
+    // 페이지 전환 (Apple 스타일)
+    pageSlideIn: {
+      transform: 'translateX(100%)',
+      opacity: 0,
+      transition: `all ${animations.duration.pageTransition} ${animations.easing.appleSmooth}`
+    },
+    
+    // 모달 애니메이션 (iOS 스타일)
+    modalSlideUp: {
+      transform: 'translateY(100%)',
+      transition: `transform ${animations.duration.slow} ${animations.easing.appleSpring}`
+    },
+    
+    // 로딩 애니메이션
+    pulseLoading: {
+      animation: 'pulse 1.5s ease-in-out infinite'
     }
+  },
+  
+  // 고급 애니메이션 시퀀스
+  sequences: {
+    // 카드 등장 애니메이션
+    cardEntrance: [
+      { opacity: 0, transform: 'translateY(50px) scale(0.9)' },
+      { opacity: 1, transform: 'translateY(0) scale(1)' }
+    ],
+    
+    // 홀로그래픽 활성화
+    holographicActivation: [
+      { filter: 'brightness(1) saturate(1)' },
+      { filter: 'brightness(1.2) saturate(1.5)' },
+      { filter: 'brightness(1) saturate(1)' }
+    ]
   }
 }
+
+// Apple 스타일 CSS 키프레임
+const keyframes = `
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes glow {
+  from { filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.3)); }
+  to { filter: drop-shadow(0 0 30px rgba(99, 102, 241, 0.7)); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes holographicRotate {
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(0px); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(-30px); opacity: 0; }
+}
+
+/* Apple 스타일 페이드 인 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+`
 
 // CSS Keyframes
 const keyframes = `
@@ -1052,12 +1297,247 @@ interface LayoutPatterns {
 - **고대비 모드 지원**
 - **애니메이션 감소 옵션**
 
-### Performance Considerations
-- **이미지 최적화**: WebP, AVIF 포맷 지원
-- **레이지 로딩**: 카드 이미지 지연 로딩
-- **코드 스플리팅**: 라우트별 번들 분할
-- **CDN 활용**: 정적 자산 캐싱
-- **Progressive Enhancement**: 점진적 기능 향상
+### Apple-Inspired Premium UI Components
+
+#### Hero Section (애플 홈페이지 스타일)
+```typescript
+interface HeroSection {
+  layout: {
+    height: '100vh',
+    background: 'linear-gradient(135deg, #000000, #1c1c1e)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  
+  content: {
+    title: {
+      fontSize: typography.scale.display2,
+      fontWeight: typography.weights.bold,
+      color: colorSystem.dark.text.primary,
+      textAlign: 'center',
+      letterSpacing: typography.letterSpacing.tight,
+      lineHeight: typography.lineHeights.tight
+    },
+    
+    subtitle: {
+      fontSize: typography.scale.title1,
+      fontWeight: typography.weights.regular,
+      color: colorSystem.dark.text.secondary,
+      marginTop: spacing[6],
+      textAlign: 'center'
+    },
+    
+    cta: {
+      marginTop: spacing[12],
+      display: 'flex',
+      gap: spacing[4],
+      justifyContent: 'center'
+    }
+  },
+  
+  // 애플 스타일 패럴랙스 효과
+  parallax: {
+    backgroundCards: {
+      position: 'absolute',
+      animation: 'float 6s ease-in-out infinite',
+      opacity: 0.1
+    }
+  }
+}
+```
+
+#### Premium Card Component (애플 품질)
+```typescript
+interface PremiumCard {
+  container: {
+    background: colorSystem.light.surface.primary,
+    borderRadius: borderRadius['2xl'],
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+    border: `1px solid ${colorSystem.light.surface.border}`,
+    overflow: 'hidden',
+    transition: `all ${animations.duration.normal} ${animations.easing.appleSmooth}`
+  },
+  
+  hover: {
+    transform: 'translateY(-8px) scale(1.02)',
+    boxShadow: '0 20px 60px rgba(0, 0, 0, 0.25)',
+    borderColor: colorSystem.light.accent.primary
+  },
+  
+  content: {
+    padding: spacing[6],
+    display: 'flex',
+    flexDirection: 'column',
+    gap: spacing[4]
+  },
+  
+  // 홀로그래픽 오버레이
+  holographicOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%)',
+    transform: 'translateX(-100%)',
+    transition: `transform ${animations.duration.holographic} ${animations.easing.holographic}`
+  }
+}
+```
+
+#### Navigation System (애플 스타일)
+```typescript
+interface AppleNavigation {
+  header: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '60px',
+    background: 'rgba(255, 255, 255, 0.8)',
+    backdropFilter: 'blur(20px)',
+    borderBottom: `1px solid ${colorSystem.light.surface.border}`,
+    zIndex: 1000
+  },
+  
+  container: {
+    maxWidth: spacing.container['2xl'],
+    margin: '0 auto',
+    padding: `0 ${spacing[6]}`,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: '100%'
+  },
+  
+  logo: {
+    fontSize: typography.scale.title2,
+    fontWeight: typography.weights.bold,
+    color: colorSystem.light.text.primary
+  },
+  
+  menu: {
+    display: 'flex',
+    gap: spacing[8],
+    alignItems: 'center'
+  },
+  
+  menuItem: {
+    fontSize: typography.scale.body,
+    fontWeight: typography.weights.medium,
+    color: colorSystem.light.text.secondary,
+    textDecoration: 'none',
+    transition: `color ${animations.duration.fast} ${animations.easing.appleSmooth}`,
+    
+    hover: {
+      color: colorSystem.light.text.primary
+    }
+  }
+}
+```
+
+#### Premium Button System
+```typescript
+interface PremiumButtons {
+  primary: {
+    background: colorSystem.light.accent.primary,
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: borderRadius.xl,
+    padding: `${spacing[3]} ${spacing[6]}`,
+    fontSize: typography.scale.body,
+    fontWeight: typography.weights.semibold,
+    cursor: 'pointer',
+    transition: `all ${animations.duration.normal} ${animations.easing.appleSmooth}`,
+    
+    hover: {
+      background: 'linear-gradient(135deg, #007aff, #5856d6)',
+      transform: 'translateY(-2px)',
+      boxShadow: '0 8px 25px rgba(0, 122, 255, 0.3)'
+    },
+    
+    active: animations.microInteractions.buttonPress
+  },
+  
+  secondary: {
+    background: 'transparent',
+    color: colorSystem.light.accent.primary,
+    border: `2px solid ${colorSystem.light.accent.primary}`,
+    borderRadius: borderRadius.xl,
+    padding: `${spacing[3]} ${spacing[6]}`,
+    fontSize: typography.scale.body,
+    fontWeight: typography.weights.semibold,
+    
+    hover: {
+      background: colorSystem.light.accent.primary,
+      color: '#ffffff',
+      transform: 'translateY(-1px)'
+    }
+  },
+  
+  ghost: {
+    background: 'transparent',
+    color: colorSystem.light.text.primary,
+    border: 'none',
+    borderRadius: borderRadius.xl,
+    padding: `${spacing[3]} ${spacing[6]}`,
+    
+    hover: {
+      background: 'rgba(0, 122, 255, 0.1)',
+      color: colorSystem.light.accent.primary
+    }
+  }
+}
+```
+
+#### Gallery Layout (애플 포토 앱 스타일)
+```typescript
+interface AppleGallery {
+  container: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+    gap: spacing[6],
+    padding: spacing[8],
+    maxWidth: spacing.container['2xl'],
+    margin: '0 auto'
+  },
+  
+  // 마소니 레이아웃 (Pinterest/Apple Photos 스타일)
+  masonry: {
+    columns: {
+      mobile: 1,
+      tablet: 2,
+      desktop: 3,
+      wide: 4
+    },
+    gap: spacing[4],
+    breakInside: 'avoid'
+  },
+  
+  // 무한 스크롤 로딩
+  infiniteScroll: {
+    threshold: 0.1,
+    rootMargin: '100px',
+    loadingIndicator: {
+      display: 'flex',
+      justifyContent: 'center',
+      padding: spacing[8],
+      animation: animations.microInteractions.pulseLoading
+    }
+  }
+}
+```
+
+### Performance Considerations (애플 수준 최적화)
+- **60fps 보장**: 모든 애니메이션 60fps 유지
+- **레티나 디스플레이 지원**: 고해상도 이미지 최적화
+- **Progressive Loading**: 애플 스타일 점진적 로딩
+- **Metal Performance**: GPU 가속 활용
+- **Lazy Loading**: 뷰포트 기반 지연 로딩
+- **Code Splitting**: 라우트별 번들 최적화
+- **Image Optimization**: WebP, AVIF, HEIC 지원
+- **Caching Strategy**: 애플 수준 캐싱 전략
 
 ## Holographic Effect Core System
 
@@ -1120,56 +1600,138 @@ interface HolographicConfig {
 }
 ```
 
-#### Interactive Physics System
+#### Enhanced Realistic Card Physics System
 ```typescript
-interface CardPhysics {
-  // Svelte Spring 설정
+interface RealisticCardPhysics {
+  // Enhanced Svelte Spring 설정 for realistic card behavior
   springInteractSettings: {
-    stiffness: 0.066
-    damping: 0.25
+    stiffness: 0.1      // Reduced for smoother, more realistic movement
+    damping: 0.8        // Increased for better control
   }
   
   springPopoverSettings: {
-    stiffness: 0.033
-    damping: 0.45
+    stiffness: 0.15     // Faster response for pointer tracking
+    damping: 0.9        // High damping for precise control
   }
   
-  // 마우스 상호작용 계산
+  // 실물 카드 마우스 상호작용 계산
   calculatePointerPosition(event: MouseEvent | TouchEvent, element: HTMLElement): {
     absolute: { x: number, y: number }
     percent: { x: number, y: number }
     center: { x: number, y: number }
+    fromCenter: number  // Distance from center (0-1)
   }
   
-  // 3D 회전 계산
-  calculateRotation(centerOffset: { x: number, y: number }): {
-    x: number  // -17.5 ~ 17.5도
-    y: number  // -25 ~ 25도
+  // 실물 카드 3D 회전 계산 - Enhanced for realism
+  calculateRealisticRotation(centerOffset: { x: number, y: number }, fromCenter: number): {
+    x: number  // -35 ~ 35도 (increased range for dramatic effect)
+    y: number  // -35 ~ 35도 (increased range for dramatic effect)
+    intensity: number  // Dynamic intensity based on distance from center
   }
   
-  // 홀로그래픽 효과 위치 계산
-  calculateEffectPosition(percent: { x: number, y: number }): {
-    glare: { x: number, y: number, opacity: number }
+  // 실물 카드 Y축 회전 물리학
+  calculateSpinPhysics(currentRotation: number, velocity: number): {
+    rotation: number
+    velocity: number
+    isComplete: boolean
+  }
+  
+  // 홀로그래픽 효과 위치 계산 - Enhanced
+  calculateEffectPosition(percent: { x: number, y: number }, fromCenter: number): {
+    glare: { x: number, y: number, opacity: number, size: number }
     background: { x: number, y: number }
+    shadow: { x: number, y: number, blur: number, opacity: number }
+  }
+  
+  // 실물 카드 리프팅 효과
+  calculateCardLift(fromCenter: number, isHovered: boolean): {
+    translateZ: number  // Z축 이동 (카드 들어올리기)
+    scale: number       // 동적 스케일링
+    shadowIntensity: number  // 그림자 강도
   }
 }
 ```
 
-#### CSS Effect Implementation
+#### Enhanced Realistic Card CSS Implementation
 ```css
 .holographic-card {
-  /* 3D 변형 공간 설정 */
+  /* Enhanced 3D 변형 공간 설정 for realistic card physics */
   transform-style: preserve-3d;
-  transform: 
-    perspective(1000px)
-    rotateX(var(--rotate-x))
-    rotateY(var(--rotate-y))
-    scale(var(--card-scale))
-    translate3d(var(--translate-x), var(--translate-y), 0);
+  perspective: 1200px; /* Increased perspective for more dramatic 3D effect */
   
-  /* 성능 최적화 */
+  transform: 
+    perspective(1200px)
+    rotateX(var(--rotate-x))
+    rotateY(calc(var(--rotate-y) + var(--spin-rotation))) /* Y-axis spin support */
+    scale(var(--card-scale))
+    translate3d(var(--translate-x), var(--translate-y), var(--translate-z));
+  
+  /* Realistic card shadow that follows the tilt */
+  filter: drop-shadow(
+    calc(var(--rotate-y) * 0.1px) 
+    calc(var(--rotate-x) * 0.1px + 8px) 
+    calc(12px + var(--pointer-from-center) * 8px) 
+    rgba(0, 0, 0, calc(0.2 + var(--pointer-from-center) * 0.15))
+  );
+  
+  /* Enhanced performance and smoothness */
   will-change: transform, opacity, background-image, background-position;
+  transition: transform 0.08s cubic-bezier(0.23, 1, 0.32, 1); /* Smoother easing */
 }
+
+/* Realistic hover effects */
+.holographic-card:hover {
+  --translate-z: 20px; /* Lift the card up */
+  
+  /* Enhanced shadow on hover */
+  filter: drop-shadow(
+    calc(var(--rotate-y) * 0.15px) 
+    calc(var(--rotate-x) * 0.15px + 15px) 
+    calc(25px + var(--pointer-from-center) * 15px) 
+    rgba(0, 0, 0, calc(0.3 + var(--pointer-from-center) * 0.2))
+  );
+}
+
+/* Realistic floating animation when idle */
+.holographic-card:not(:hover) {
+  animation: realistic-card-float 8s ease-in-out infinite;
+}
+
+@keyframes realistic-card-float {
+  0%, 100% { 
+    transform: 
+      perspective(1200px)
+      rotateX(0deg) 
+      rotateY(0deg) 
+      translateY(0px) 
+      translateZ(0px);
+  }
+  25% { 
+    transform: 
+      perspective(1200px)
+      rotateX(0.5deg) 
+      rotateY(-0.3deg) 
+      translateY(-1px) 
+      translateZ(2px);
+  }
+  50% { 
+    transform: 
+      perspective(1200px)
+      rotateX(0deg) 
+      rotateY(0.5deg) 
+      translateY(-2px) 
+      translateZ(4px);
+  }
+  75% { 
+    transform: 
+      perspective(1200px)
+      rotateX(-0.3deg) 
+      rotateY(-0.2deg) 
+      translateY(-1px) 
+      translateZ(2px);
+  }
+}
+```
 
 .card__shine {
   /* 기본 반사 효과 */

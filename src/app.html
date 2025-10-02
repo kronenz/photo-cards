@@ -1,300 +1,214 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 	<head>
-
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<!-- meta -->
-		<title>야구 Cards CSS Holographic Effect</title>
-		<meta name="description" content="야구 카드 온라인" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 		
-		<link rel="canonical" href="https://30aa-210-113-225-166.ngrok-free.app" />
-		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
-		<meta name="thumbnail" content="thumb.png" />
-
-		<!-- <meta property="og:url" content="https://30aa-210-113-225-166.ngrok-free.app" />
-		<meta property="og:type" content="website" />
-		<meta property="og:title" content="야구 Cards CSS Holographic Effect" />
-		<meta property="og:description" content="야구 카드 온라인" />
-		<meta property="og:image" content="https://i.ibb.co/dPpfZ1W/Monosnap-Poke-mon-Cards-CSS-Holographic-Effect-2024-07-25-14-37-42.png" />
-
-		<meta name="twitter:title" content="야구 Cards CSS Holographic Effect">
-		<meta name="twitter:description" content="야구 카드 온라인">
-		<meta name="twitter:image" content="https://i.ibb.co/dPpfZ1W/Monosnap-Poke-mon-Cards-CSS-Holographic-Effect-2024-07-25-14-37-42.png">
-		<meta name="twitter:card" content="summary_large_image">
-		<meta name="twitter:site" content="@simeydotme"> -->
-
-		<!-- fonts -->
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,700;1,300;1,700&family=Roboto:ital,wght@0,300;0,700;1,300;1,700&display=swap"> 
+		<!-- Apple-Style Meta Tags -->
+		<title>KBO 홀로그래픽 카드 커뮤니티 - Apple 수준 프리미엄 플랫폼</title>
+		<meta name="description" content="Apple 수준의 프리미엄 디자인으로 제작된 KBO 야구 홀로그래픽 카드 제작 및 커뮤니티 플랫폼. 60fps 보장 홀로그래픽 효과와 감동적인 스토리텔링으로 야구의 영광스러운 순간을 영원히 보존하세요." />
+		<meta name="keywords" content="KBO, 야구카드, 홀로그래픽, 커뮤니티, Apple 디자인, 프리미엄, 카드 제작" />
+		<meta name="author" content="KBO 홀로그래픽 카드 커뮤니티" />
+		<meta name="robots" content="index, follow" />
 		
+		<!-- Apple-Specific Meta Tags -->
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<meta name="apple-mobile-web-app-title" content="KBO Cards" />
+		<meta name="format-detection" content="telephone=no" />
 		
-		<!-- href 속성의 값인 "%sveltekit.assets%/favicon.png"는 SvelteKit에서 제공하는 특별한 플레이스홀더입니다.
-		     이는 빌드 시 실제 favicon.png 파일의 경로로 대체됩니다. 이렇게 함으로써 개발 환경과 프로덕션 환경에서
-		     일관된 방식으로 파비콘을 참조할 수 있습니다. -->
-		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!-- Theme and Color Scheme -->
+		<meta name="theme-color" content="#000000" />
 		<meta name="color-scheme" content="dark light" />
+		
+		<!-- Favicon and Icons (Apple Style) -->
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<link rel="apple-touch-icon" href="%sveltekit.assets%/apple-touch-icon.png" />
+		<link rel="mask-icon" href="%sveltekit.assets%/safari-pinned-tab.svg" color="#000000" />
+		
+		<!-- Open Graph Meta Tags -->
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="KBO 홀로그래픽 카드 커뮤니티" />
+		<meta property="og:description" content="Apple 수준의 프리미엄 KBO 야구 홀로그래픽 카드 제작 플랫폼" />
+		<meta property="og:image" content="%sveltekit.assets%/og-image.png" />
+		<meta property="og:url" content="https://kbo-cards.com" />
+		<meta property="og:site_name" content="KBO 홀로그래픽 카드 커뮤니티" />
+		
+		<!-- Twitter Card Meta Tags -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content="KBO 홀로그래픽 카드 커뮤니티" />
+		<meta name="twitter:description" content="Apple 수준의 프리미엄 KBO 야구 홀로그래픽 카드 제작 플랫폼" />
+		<meta name="twitter:image" content="%sveltekit.assets%/twitter-image.png" />
+		
+		<!-- Apple SF Pro Fonts & Korean Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+		
+		<!-- Load Critical Resources -->
+		<link rel="stylesheet" href="/src/lib/styles/apple-design-system.css" />
+		<link rel="stylesheet" href="/holographic-effects.css" />
+		
+		<!-- DNS Prefetch for Performance -->
+		<link rel="dns-prefetch" href="//fonts.googleapis.com" />
+		<link rel="dns-prefetch" href="//fonts.gstatic.com" />
+		<link rel="dns-prefetch" href="//cdn.jsdelivr.net" />
+		
 		%sveltekit.head%
 
+		<!-- Apple-Style Critical CSS -->
 		<style>
-			body {
-				--bg-1: hsl(0, 0%, 30%);
-				--bg-2: hsl(206, 20%, 90%);
-				--bg-3: hsl(206, 20%, 80%);
-				--fg-1: hsl(0, 0%, 13%);
-				--fg-2: hsl(0, 0%, 20%);
-				--fg-2: hsl(0, 0%, 30%);
-				--link: hsl(208, 77%, 47%);
-				--link-hover: hsl(208, 77%, 55%);
-				--link-active: hsl(208, 77%, 40%);
-				--border-radius: 4px;
-				--font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
-					'Open Sans', 'Helvetica Neue', sans-serif;
-				--font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas,
-					'DejaVu Sans Mono', monospace;
-				background: var(--bg-1);
-				color: var(--fg-1);
-				font-family: var(--font);
-				line-height: 1.5;
-				width: 100%;
-				height: calc(100vh - 2rem);
-				
-			}
-
-			h1,
-			h2,
-			h3,
-			h4,
-			h5,
-			h6 {
-				font-weight: normal;
-				font-variant-numeric: tabular-nums;
-				line-height: 1.1;
-			}
-
-			:is(h1, h2, h3, h4, h5, h6, p) {
-				margin: 1rem 0.1rem;
-			}
-
-			label {
-				margin: 0.5rem 0.1rem;
-			}
-
-			:is(h1, h2, h3, h4, h5, h6, p, label):first-child {
-				margin-top: 0;
-			}
-
-			:is(h1, h2, h3, h4, h5, h6, p, label):last-child {
-				margin-bottom: 0;
-			}
-
-			a {
-				color: var(--link);
-			}
-
-			a:hover {
-				color: var(--link-hover);
-			}
-
-			a:active {
-				color: var(--link-active);
-			}
-
-			label {
-				display: flex;
-				gap: 0.5rem;
-				align-items: center;
-			}
-
-			label input {
-				margin: 0;
-			}
-
-			button,
-			input,
-			select {
-				font-family: inherit;
-				font-size: inherit;
-			}
-
-			button {
-				background: var(--link);
-				color: var(--bg-1);
-				padding: 0.5rem 1rem;
-				border: none;
-				border-radius: var(--border-radius);
-			}
-
-			button:hover {
-				background: var(--link-hover);
-			}
-
-			button:active {
-				background: var(--link-active);
-			}
-
-			:is(button, button:hover, button:active):disabled {
-				background: var(--link);
-				filter: grayscale(1);
-				opacity: 0.4;
-			}
-
-			input,
-			textarea,
-			select {
-				padding: 0.5rem;
-				border: 1px solid var(--bg-2);
-				border-radius: var(--border-radius);
+			/* Critical Apple-Style CSS for immediate rendering */
+			* {
 				box-sizing: border-box;
 			}
-
-			input,
-			textarea {
-				background: var(--bg-1);
-				color: inherit;
+			
+			html {
+				scroll-behavior: smooth;
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+				text-rendering: optimizeLegibility;
+				font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
 			}
-
-			select:not([multiple]) {
-				background: var(--bg-2);
-			}
-
-			textarea {
-				font-family: var(--font-mono);
-				font-size: 0.9rem;
-			}
-
-			form {
-				display: flex;
-				flex-direction: column;
-				gap: 1rem;
-				align-items: baseline;
-			}
-
-			ul:has(li):has(form) {
-				list-style: none;
+			
+			body {
+				margin: 0;
 				padding: 0;
+				font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard', 'Segoe UI', system-ui, sans-serif;
+				background-color: #000000;
+				color: #ffffff;
+				line-height: 1.5;
+				font-weight: 400;
+				min-height: 100vh;
+				overflow-x: hidden;
+				transition: background-color 300ms cubic-bezier(0.25, 0.1, 0.25, 1),
+				           color 300ms cubic-bezier(0.25, 0.1, 0.25, 1);
 			}
-
-			li form {
-				flex-direction: row;
-				gap: 0.5rem;
-				margin: 0.5rem 0;
-			}
-
-			nav {
-				position: relative;
-				display: flex;
-				gap: 1em;
-				padding: 1em;
-				background: var(--bg-2);
-				z-index: 2;
-				margin: 0 0 1em 0;
-				border-radius: var(--border-radius);
-			}
-
-			nav a {
-				text-decoration: none;
-			}
-
-			nav a[aria-current='true'] {
-				border-bottom: 2px solid;
-			}
-
-			ul:has(form) {
-				list-style: none;
-				padding: 0;
-			}
-
-			progress {
-				margin: 0.5rem 0;
-			}
-
-			progress:first-child {
-				margin-top: 0;
-			}
-
-			progress:last-child {
-				margin-bottom: 0;
-			}
-
-			.error {
-				color: red;
-			}
-
-			code {
-				background: var(--bg-2);
-				font-family: var(--font-mono);
-				font-size: 0.9em;
-				padding: 0.15rem 0.3rem;
-				border-radius: var(--border-radius);
-			}
-
-			ul.todos {
-				padding: 0;
-			}
-
-			ul.todos li:not(:has(> form)),
-			ul.todos li form {
-				position: relative;
+			
+			/* Apple-style loading state */
+			.loading {
 				display: flex;
 				align-items: center;
-				padding: 0.5em 0.5em 0.5em 1em;
-				margin: 0 0 0.5em 0;
-				gap: 0.5em;
-				border-radius: 5px;
-				user-select: none;
-				background: var(--bg-1);
-				filter: drop-shadow(2px 3px 6px rgba(0, 0, 0, 0.1));
-				transition: filter 0.2s, opacity 0.2s;
+				justify-content: center;
+				min-height: 100vh;
+				background: linear-gradient(135deg, #000000, #1c1c1e);
 			}
-
-			ul.todos .done {
-				filter: none;
-				opacity: 0.4;
+			
+			.loading-spinner {
+				width: 40px;
+				height: 40px;
+				border: 3px solid rgba(255, 255, 255, 0.1);
+				border-top: 3px solid #0a84ff;
+				border-radius: 50%;
+				animation: spin 1s linear infinite;
 			}
-
-			ul.todos button {
-				border: none;
-				background-color: transparent;
-				background-repeat: no-repeat;
-				background-position: 50% 50%;
-				background-size: 1rem 1rem;
-				cursor: pointer;
-				width: 3em;
-				height: 3em;
-				margin: -0.5em -0.5em -0.5em 0;
-				aspect-ratio: 1;
-				opacity: 0.5;
-				transition: opacity 0.2s;
+			
+			@keyframes spin {
+				0% { transform: rotate(0deg); }
+				100% { transform: rotate(360deg); }
 			}
-
-			ul.todos button:hover {
-				opacity: 1;
+			
+			/* Apple-style focus management */
+			:focus-visible {
+				outline: 2px solid #0a84ff;
+				outline-offset: 2px;
+				border-radius: 4px;
 			}
-
-			body.dark {
-				--bg-1: hsl(0, 0%, 18%);
-				--bg-2: hsl(0, 0%, 30%);
-				--bg-3: hsl(0, 0%, 40%);
-				--fg-1: hsl(0, 0%, 90%);
-				--fg-2: hsl(0, 0%, 70%);
-				--fg-3: hsl(0, 0%, 60%);
-				--link: hsl(206, 96%, 72%);
-				--link-hover: hsl(206, 96%, 78%);
-				--link-active: hsl(206, 96%, 64%);
+			
+			/* Apple-style selection */
+			::selection {
+				background-color: #0a84ff;
+				color: white;
+			}
+			
+			::-moz-selection {
+				background-color: #0a84ff;
+				color: white;
+			}
+			
+			/* Apple-style scrollbar */
+			::-webkit-scrollbar {
+				width: 8px;
+				height: 8px;
+			}
+			
+			::-webkit-scrollbar-track {
+				background: transparent;
+			}
+			
+			::-webkit-scrollbar-thumb {
+				background: rgba(255, 255, 255, 0.1);
+				border-radius: 4px;
+				transition: background 200ms cubic-bezier(0.25, 0.1, 0.25, 1);
+			}
+			
+			::-webkit-scrollbar-thumb:hover {
+				background: rgba(255, 255, 255, 0.2);
+			}
+			
+			/* Light mode support */
+			@media (prefers-color-scheme: light) {
+				body:not(.dark) {
+					background-color: #ffffff;
+					color: #1d1d1f;
+				}
+				
+				body:not(.dark) ::-webkit-scrollbar-thumb {
+					background: rgba(0, 0, 0, 0.1);
+				}
+				
+				body:not(.dark) ::-webkit-scrollbar-thumb:hover {
+					background: rgba(0, 0, 0, 0.2);
+				}
+			}
+			
+			/* Reduced motion support */
+			@media (prefers-reduced-motion: reduce) {
+				* {
+					animation-duration: 0.01ms !important;
+					animation-iteration-count: 1 !important;
+					transition-duration: 0.01ms !important;
+				}
+				
+				html {
+					scroll-behavior: auto;
+				}
+			}
+			
+			/* High contrast support */
+			@media (prefers-contrast: high) {
+				:focus-visible {
+					outline-width: 3px;
+				}
 			}
 		</style>
 	</head>
 	<body>
-		<div style="display: contents">%sveltekit.body%</div>
+		<!-- Apple-style loading screen -->
+		<div id="initial-loading" class="loading">
+			<div class="loading-spinner"></div>
+		</div>
+		
+		<!-- Main app container -->
+		<div id="app-container" style="display: none;">
+			%sveltekit.body%
+		</div>
 
-		<script>
-			const theme = new URL(window.location).searchParams.get('theme');
-
-			document.body.classList.remove('light', 'dark');
-			document.body.classList.add(theme || 'light');
-		</script>
+		<!-- Apple-style theme and performance management will be handled by Svelte components -->
+		
+		<!-- Apple-style fade in animation -->
+		<style>
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+					transform: translateY(20px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+		</style>
 	</body>
 </html>

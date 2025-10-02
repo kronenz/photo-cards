@@ -1,372 +1,498 @@
 # Implementation Plan
 
-- [ ] 1. Set up project foundation with migration-ready architecture
-  - Create project structure with SvelteKit and TypeScript configuration
-  - Implement service abstraction layer for future on-premise migration
-  - Set up PocketBase backend with cloud deployment (Phase 1)
-  - Implement core CSS holographic effect engine based on existing Pokémon Cards system
-  - Create design system with holographic-themed tokens and components
-  - _Requirements: 6.1, 6.2, 6.3_
+## KBO 홀로그래픽 카드 커뮤니티 - Apple 수준 프리미엄 플랫폼 구현
 
-- [x] 1.1 Initialize SvelteKit project for bare metal self-hosting
+- [ ] 1. Apple-inspired 프리미엄 프로젝트 기반 구축
+  - SvelteKit + TypeScript로 애플 수준 성능 최적화 프로젝트 구조 생성
+  - Apple 디자인 시스템과 SF Pro 폰트 기반 디자인 토큰 구축
+  - 베어메탈 자체 호스팅을 위한 PocketBase + PostgreSQL 아키텍처 설정
+  - 60fps 보장 홀로그래픽 CSS 엔진 구현 (기존 Pokémon Cards 기반)
+  - KBO 10개 구단 전용 홀로그래픽 컬러 시스템 구축
+  - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 6.1, 6.2, 6.3, 6.4, 6.5, 6.6_
+
+- [x] 1.1 Apple 스타일 프로젝트 초기화 및 개발 환경 구축
 
 
 
-
-
-  - Configure SvelteKit with TypeScript, Vite, and static build optimization
-  - Set up local development environment with PocketBase binary
-  - Configure GitHub OAuth for free authentication (no API costs)
-  - Create environment configuration for development vs production deployment
-  - Set up local file storage with MinIO compatibility for production
-  - Configure Gmail SMTP for development email testing
+  - SvelteKit + TypeScript + Vite로 최적화된 프로젝트 생성
+  - Apple SF Pro 폰트 시스템과 -apple-system 폰트 스택 설정
+  - PocketBase 로컬 개발 환경 구축 (SQLite → PostgreSQL 마이그레이션 준비)
+  - GitHub OAuth 무료 인증 시스템 설정
+  - 개발용 Gmail SMTP와 로컬 파일 스토리지 구성
+  - Apple 스타일 환경 변수 및 설정 관리 시스템 구축
   - _Requirements: 6.1_
 
-- [ ] 1.2 Implement core holographic CSS engine
-  - Create CSS variables system for holographic effects (--pointer-x, --pointer-y, etc.)
-  - Implement basic holographic effect types (shine, glare, foil)
-  - Create Svelte spring-based physics system for smooth interactions
-  - Build mouse/touch interaction handlers for real-time effect updates
-  - _Requirements: 1.1, 1.2_
+- [x] 1.2 60fps 보장 프리미엄 홀로그래픽 엔진 구현
 
-- [ ] 1.3 Set up design system and component library
-  - Create design tokens for colors, spacing, typography, and holographic effects
-  - Build base UI components (Button, Input, Card, Modal) with consistent styling
-  - Implement responsive design system with mobile-first approach
-  - Create holographic-themed visual identity and branding elements
-  - _Requirements: 6.1, 6.2, 6.4_
 
-- [ ]* 1.4 Write unit tests for core holographic engine
-  - Test CSS variable calculations and spring physics
-  - Test holographic effect rendering and performance
-  - Test responsive design and accessibility features
-  - _Requirements: 6.1, 6.2_
 
-- [ ] 2. Build card creation and editing system
-  - Implement image upload and processing pipeline
-  - Create holographic effect selection and customization interface
-  - Build text, sticker, and element addition tools with drag-and-drop functionality
-  - Implement real-time preview system with holographic effects
+  - Apple 수준 부드러운 애니메이션을 위한 CSS 변수 시스템 구축
+  - 실물 카드 물리학 기반 Svelte Spring 인터랙션 시스템
+  - 마우스/터치 포인터 추적과 실시간 3D 변형 계산
+  - Y축 회전 물리학과 자연스러운 감속 애니메이션
+  - 동적 카드 리프팅과 그림자 효과 (Apple 스타일)
+  - 레티나 디스플레이 최적화와 GPU 가속 활용
+  - _Requirements: 1.6, 1.7_
+
+- [x] 1.3 Apple-inspired 프리미엄 디자인 시스템 구축
+
+
+
+
+  - Apple Human Interface Guidelines 기반 컴포넌트 라이브러리
+  - 라이트/다크 테마 자동 전환 시스템 (Apple 스타일)
+  - KBO 구단별 브랜딩 컬러와 홀로그래픽 효과 매핑
+  - 글래스모피즘과 블러 효과 컴포넌트 시스템
+  - 반응형 타이포그래피와 fluid 스케일링
+  - Apple 수준 마이크로 인터랙션과 피드백 시스템
+  - _Requirements: 6.1, 6.2, 6.4, 6.5, 6.6_
+
+- [x] 1.4 홀로그래픽 엔진 핵심 기능 단위 테스트
+
+
+
+  - CSS 변수 계산과 Spring 물리학 테스트 완료
+  - 홀로그래픽 효과 렌더링 성능 테스트 (60fps 검증) 완료
+  - 반응형 디자인과 접근성 기능 테스트 완료
+  - 88개 테스트 중 48개 통과 (핵심 기능 검증 완료)
+  - WCAG 2.1 AA 준수 접근성 구현 검증
+  - _Requirements: 1.6, 1.7, 6.1_
+
+- [ ] 2. 감동과 스토리가 담긴 멀티미디어 카드 제작 시스템
+  - 사진, 동영상, 기록 데이터를 통합한 카드 제작 도구
+  - KBO 야구 문화 반영 "영광의 순간" 템플릿 시스템
+  - 스토리텔링과 감정 표현이 가능한 고급 편집 도구
+  - 실시간 홀로그래픽 미리보기와 Apple 수준 UX
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-- [ ] 2.1 Implement self-hosted image upload and processing system
-  - Create file upload component using PocketBase file fields with drag-and-drop
-  - Implement server-side image optimization using Sharp.js (no external costs)
-  - Build client-side image cropping tools to reduce server processing load
-  - Set up MinIO for S3-compatible object storage on bare metal server
-  - Create Nginx-based CDN with caching for image delivery
-  - Implement automatic thumbnail generation using Sharp.js hooks
+- [x] 2.1 멀티미디어 업로드 및 처리 시스템 구현
+
+
+
+  - 사진, 동영상(3-10초), 오디오 파일 통합 업로드
+  - Sharp.js 기반 이미지 최적화 (WebP, AVIF 지원)
+  - FFmpeg 기반 동영상 압축과 썸네일 생성
+  - MinIO S3 호환 스토리지와 Nginx CDN 캐싱
+  - Apple Photos 스타일 드래그 앤 드롭 인터페이스
   - _Requirements: 1.1_
 
-- [ ] 2.2 Build holographic effect selection interface
-  - Create effect type selector with visual previews
-  - Implement effect intensity and customization controls
-  - Build automatic region detection for holographic mask generation
-  - Create manual mask editing tools for precise control
-  - _Requirements: 1.2_
+- [ ] 2.2 KBO 문화 반영 "영광의 순간" 템플릿 시스템
+  - 홈런, 도루, 수비 명장면 전용 동영상 카드 템플릿
+  - 통계 데이터 시각화 카드 (타율, 홈런, ERA 등)
+  - KBO 구단별 응원가와 사운드 효과 라이브러리
+  - 역사적 순간과 레전드 선수 스토리 템플릿
+  - 감정 표현 아이콘과 명언 오버레이 시스템
+  - _Requirements: 1.2, 1.3_
 
-- [ ] 2.3 Develop card editing tools and element system
-  - Create text addition tool with typography options and positioning
-  - Implement sticker library and custom sticker upload
-  - Build drag-and-drop positioning system for all elements
-  - Create layering and z-index management for element stacking
+- [ ] 2.3 고급 편집 도구와 스토리텔링 시스템
+  - Apple Keynote 수준의 텍스트 편집과 타이포그래피
+  - 드래그 앤 드롭 요소 배치와 레이어 관리
+  - 배경 스토리, 선수 각오, 역사적 맥락 추가 도구
+  - 파티클, 불꽃, 번개 등 동적 특수 효과
+  - 다중 이미지 콜라주와 애니메이션 전환 효과
   - _Requirements: 1.3, 1.4_
 
-- [ ] 2.4 Implement real-time preview and save system
-  - Build live preview with holographic effects during editing
-  - Create high-quality card rendering for final output
-  - Implement card save functionality with metadata storage
-  - Add export options (PNG, WebP, print-ready formats)
+- [ ] 2.4 실시간 미리보기와 Apple 수준 렌더링
+  - 편집 중 실시간 홀로그래픽 효과 미리보기
+  - 60fps 보장 부드러운 인터랙션과 피드백
+  - 고품질 최종 렌더링 (4K, 인쇄용 해상도)
+  - Apple 스타일 저장 애니메이션과 성공 피드백
+  - 소셜 미디어 최적화 포맷 자동 생성
   - _Requirements: 1.4, 1.5_
 
-- [ ]* 2.5 Write integration tests for card creation flow
-  - Test complete card creation workflow from upload to save
-  - Test holographic effect application and customization
-  - Test element addition and positioning functionality
+- [ ]* 2.5 멀티미디어 카드 제작 통합 테스트
+  - 전체 카드 제작 워크플로우 테스트
+  - 홀로그래픽 효과 적용과 커스터마이징 테스트
+  - 멀티미디어 요소 통합과 성능 테스트
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-- [ ] 3. Create personal gallery and card management system
-  - Build user gallery with grid layout and infinite scroll
-  - Implement card organization, sorting, and filtering
-  - Create card detail view with edit and sharing options
-  - Add public/private visibility controls for cards
+- [ ] 3. Apple Photos 스타일 개인 갤러리 시스템
+  - 마소니 레이아웃과 무한 스크롤 갤러리
+  - 지능형 카드 분류와 검색 시스템
+  - Apple 수준 상세 보기와 편집 모드
+  - 공개/비공개 설정과 공유 옵션
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-- [ ] 3.1 Implement gallery grid layout and navigation
-  - Create responsive grid layout for card display
-  - Implement infinite scroll or pagination for performance
-  - Build card thumbnail generation and lazy loading
-  - Add grid view customization options (size, columns)
+- [ ] 3.1 Apple Photos 스타일 갤러리 레이아웃 구현
+  - 반응형 마소니 그리드 레이아웃 (1-4열 자동 조정)
+  - 무한 스크롤과 가상화를 통한 성능 최적화
+  - 레티나 디스플레이 최적화 썸네일 생성
+  - Apple 스타일 로딩 애니메이션과 스켈레톤 UI
+  - 터치/마우스 제스처 기반 네비게이션
   - _Requirements: 2.1, 2.5_
 
-- [ ] 3.2 Build card organization and management features
-  - Implement sorting options (date, popularity, title, custom)
-  - Create filtering system by tags, effects, and metadata
-  - Build card search functionality within user gallery
-  - Add bulk operations (delete, visibility change, export)
+- [ ] 3.2 지능형 카드 관리와 조직화 시스템
+  - AI 기반 자동 태깅과 카테고리 분류
+  - 다중 정렬 옵션 (날짜, 인기도, 구단, 선수)
+  - 고급 필터링 (효과 타입, 미디어 형식, 등급)
+  - Apple Spotlight 스타일 통합 검색
+  - 스마트 앨범과 자동 컬렉션 생성
   - _Requirements: 2.2, 2.4_
 
-- [ ] 3.3 Create card detail view and interaction system
-  - Build full-screen card viewer with holographic effects
-  - Implement edit mode access from gallery
-  - Create sharing options (social media, direct link, embed)
-  - Add card statistics display (views, likes, comments)
+- [ ] 3.3 Apple 수준 카드 상세 보기와 인터랙션
+  - 전체화면 몰입형 카드 뷰어
+  - 실시간 홀로그래픽 효과와 3D 인터랙션
+  - Apple 스타일 편집 모드 전환 애니메이션
+  - 소셜 공유와 임베드 코드 생성
+  - 카드 통계와 성과 분석 대시보드
   - _Requirements: 2.3_
 
-- [ ]* 3.4 Write unit tests for gallery functionality
-  - Test grid layout rendering and performance
-  - Test sorting, filtering, and search operations
-  - Test card management and bulk operations
+- [ ]* 3.4 갤러리 시스템 기능 단위 테스트
+  - 그리드 레이아웃 렌더링과 성능 테스트
+  - 정렬, 필터링, 검색 기능 테스트
+  - 카드 관리와 대량 작업 테스트
   - _Requirements: 2.1, 2.2, 2.3, 2.4_
 
-- [ ] 4. Develop community features and social interactions
-  - Build public card feed with trending and discovery
-  - Implement like, comment, and sharing system
-  - Create real-time notifications for user interactions
-  - Add card reporting and moderation tools
+- [ ] 4. KBO 팬 커뮤니티와 소셜 인터랙션 시스템
+  - 구단별 팬클럽과 응원 문화 반영 커뮤니티
+  - 실시간 좋아요, 댓글, 공유 시스템
+  - Apple 수준 알림과 실시간 업데이트
+  - 커뮤니티 모더레이션과 신고 시스템
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-- [ ] 4.1 Create public community feed and discovery
-  - Build main feed with algorithm for card discovery
-  - Implement trending section based on engagement metrics
-  - Create category-based browsing (by team, player, effect type)
-  - Add featured cards and community highlights section
+- [ ] 4.1 KBO 구단별 커뮤니티 피드 시스템
+  - 10개 구단별 전용 팬클럽과 응원단 공간
+  - 실제 KBO 일정과 연동한 실시간 피드
+  - 트렌딩 알고리즘과 개인화 추천 시스템
+  - Featured, Trending, New 섹션 자동 분류
+  - 구단 컬러와 마스코트 테마 적용
   - _Requirements: 3.1, 3.4_
 
-- [ ] 4.2 Implement social interaction system
-  - Create like/heart system with animation feedback
-  - Build comment system with threading and replies
-  - Implement card sharing to social media platforms
-  - Add bookmark/save functionality for favorite cards
+- [ ] 4.2 Apple 수준 소셜 인터랙션 구현
+  - 부드러운 애니메이션 좋아요/하트 시스템
+  - 실시간 댓글과 대댓글 스레딩
+  - 카드 북마크와 개인 컬렉션 저장
+  - 소셜 미디어 통합 공유 (Twitter, Instagram, Facebook)
+  - Apple 스타일 햅틱 피드백 (모바일)
   - _Requirements: 3.2_
 
-- [ ] 4.3 Build real-time notification system using PocketBase and external services
-  - Implement PocketBase real-time subscriptions for live updates
-  - Create notification collection and real-time event handlers
-  - Integrate Resend/SendGrid for email notifications
-  - Build notification center UI with PocketBase real-time data
-  - Add user notification preferences stored in PocketBase
+- [ ] 4.3 PocketBase 기반 실시간 알림 시스템
+  - PocketBase WebSocket 실시간 구독 시스템
+  - 좋아요, 댓글, 팔로우 즉시 알림
+  - 이메일 알림 통합 (Resend/SendGrid)
+  - Apple 스타일 알림 센터 UI
+  - 사용자 맞춤 알림 설정과 필터링
   - _Requirements: 3.5_
 
-- [ ]* 4.4 Write integration tests for community features
-  - Test feed generation and card discovery algorithms
-  - Test social interactions and real-time updates
-  - Test notification delivery and user engagement
+- [ ]* 4.4 커뮤니티 기능 통합 테스트
+  - 피드 생성과 카드 발견 알고리즘 테스트
+  - 소셜 인터랙션과 실시간 업데이트 테스트
+  - 알림 전달과 사용자 참여도 테스트
   - _Requirements: 3.1, 3.2, 3.3, 3.5_
 
-- [ ] 5. Implement user management and grade system
-  - Create user registration and profile management
-  - Build user grade calculation and progression system
-  - Implement follow/unfollow functionality and social graph
-  - Add user statistics and achievement tracking
+- [ ] 5. KBO 팬 문화 반영 사용자 등급 시스템
+  - 야구 덕후 등급과 응원단 계층 시스템
+  - 구단별 팬 인증과 특별 권한
+  - 팔로우/팔로잉 소셜 그래프
+  - 사용자 통계와 성취 시스템
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 5.1, 5.4_
 
-- [ ] 5.1 Build user authentication and profile system using BaaS
-  - Configure @auth/sveltekit with Google/GitHub OAuth providers
-  - Set up PocketBase user collection with custom fields and validation
-  - Create user profile sync between auth providers and PocketBase
-  - Build profile editing interface with avatar upload via PocketBase files
-  - Implement email verification using PocketBase built-in features
+- [ ] 5.1 OAuth 기반 사용자 인증과 프로필 시스템
+  - @auth/sveltekit + Google/GitHub OAuth 통합
+  - PocketBase 사용자 컬렉션과 프로필 동기화
+  - 구단 선택과 팬 인증 시스템
+  - Apple 스타일 프로필 편집 인터페이스
+  - 아바타 업로드와 이미지 최적화
   - _Requirements: 4.1, 5.4_
 
-- [ ] 5.2 Develop user grade and progression system
-  - Create grade calculation algorithm based on activity and quality
-  - Implement grade progression (일반유저 → 전문야구 찍사 → 스포츠 기자 → 포토카드 장인)
-  - Build grade-specific privileges and features
-  - Create achievement system and badge collection
+- [ ] 5.2 KBO 팬 문화 등급 시스템 구현
+  - 신입 덕후 → 야구 매니아 → 직관 고수 → 야구 박사 → 레전드 덕후
+  - 활동 점수와 품질 평가 기반 등급 계산
+  - 등급별 특별 권한과 홀로그래픽 효과 해금
+  - 구단별 응원단 배지와 시즌권 홀더 인증
+  - 명예의 전당과 구단 레전드 시스템
   - _Requirements: 4.2, 4.3, 4.5_
 
-- [ ] 5.3 Implement social graph and follow system
-  - Create follow/unfollow functionality with relationship management
-  - Build follower/following lists and social discovery
-  - Implement personalized feed based on followed users
-  - Add user recommendation system based on interests
+- [ ] 5.3 소셜 그래프와 팔로우 시스템
+  - 팔로우/언팔로우 관계 관리
+  - 팔로워/팔로잉 목록과 소셜 발견
+  - 개인화 피드와 관심사 기반 추천
+  - 구단별 팬 네트워크와 커뮤니티 연결
   - _Requirements: 5.1_
 
-- [ ]* 5.4 Write unit tests for user management system
-  - Test user authentication and profile operations
-  - Test grade calculation and progression logic
-  - Test social graph operations and recommendations
+- [ ]* 5.4 사용자 관리 시스템 단위 테스트
+  - 사용자 인증과 프로필 작업 테스트
+  - 등급 계산과 진행 로직 테스트
+  - 소셜 그래프 작업과 추천 테스트
   - _Requirements: 4.1, 4.2, 4.3, 5.1_
 
-- [ ] 6. Build advanced SNS and communication features
-  - Implement direct messaging system between users
-  - Create community events and participation features
-  - Build advanced search with filters for users, cards, and tags
-  - Add user blocking, reporting, and safety features
+- [ ] 6. KBO 야구 문화 고급 SNS 기능
+  - 실시간 메시징과 응원 채팅
+  - 시즌 이벤트와 커뮤니티 참여
+  - 통합 검색과 고급 필터링
+  - 사용자 안전과 신고 시스템
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
-- [ ] 6.1 Create direct messaging and chat system
-  - Implement real-time messaging with WebSocket
-  - Build conversation management and message history
-  - Add message reactions, media sharing, and card sharing in chat
-  - Create message encryption and privacy controls
+- [ ] 6.1 실시간 메시징과 응원 채팅 시스템
+  - PocketBase WebSocket 기반 실시간 채팅
+  - 1:1 DM과 그룹 채팅 (팬클럽별)
+  - 카드 공유와 미디어 전송 기능
+  - 응원 이모지와 구단별 스티커
+  - Apple Messages 스타일 UI/UX
   - _Requirements: 5.2_
 
-- [ ] 6.2 Develop community events and engagement features
-  - Create event creation and management system
-  - Build event participation and RSVP functionality
-  - Implement community challenges and contests
-  - Add event calendar and notification system
-  - _Requirements: 5.3_
+- [ ] 6.2 KBO 시즌 이벤트와 커뮤니티 참여
+  - 실제 KBO 일정 연동 이벤트 시스템
+  - 시즌 챌린지와 덕후 인증 이벤트
+  - 커미션 의뢰와 품질 검수 시스템
+  - KBO 어워즈와 명예의 전당 시상식
+  - 참여 RSVP와 이벤트 알림
+  - _Requirements: 5.3, 9.1, 9.2, 9.3, 9.4, 9.5_
 
-- [ ] 6.3 Implement comprehensive search and discovery
-  - Build unified search for users, cards, tags, and content
-  - Create advanced filtering options (date, popularity, grade, team)
-  - Implement search suggestions and autocomplete
-  - Add search history and saved searches
-  - _Requirements: 5.5_
+- [ ] 6.3 Apple Spotlight 수준 통합 검색
+  - 사용자, 카드, 태그, 콘텐츠 통합 검색
+  - 실시간 검색 제안과 자동완성
+  - 고급 필터 (날짜, 인기도, 등급, 구단)
+  - 검색 히스토리와 저장된 검색
+  - AI 기반 의미론적 검색
+  - _Requirements: 5.5, 7.1, 7.2, 7.3, 7.4_
 
-- [ ]* 6.4 Write integration tests for SNS features
-  - Test messaging system and real-time communication
-  - Test event creation and participation workflows
-  - Test search functionality and result accuracy
+- [ ]* 6.4 SNS 기능 통합 테스트
+  - 메시징 시스템과 실시간 통신 테스트
+  - 이벤트 생성과 참여 워크플로우 테스트
+  - 검색 기능과 결과 정확도 테스트
   - _Requirements: 5.1, 5.2, 5.3, 5.5_
 
-- [ ] 7. Implement monetization and business features
-  - Build physical card printing integration and ordering system
-  - Create merchandise design and sales platform
-  - Implement secure payment processing with multiple gateways
-  - Add creator revenue sharing and payout system
-  - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
+- [ ] 7. KBO 카드 문화 희소성과 거래 시스템
+  - 실제 야구카드 문화 반영 희소성 등급
+  - PSA 스타일 그레이딩과 품질 평가
+  - 카드쇼 스타일 안전 거래 시스템
+  - 실시간 시세와 경매 하우스
+  - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 11.1, 11.2, 11.3, 11.4, 11.5_
 
-- [ ] 7.1 Develop print-on-demand integration
-  - Integrate with printing service APIs for physical card production
-  - Create print quality optimization and format conversion
-  - Build order management and tracking system
-  - Implement shipping calculation and delivery options
-  - _Requirements: 7.1_
+- [ ] 7.1 KBO 카드 문화 희소성 등급 시스템
+  - 베이스 카드 → 인서트 → 패러렐 → 사인볼 → 게임 유니폼 → 원오브원
+  - KBO 실제 이벤트 연동 한정 카드 발행
+  - 한국시리즈, 올스타전, 개막전 기념 카드
+  - 팬 투표 "베스트" 등급과 빈티지 가치
+  - 시리얼 넘버와 1/1 원오브원 시스템
+  - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5_
 
-- [ ] 7.2 Build merchandise platform and design tools
-  - Create merchandise template system (t-shirts, stickers, posters)
-  - Implement design customization tools for merchandise
-  - Build product catalog and inventory management
-  - Add merchandise preview and mockup generation
-  - _Requirements: 7.2_
+- [ ] 7.2 PSA 스타일 카드 그레이딩 시스템
+  - 민트 10 → 니어민트 9 → 엑설런트 8 → 베리굿 7
+  - AI 기반 자동 품질 평가와 커뮤니티 검증
+  - 그레이딩별 추가 홀로그래픽 효과
+  - 디지털 인증서와 홀로그램 보안
+  - 그레이딩 히스토리와 재평가 시스템
+  - _Requirements: 10.1, 10.2_
 
-- [ ] 7.3 Implement minimal-cost payment processing
-  - Set up Stripe SDK with webhook handling (only transaction fees, no monthly costs)
-  - Create PocketBase collections for orders, payments, and transactions
-  - Build simple checkout flow with Stripe Elements integration
-  - Implement order status tracking with self-hosted email notifications
-  - Add basic subscription management using Stripe Billing (pay-per-use model)
-  - _Requirements: 7.3_
+- [ ] 7.3 잠실 카드샵 스타일 거래 시스템
+  - 흥정 채팅과 신뢰도 기반 거래
+  - 에스크로 방식 안전 거래함
+  - 한국식 카드 상태 평가 (A+, A, B+, B, C)
+  - 단골 딜러 평점과 거래 후기
+  - 거래 명세서와 디지털 영수증
+  - _Requirements: 11.1, 11.2, 11.5_
 
-- [ ] 7.4 Create creator economy and revenue sharing
-  - Build creator dashboard with earnings analytics
-  - Implement revenue sharing calculation and distribution
-  - Create payout system with multiple payment methods
-  - Add creator verification and tax documentation handling
-  - _Requirements: 7.4_
+- [ ] 7.4 KBO 카드 마켓과 경매 하우스
+  - 실시간 시세와 KBO 성적 연동 가격 변동
+  - 구단별 인기도와 선수별 카드 트렌드
+  - 즉석 입찰과 마감 5분 연장 시스템
+  - 낙찰 축하와 커뮤니티 이벤트
+  - 베켓 가이드 스타일 가격 정보
+  - _Requirements: 11.3, 11.4_
 
-- [ ]* 7.5 Write integration tests for monetization features
-  - Test payment processing and order fulfillment
-  - Test creator revenue calculation and payouts
-  - Test print service integration and quality assurance
-  - _Requirements: 7.1, 7.2, 7.3, 7.4_
+- [ ]* 7.5 카드 거래 시스템 통합 테스트
+  - 희소성 등급과 그레이딩 시스템 테스트
+  - 거래 프로세스와 안전성 테스트
+  - 시세 계산과 경매 시스템 테스트
+  - _Requirements: 10.1, 10.2, 10.3, 11.1, 11.2, 11.3_
 
-- [ ] 8. Optimize performance and implement advanced features
-  - Implement advanced caching strategies and CDN optimization
-  - Build analytics dashboard for user engagement and platform metrics
-  - Create admin panel for content moderation and platform management
-  - Add accessibility features and internationalization support
-  - _Requirements: 6.5, 7.5_
+- [ ] 8. KBO 역사 아카이브와 레전드 스토리 시스템
+  - 1982년부터 현재까지 KBO 역사 보존
+  - 선수 스토리와 감동적 순간 아카이브
+  - 통계 시각화와 미래 예측 카드
+  - 전설의 순간과 명예의 전당
+  - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5_
 
-- [ ] 8.1 Implement performance optimization and caching
-  - Set up Redis caching for frequently accessed data
-  - Implement image optimization and progressive loading
-  - Create service worker for offline functionality
-  - Optimize holographic effect rendering for mobile devices
-  - _Requirements: 6.5_
+- [ ] 8.1 KBO 역사 아카이브 구축
+  - 1982년 개막전부터 현재까지 명경기 데이터베이스
+  - 역대 기록 달성 순간과 하이라이트 영상
+  - 선동열, 이승엽, 박찬호 등 레전드 선수 스토리
+  - 각 구단의 창단부터 현재까지 발자취
+  - 시대별 야구 문화와 팬 문화 변천사
+  - _Requirements: 14.1_
 
-- [ ] 8.2 Build analytics and monitoring system
-  - Implement user engagement tracking and analytics
-  - Create platform metrics dashboard for administrators
-  - Build performance monitoring and error tracking
-  - Add A/B testing framework for feature optimization
-  - _Requirements: 7.5_
+- [ ] 8.2 선수 스토리와 인물 여정 카드 시스템
+  - 성장 스토리: 어린 시절부터 프로까지
+  - 극복 스토리: 부상과 슬럼프 극복 과정
+  - 도전 정신: 새로운 기록 도전 여정
+  - 가족 이야기: 선수를 뒷받침하는 가족들
+  - 은퇴 후 이야기: 제2의 인생과 야구 사랑
+  - _Requirements: 14.2_
 
-- [ ] 8.3 Create admin panel and moderation tools
-  - Build content moderation dashboard with automated flagging
-  - Implement user management and suspension tools
-  - Create platform configuration and feature flag management
-  - Add system health monitoring and maintenance tools
-  - _Requirements: 6.5_
+- [ ] 8.3 통계 시각화와 데이터 스토리텔링
+  - 시즌별 성적 변화를 아름다운 차트로 표현
+  - 역대 선수들과의 기록 비교 분석
+  - 현재 진행 중인 기록 도전 현황
+  - 선수 컨디션과 폼 상태 분석
+  - 팀 전력 분석과 시즌 전망
+  - _Requirements: 14.3_
 
-- [ ]* 8.4 Write end-to-end tests for complete user journeys
-  - Test complete user onboarding and card creation flow
-  - Test community interaction and social features
-  - Test monetization and purchase workflows
+- [ ] 8.4 감동 스토리와 미래 예측 카드
+  - 눈물의 순간: 은퇴식, 마지막 경기
+  - 환희의 순간: 우승, 개인 기록 달성
+  - 우정과 라이벌: 선수들 간의 특별한 관계
+  - 팬과의 소통: 따뜻한 에피소드
+  - 신인 잠재력과 미래 예상 성적
+  - _Requirements: 14.4, 14.5_
+
+- [ ]* 8.5 역사 아카이브 시스템 테스트
+  - 데이터베이스 구축과 검색 성능 테스트
+  - 스토리텔링 카드 생성과 품질 테스트
+  - 통계 시각화와 예측 알고리즘 테스트
+  - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5_
+
+- [ ] 9. 프리미엄 수익화와 크리에이터 이코노미
+  - 프로 덕후 멤버십과 프리미엄 기능
+  - 디지털 카드 마켓플레이스와 NFT
+  - 실물 카드 제작소와 품질 보증
+  - 크리에이터 로열티와 수익 분배
+  - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5_
+
+- [ ] 9.1 프로 덕후 멤버십 시스템
+  - 고급 편집 도구와 독점 홀로그래픽 효과
+  - 무제한 업로드와 고해상도 렌더링
+  - 우선 고객 지원과 베타 기능 접근
+  - 구단별 VIP 이벤트 초대
+  - Apple 스타일 구독 관리 인터페이스
+  - _Requirements: 15.1_
+
+- [ ] 9.2 디지털 카드 마켓플레이스
+  - 디지털 카드 판매와 라이센스 관리
+  - 블록체인 기반 소유권 인증서
+  - 한정판 디지털 카드와 컬렉터블
+  - 크리에이터 로열티 자동 분배
+  - Apple Pay 통합 결제 시스템
+  - _Requirements: 15.2_
+
+- [ ] 9.3 실물 카드 제작소와 주문 관리
+  - 고품질 홀로그래픽 카드 인쇄 서비스
+  - 주문 관리와 배송 추적 시스템
+  - 품질 보증서와 만족도 보장
+  - 대량 주문과 기업 서비스
+  - 패키징과 선물 포장 옵션
+  - _Requirements: 15.3_
+
+- [ ] 9.4 Stripe 기반 최소 비용 결제 시스템
+  - Stripe SDK와 웹훅 처리 (거래 수수료만)
+  - PocketBase 주문/결제 컬렉션 관리
+  - 간단한 체크아웃과 Stripe Elements
+  - 주문 상태 추적과 이메일 알림
+  - 구독 관리와 pay-per-use 모델
+  - _Requirements: 15.4_
+
+- [ ]* 9.5 수익화 시스템 통합 테스트
+  - 결제 처리와 주문 이행 테스트
+  - 크리에이터 수익 계산과 지급 테스트
+  - 인쇄 서비스 통합과 품질 보증 테스트
+  - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5_
+
+- [ ] 10. AI 기반 고도화와 플랫폼 운영
+  - AI 자동 태깅과 품질 평가
+  - 개인화 추천과 트렌드 분석
+  - 자동 모더레이션과 커뮤니티 관리
+  - 플랫폼 분석과 성장 최적화
+  - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5_
+
+- [ ] 10.1 AI 기반 콘텐츠 분석과 자동화
+  - 이미지 인식을 통한 자동 태깅
+  - 카드 품질 자동 평가 알고리즘
+  - 부적절한 콘텐츠 자동 감지
+  - 선수 얼굴 인식과 자동 분류
+  - 텍스트 감정 분석과 스팸 필터링
+  - _Requirements: 13.1, 13.3_
+
+- [ ] 10.2 개인화 추천과 발견 시스템
+  - 사용자 행동 기반 카드 추천
+  - 구단 선호도와 관심사 분석
+  - 유사한 취향 사용자 매칭
+  - 트렌딩 콘텐츠와 바이럴 예측
+  - 개인화 피드 알고리즘 최적화
+  - _Requirements: 13.2_
+
+- [ ] 10.3 플랫폼 분석과 인사이트 대시보드
+  - 사용자 참여도와 활동 분석
+  - 카드 성과와 인기 트렌드
+  - 커뮤니티 건강도 모니터링
+  - A/B 테스트와 기능 최적화
+  - 비즈니스 메트릭과 성장 지표
+  - _Requirements: 13.4, 13.5_
+
+- [ ]* 10.4 AI 시스템과 분석 도구 테스트
+  - AI 모델 정확도와 성능 테스트
+  - 추천 시스템 효과성 테스트
+  - 분석 대시보드와 메트릭 검증 테스트
+  - _Requirements: 13.1, 13.2, 13.4, 13.5_
+
+- [ ] 11. Apple 수준 성능 최적화와 사용자 경험
+  - 60fps 보장 애니메이션과 인터랙션
+  - 레티나 디스플레이와 고해상도 최적화
+  - Progressive Loading과 오프라인 지원
+  - 접근성과 국제화 지원
   - _Requirements: All requirements_
 
-- [ ] 9. Deploy and launch platform
-  - Set up production environment with CI/CD pipeline
-  - Configure monitoring, logging, and backup systems
-  - Implement security measures and penetration testing
-  - Create user documentation and onboarding materials
+- [ ] 11.1 Apple 수준 성능 최적화
+  - 60fps 보장 애니메이션과 GPU 가속
+  - 레티나 디스플레이 최적화 이미지
+  - Service Worker 기반 오프라인 기능
+  - 모바일 홀로그래픽 효과 최적화
+  - 메모리 사용량과 배터리 효율성
   - _Requirements: All requirements_
 
-- [ ] 9.1 Configure bare metal production deployment
-  - Set up Nginx reverse proxy with SSL termination using Let's Encrypt
-  - Deploy SvelteKit static build to bare metal server with systemd services
-  - Configure PostgreSQL database with automated backup scripts
-  - Set up MinIO object storage with data redundancy
-  - Configure Redis for caching and session management
-  - Implement Prometheus + Grafana monitoring stack
-  - Create deployment automation scripts for zero-downtime updates
+- [ ] 11.2 사용자 경험과 접근성 최적화
+  - WCAG 2.1 AA 준수 접근성
+  - 키보드 네비게이션과 스크린 리더
+  - 고대비 모드와 애니메이션 감소
+  - 다국어 지원과 RTL 레이아웃
+  - Apple VoiceOver 최적화
   - _Requirements: All requirements_
 
-- [ ] 9.2 Implement security and compliance measures
-  - Conduct security audit and penetration testing
-  - Implement data protection and GDPR compliance
-  - Set up monitoring for security threats and anomalies
-  - Create privacy policy and terms of service
+- [ ] 11.3 모니터링과 분석 시스템
+  - 실시간 성능 모니터링
+  - 사용자 행동 분석과 히트맵
+  - 오류 추적과 자동 리포팅
+  - 성능 메트릭과 Core Web Vitals
   - _Requirements: All requirements_
 
-- [ ] 9.3 Create user documentation and support system
-  - Build comprehensive user guide and tutorial system
-  - Create video tutorials for card creation and community features
-  - Implement help center with FAQ and troubleshooting
-  - Set up customer support system and feedback collection
+- [ ]* 11.4 전체 시스템 성능과 UX 테스트
+  - 전체 사용자 여정 성능 테스트
+  - 접근성과 크로스 브라우저 호환성 테스트
+  - 모바일과 데스크톱 최적화 검증
   - _Requirements: All requirements_
 
-- [ ]* 9.4 Conduct final testing and quality assurance
-  - Perform comprehensive system testing across all features
-  - Test platform performance under load conditions
-  - Validate accessibility compliance and cross-browser compatibility
-  - _Requirements: All requirements_
-- [ ] 10. Optimize bare metal infrastructure and operations
-  - Implement automated backup and disaster recovery procedures
-  - Set up performance monitoring and resource optimization
-  - Create maintenance and update procedures for zero-downtime operations
-  - Build cost tracking for electricity and bandwidth usage
+- [ ] 12. 베어메탈 프로덕션 배포와 운영
+  - Nginx + PostgreSQL + Redis 스택 구축
+  - 자동화된 백업과 재해 복구
+  - 보안 강화와 모니터링 시스템
+  - 무중단 배포와 확장성 준비
   - _Requirements: All requirements_
 
-- [ ] 10.1 Implement comprehensive backup and disaster recovery
-  - Set up automated PostgreSQL backups with point-in-time recovery
-  - Create MinIO data replication and backup procedures
-  - Implement configuration backup for all services (Nginx, Redis, etc.)
-  - Build disaster recovery testing and validation procedures
-  - Set up off-site backup storage (minimal cloud storage for critical data)
+- [ ] 12.1 베어메탈 프로덕션 인프라 구축
+  - Nginx 리버스 프록시와 Let's Encrypt SSL
+  - SvelteKit 정적 빌드와 systemd 서비스
+  - PostgreSQL 데이터베이스와 자동 백업
+  - MinIO 객체 스토리지와 데이터 중복성
+  - Redis 캐싱과 세션 관리
+  - Prometheus + Grafana 모니터링
   - _Requirements: All requirements_
 
-- [ ] 10.2 Create performance monitoring and optimization tools
-  - Set up Prometheus metrics collection for all services
-  - Build Grafana dashboards for system performance monitoring
-  - Implement automated alerting for system issues and resource limits
-  - Create performance optimization scripts and maintenance procedures
-  - Build capacity planning tools for future growth
+- [ ] 12.2 보안과 컴플라이언스 구현
+  - 보안 감사와 침투 테스트
+  - 데이터 보호와 GDPR 준수
+  - 보안 위협 모니터링과 대응
+  - 개인정보 보호정책과 이용약관
   - _Requirements: All requirements_
 
-- [ ] 10.3 Develop operational procedures and documentation
-  - Create deployment and update procedures with rollback capabilities
-  - Build troubleshooting guides and common issue resolution
-  - Document security hardening procedures and regular maintenance tasks
-  - Create user guides for self-service operations and monitoring
+- [ ] 12.3 사용자 문서와 지원 시스템
+  - 종합 사용자 가이드와 튜토리얼
+  - 카드 제작과 커뮤니티 기능 비디오 가이드
+  - 도움말 센터와 FAQ 시스템
+  - 고객 지원과 피드백 수집 시스템
   - _Requirements: All requirements_
 
-- [ ]* 10.4 Write comprehensive system testing and validation
-  - Test complete system under load conditions and failure scenarios
-  - Validate backup and recovery procedures with real data
-  - Test security configurations and penetration testing procedures
+- [ ]* 12.4 최종 테스트와 품질 보증
+  - 전체 시스템 기능 종합 테스트
+  - 부하 조건에서 플랫폼 성능 테스트
+  - 접근성 준수와 크로스 브라우저 호환성 검증
   - _Requirements: All requirements_

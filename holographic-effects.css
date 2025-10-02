@@ -1,65 +1,559 @@
-/* ===== HOLOGRAPHIC CARD EFFECTS ===== */
+/* ===== KBO 홀로그래픽 카드 커뮤니티 - 완벽한 홀로그래픽 효과 ===== */
+/* how2code.md 완벽 예제 기반 구현 */
 
-/* Basic Holo - Simple rainbow gradient */
-.card--basic .card__foil {
-  background: linear-gradient(
-    calc(var(--pointer-x) * 2deg + 115deg),
+:root {
+  --color1: rgb(0, 231, 255);
+  --color2: rgb(255, 0, 231);
+  --back: url(https://cdn2.bulbagarden.net/upload/1/17/Cardback.jpg);
+  
+  /* how2code.md 완벽 구현 - 포켓몬 카드 컬러 */
+  --charizard1: #fac;
+  --charizard2: #ddccaa;
+  --charizardfront: url(https://assets.codepen.io/13471/charizard-gx.webp);
+  --pika1: #54a29e;
+  --pika2: #a79d66;
+  --pikafront: url(https://assets.codepen.io/13471/pikachu-gx.webp);
+  --eevee1: #efb2fb;
+  --eevee2: #acc6f8;
+  --eeveefront: url(https://assets.codepen.io/13471/eevee-gx.webp);
+  --mewtwo1: #efb2fb;
+  --mewtwo2: #acc6f8;
+  --mewtwofront: url(https://assets.codepen.io/13471/mewtwo-gx.webp);
+  
+  /* KBO 구단별 컬러 */
+  --lg1: #c41e3a;
+  --lg2: #ff69b4;
+  --doosan1: #131230;
+  --doosan2: #4169e1;
+  --kt1: #000000;
+  --kt2: #ff0000;
+  --samsung1: #074ca1;
+  --samsung2: #87ceeb;
+  --lotte1: #041e42;
+  --lotte2: #c41e3a;
+  --kia1: #ea002c;
+  --kia2: #000000;
+  --nc1: #315288;
+  --nc2: #c4a484;
+  --hanwha1: #ff6600;
+  --hanwha2: #000000;
+  --ssg1: #ce0e2d;
+  --ssg2: #ffd700;
+  --kiwoom1: #570514;
+  --kiwoom2: #ffd700;
+}
+
+/* 홀로그래픽 카드 기본 구조 (how2code.md 완벽 구현) */
+.holographic-card {
+  /* how2code.md 완벽 사이즈 구현 */
+  width: 71.5vw;
+  height: 100vw;
+  
+  @media screen and (min-width: 600px) {
+    width: clamp(12.9vw, 61vh, 18vw);
+    height: clamp(18vw, 85vh, 25.2vw);
+  }
+  
+  position: relative;
+  overflow: hidden;
+  margin: 20px;
+  z-index: 10;
+  touch-action: none;
+  isolation: isolate;
+  
+  border-radius: 5% / 3.5%;
+  box-shadow: 
+    -5px -5px 5px -5px var(--color1), 
+    5px 5px 5px -5px var(--color2), 
+    -7px -7px 10px -5px transparent, 
+    7px 7px 10px -5px transparent, 
+    0 0 5px 0px rgba(255,255,255,0),
+    0 55px 35px -20px rgba(0, 0, 0, 0.5);
+  
+  transition: transform 0.5s ease, box-shadow 0.2s ease;
+  will-change: transform, filter;
+  
+  background-color: #040712;
+  background-image: var(--front);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  transform-origin: center;
+}
+
+.holographic-card:hover {
+  box-shadow: 
+    -20px -20px 30px -25px var(--color1), 
+    20px 20px 30px -25px var(--color2), 
+    -7px -7px 10px -5px var(--color1), 
+    7px 7px 10px -5px var(--color2), 
+    0 0 13px 4px rgba(255,255,255,0.3),
+    0 55px 35px -20px rgba(0, 0, 0, 0.5);
+}
+
+/* 홀로그래픽 효과 레이어 (how2code.md 완벽 구현) */
+.holographic-card:before,
+.holographic-card:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background-repeat: no-repeat;
+  opacity: .5;
+  mix-blend-mode: color-dodge;
+  transition: all .33s ease;
+}
+
+.holographic-card:before {
+  background-position: 50% 50%;
+  background-size: 300% 300%;
+  background-image: linear-gradient(
+    115deg,
     transparent 0%,
-    rgba(255, 0, 153, 0.6) 25%,
-    rgba(255, 204, 0, 0.7) 35%,
-    rgba(255, 0, 153, 0.6) 45%,
-    rgba(0, 255, 255, 0.7) 55%,
-    rgba(255, 0, 153, 0.6) 65%,
-    rgba(255, 204, 0, 0.7) 75%,
+    var(--color1) 25%,
+    transparent 47%,
+    transparent 53%,
+    var(--color2) 75%,
     transparent 100%
   );
-  background-size: 300% 300%;
-  animation: basic-shift 3s ease-in-out infinite;
+  opacity: .5;
+  filter: brightness(.5) contrast(1);
+  z-index: 1;
 }
 
-@keyframes basic-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+.holographic-card:after {
+  opacity: 1;
+  background-image: 
+    url("https://assets.codepen.io/13471/sparkles.gif"), 
+    url("https://assets.codepen.io/13471/holo.png"), 
+    linear-gradient(125deg, #ff008450 15%, #fca40040 30%, #ffff0030 40%, #00ff8a20 60%, #00cfff40 70%, #cc4cfa50 85%);
+  background-position: 50% 50%;
+  background-size: 160%;
+  background-blend-mode: overlay;
+  z-index: 2;
+  filter: brightness(1) contrast(1);
+  transition: all .33s ease;
+  mix-blend-mode: color-dodge;
+  opacity: .75;
 }
 
-/* Cosmic Holo - Galaxy effect */
-.card--cosmic .card__foil {
+.holographic-card.active:after,
+.holographic-card:hover:after {
+  filter: brightness(1) contrast(1);
+  opacity: 1;
+}
+
+.holographic-card.active,
+.holographic-card:hover {
+  animation: none;
+  transition: box-shadow 0.1s ease-out;
+}
+
+.holographic-card.active:before,
+.holographic-card:hover:before {
+  animation: none;
+  background-image: linear-gradient(
+    110deg,
+    transparent 25%,
+    var(--color1) 48%,
+    var(--color2) 52%,
+    transparent 75%
+  );
+  background-position: 50% 50%;
+  background-size: 250% 250%;
+  opacity: .88;
+  filter: brightness(.66) contrast(1.33);
+  transition: none;
+}
+
+.holographic-card.active:before,
+.holographic-card:hover:before,
+.holographic-card.active:after,
+.holographic-card:hover:after {
+  animation: none;
+  transition: none;
+}
+
+/* 자동 애니메이션 (how2code.md 완벽 구현) */
+.holographic-card.animated {
+  transition: none;
+  animation: holoCard 12s ease 0s 1;
+}
+
+.holographic-card.animated:before { 
+  transition: none;
+  animation: holoGradient 12s ease 0s 1;
+}
+
+.holographic-card.animated:after {
+  transition: none;
+  animation: holoSparkle 12s ease 0s 1;
+}
+
+/* ===== 키프레임 애니메이션 (how2code.md 완벽 구현) ===== */
+
+@keyframes holoSparkle {
+  0%, 100% {
+    opacity: .75; 
+    background-position: 50% 50%; 
+    filter: brightness(1.2) contrast(1.25);
+  }
+  5%, 8% {
+    opacity: 1; 
+    background-position: 40% 40%; 
+    filter: brightness(.8) contrast(1.2);
+  }
+  13%, 16% {
+    opacity: .5; 
+    background-position: 50% 50%; 
+    filter: brightness(1.2) contrast(.8);
+  }
+  35%, 38% {
+    opacity: 1; 
+    background-position: 60% 60%; 
+    filter: brightness(1) contrast(1);
+  }
+  55% {
+    opacity: .33; 
+    background-position: 45% 45%; 
+    filter: brightness(1.2) contrast(1.25);
+  }
+}
+
+@keyframes holoGradient {
+  0%, 100% {
+    opacity: 0.5;
+    background-position: 50% 50%;
+    filter: brightness(.5) contrast(1);
+  }
+  5%, 9% {
+    background-position: 100% 100%;
+    opacity: 1;
+    filter: brightness(.75) contrast(1.25);
+  }
+  13%, 17% {
+    background-position: 0% 0%;
+    opacity: .88;
+  }
+  35%, 39% {
+    background-position: 100% 100%;
+    opacity: 1;
+    filter: brightness(.5) contrast(1);
+  }
+  55% {
+    background-position: 0% 0%;
+    opacity: 1;
+    filter: brightness(.75) contrast(1.25);
+  }
+}
+
+@keyframes holoCard {
+  0%, 100% {
+    transform: rotateZ(0deg) rotateX(0deg) rotateY(0deg);
+  }
+  5%, 8% {
+    transform: rotateZ(0deg) rotateX(6deg) rotateY(-20deg);
+  }
+  13%, 16% {
+    transform: rotateZ(0deg) rotateX(-9deg) rotateY(32deg);
+  }
+  35%, 38% {
+    transform: rotateZ(3deg) rotateX(12deg) rotateY(20deg);
+  }
+  55% {
+    transform: rotateZ(-3deg) rotateX(-12deg) rotateY(-27deg);
+  }
+}
+
+/* ===== 3D Wrapper (how2code.md 완벽 구현) ===== */
+.three-d-wrapper {
+  perspective: 750px;
+  isolation: isolate;
+  transform: translate3d(0.1px, 0.1px, 0.1px);
+}
+
+/* ===== 특별 효과 (how2code.md 완벽 구현) ===== */
+
+/* Eevee 특별 효과 */
+.holographic-card.eevee {
+  --color1: #ec9bb6;
+  --color2: #ccac6f;
+  --color3: #69e4a5;
+  --color4: #8ec5d6;
+  --color5: #b98cce;
+  --front: var(--eeveefront);
+}
+
+.holographic-card.eevee:hover {
+  box-shadow: 
+    0 0 30px -5px white,
+    0 0 10px -2px white,
+    0 55px 35px -20px rgba(0, 0, 0, 0.5);
+}
+
+.holographic-card.eevee:hover:before,
+.holographic-card.eevee.active:before {
+  background-image: linear-gradient(
+    115deg,
+    transparent 20%,
+    var(--color1) 36%,
+    var(--color2) 43%,
+    var(--color3) 50%,
+    var(--color4) 57%,
+    var(--color5) 64%,
+    transparent 80%
+  );
+}
+
+/* 애니메이션 지연 (how2code.md 완벽 구현) */
+.cards .holographic-card:nth-child(2) {
+  animation-delay: 0.25s;
+}
+.cards .holographic-card:nth-child(2):before,
+.cards .holographic-card:nth-child(2):after {
+  animation-delay: 0.25s;
+}
+
+.cards .holographic-card:nth-child(3) {
+  animation-delay: 0.5s;
+}
+.cards .holographic-card:nth-child(3):before,
+.cards .holographic-card:nth-child(3):after {
+  animation-delay: 0.5s;
+}
+
+.cards .holographic-card:nth-child(4) {
+  animation-delay: 0.75s;
+}
+.cards .holographic-card:nth-child(4):before,
+.cards .holographic-card:nth-child(4):after {
+  animation-delay: 0.75s;
+}
+
+/* ===== KBO 구단별 홀로그래픽 효과 ===== */
+
+/* 포켓몬 카드 스타일 (how2code.md 완벽 구현) */
+.holographic-card.charizard {
+  --color1: var(--charizard1);
+  --color2: var(--charizard2);
+  --front: var(--charizardfront);
+}
+
+.holographic-card.pika {
+  --color1: var(--pika1);
+  --color2: var(--pika2);
+  --front: var(--pikafront);
+}
+
+.holographic-card.mewtwo {
+  --color1: var(--mewtwo1);
+  --color2: var(--mewtwo2);
+  --front: var(--mewtwofront);
+}
+
+/* KBO 구단별 홀로그래픽 효과 */
+.holographic-card.lg {
+  --color1: var(--lg1);
+  --color2: var(--lg2);
+}
+
+.holographic-card.doosan {
+  --color1: var(--doosan1);
+  --color2: var(--doosan2);
+}
+
+.holographic-card.kt {
+  --color1: var(--kt1);
+  --color2: var(--kt2);
+}
+
+.holographic-card.samsung {
+  --color1: var(--samsung1);
+  --color2: var(--samsung2);
+}
+
+.holographic-card.lotte {
+  --color1: var(--lotte1);
+  --color2: var(--lotte2);
+}
+
+.holographic-card.kia {
+  --color1: var(--kia1);
+  --color2: var(--kia2);
+}
+
+.holographic-card.nc {
+  --color1: var(--nc1);
+  --color2: var(--nc2);
+}
+
+.holographic-card.hanwha {
+  --color1: var(--hanwha1);
+  --color2: var(--hanwha2);
+}
+
+.holographic-card.ssg {
+  --color1: var(--ssg1);
+  --color2: var(--ssg2);
+}
+
+.holographic-card.kiwoom {
+  --color1: var(--kiwoom1);
+  --color2: var(--kiwoom2);
+}
+
+/* 기본 홀로그래픽 효과 */
+.holographic-card.basic {
+  --color1: rgb(0, 231, 255);
+  --color2: rgb(255, 0, 231);
+}
+
+.holographic-card.cosmic {
+  --color1: #667eea;
+  --color2: #764ba2;
+}
+
+.holographic-card.rainbow {
+  --color1: #ff0080;
+  --color2: #00e5ff;
+}
+
+.holographic-card.aurora {
+  --color1: #a8edea;
+  --color2: #fed6e3;
+}
+
+.holographic-card.secret {
+  --color1: #ffd700;
+  --color2: #ff8c00;
+}
+
+.holographic-card.galaxy {
+  --color1: #8a2be2;
+  --color2: #00bfff;
+}
+
+/* Basic Holo - 기본 효과 */
+.card--basic .card__foil {
   background: 
-    radial-gradient(
-      ellipse 600px 200px at var(--pointer-x) var(--pointer-y),
-      rgba(138, 43, 226, 0.8) 0%,
-      rgba(30, 144, 255, 0.6) 30%,
-      rgba(255, 20, 147, 0.4) 60%,
+    conic-gradient(
+      from calc(var(--reflection-angle, 45deg)) at var(--pointer-x, 50%) var(--pointer-y, 50%),
+      transparent 0%,
+      rgba(255, 0, 153, 0.6) 20%,
+      rgba(255, 204, 0, 0.7) 30%,
+      rgba(0, 255, 255, 0.6) 40%,
+      rgba(138, 43, 226, 0.5) 50%,
+      rgba(255, 20, 147, 0.6) 60%,
+      rgba(255, 204, 0, 0.7) 70%,
+      rgba(0, 255, 153, 0.5) 80%,
       transparent 100%
     ),
     linear-gradient(
-      calc(var(--pointer-x) * 2deg + 45deg),
-      transparent 0%,
-      rgba(0, 231, 255, 0.4) 20%,
-      rgba(255, 0, 231, 0.6) 40%,
-      rgba(255, 206, 84, 0.4) 60%,
-      rgba(138, 43, 226, 0.3) 80%,
-      transparent 100%
-    ),
-    conic-gradient(
-      from calc(var(--pointer-y) * 3.6deg),
-      rgba(138, 43, 226, 0.3) 0deg,
-      rgba(0, 191, 255, 0.3) 120deg,
-      rgba(255, 20, 147, 0.3) 240deg,
-      rgba(138, 43, 226, 0.3) 360deg
+      calc(var(--pointer-from-center-x, 0%) * 1deg + 120deg),
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 0.15) 50%,
+      rgba(255, 255, 255, 0.05) 100%
     );
-  background-size: 200% 200%, 400% 400%, 300% 300%;
-  animation: cosmic-pulse 4s ease-in-out infinite;
+  
+  background-size: 400% 400%, 200% 200%;
+  background-position: 
+    var(--pointer-x, 50%) var(--pointer-y, 50%),
+    center;
+  
+  /* Apple 스타일 부드러운 애니메이션 */
+  animation: basic-shimmer var(--animation-speed, 3s) cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
+  
+  /* 60fps 보장을 위한 최적화 */
+  transform: translateZ(0);
+  will-change: background-position, filter;
 }
 
-@keyframes cosmic-pulse {
+@keyframes basic-shimmer {
   0%, 100% { 
-    background-size: 200% 200%, 400% 400%, 300% 300%;
-    filter: hue-rotate(0deg) brightness(1);
+    background-position: 0% 50%, center;
+    filter: hue-rotate(0deg) brightness(var(--holographic-brightness, 1)) saturate(var(--holographic-saturation, 1.2));
+  }
+  33% { 
+    background-position: 50% 100%, center;
+    filter: hue-rotate(60deg) brightness(calc(var(--holographic-brightness, 1) * 1.1)) saturate(calc(var(--holographic-saturation, 1.2) * 1.2));
+  }
+  66% { 
+    background-position: 100% 0%, center;
+    filter: hue-rotate(120deg) brightness(calc(var(--holographic-brightness, 1) * 1.05)) saturate(calc(var(--holographic-saturation, 1.2) * 1.1));
+  }
+}
+
+/* Cosmic Holo - Apple 수준 우주 은하 효과 */
+.card--cosmic .card__foil {
+  background: 
+    /* 중앙 성운 효과 */
+    radial-gradient(
+      ellipse 800px 300px at var(--pointer-x, 50%) var(--pointer-y, 50%),
+      rgba(138, 43, 226, 0.9) 0%,
+      rgba(75, 0, 130, 0.7) 20%,
+      rgba(30, 144, 255, 0.6) 40%,
+      rgba(255, 20, 147, 0.4) 60%,
+      rgba(0, 191, 255, 0.2) 80%,
+      transparent 100%
+    ),
+    /* 나선 은하 효과 */
+    conic-gradient(
+      from calc(var(--pointer-from-center-x, 0%) * 2deg + var(--holographic-hue, 0deg)),
+      rgba(138, 43, 226, 0.4) 0deg,
+      rgba(75, 0, 130, 0.6) 60deg,
+      rgba(0, 191, 255, 0.5) 120deg,
+      rgba(30, 144, 255, 0.4) 180deg,
+      rgba(255, 20, 147, 0.6) 240deg,
+      rgba(138, 43, 226, 0.5) 300deg,
+      rgba(138, 43, 226, 0.4) 360deg
+    ),
+    /* 별빛 효과 */
+    linear-gradient(
+      calc(var(--pointer-from-center-y, 0%) * 1deg + 135deg),
+      transparent 0%,
+      rgba(255, 255, 255, 0.1) 20%,
+      rgba(0, 231, 255, 0.3) 40%,
+      rgba(255, 206, 84, 0.2) 60%,
+      rgba(255, 255, 255, 0.1) 80%,
+      transparent 100%
+    );
+  
+  background-size: 300% 300%, 400% 400%, 500% 500%;
+  background-position: 
+    var(--pointer-x, 50%) var(--pointer-y, 50%),
+    center,
+    var(--pointer-x, 50%) var(--pointer-y, 50%);
+  
+  /* Apple 스타일 우주적 애니메이션 */
+  animation: cosmic-swirl var(--animation-speed, 6s) cubic-bezier(0.23, 1, 0.32, 1) infinite;
+  
+  /* 60fps 보장 최적화 */
+  transform: translateZ(0);
+  will-change: background-position, filter, transform;
+}
+
+@keyframes cosmic-swirl {
+  0%, 100% { 
+    background-position: 0% 0%, center, 0% 0%;
+    filter: hue-rotate(var(--holographic-hue, 0deg)) brightness(var(--holographic-brightness, 1)) saturate(var(--holographic-saturation, 1.4));
+    transform: translateZ(0) rotate(0deg);
+  }
+  25% { 
+    background-position: 25% 75%, center, 25% 25%;
+    filter: hue-rotate(calc(var(--holographic-hue, 0deg) + 90deg)) brightness(calc(var(--holographic-brightness, 1) * 1.2)) saturate(calc(var(--holographic-saturation, 1.4) * 1.3));
+    transform: translateZ(0) rotate(0.5deg);
   }
   50% { 
-    background-size: 250% 250%, 500% 500%, 400% 400%;
-    filter: hue-rotate(60deg) brightness(1.2);
+    background-position: 50% 50%, center, 50% 100%;
+    filter: hue-rotate(calc(var(--holographic-hue, 0deg) + 180deg)) brightness(calc(var(--holographic-brightness, 1) * 1.1)) saturate(calc(var(--holographic-saturation, 1.4) * 1.5));
+    transform: translateZ(0) rotate(1deg);
+  }
+  75% { 
+    background-position: 75% 25%, center, 75% 75%;
+    filter: hue-rotate(calc(var(--holographic-hue, 0deg) + 270deg)) brightness(calc(var(--holographic-brightness, 1) * 1.15)) saturate(calc(var(--holographic-saturation, 1.4) * 1.2));
+    transform: translateZ(0) rotate(0.5deg);
   }
 }
 
@@ -188,53 +682,341 @@
   }
 }
 
-/* Galaxy Holo - Deep space effect */
-.card--galaxy .card__foil {
+/* ===== KBO 구단별 프리미엄 홀로그래픽 효과 ===== */
+
+/* LG 트윈스 - 레드&핑크 홀로그래픽 */
+.card--lg .card__foil {
   background: 
-    radial-gradient(
-      circle at calc(var(--pointer-x) * 0.8%) calc(var(--pointer-y) * 0.8%),
-      rgba(138, 43, 226, 0.8) 0%,
-      rgba(75, 0, 130, 0.6) 20%,
-      rgba(25, 25, 112, 0.4) 40%,
-      transparent 60%
-    ),
-    radial-gradient(
-      circle at calc(100% - var(--pointer-x) * 0.5%) calc(100% - var(--pointer-y) * 0.5%),
-      rgba(0, 191, 255, 0.6) 0%,
-      rgba(30, 144, 255, 0.4) 30%,
-      transparent 50%
-    ),
-    linear-gradient(
-      calc(var(--pointer-x) * 1deg + 135deg),
+    conic-gradient(
+      from calc(var(--reflection-angle, 45deg)) at var(--pointer-x, 50%) var(--pointer-y, 50%),
       transparent 0%,
-      rgba(138, 43, 226, 0.3) 25%,
-      rgba(255, 20, 147, 0.5) 50%,
-      rgba(0, 191, 255, 0.3) 75%,
+      rgba(196, 30, 58, 0.8) 20%,
+      rgba(255, 105, 180, 0.9) 40%,
+      rgba(255, 255, 255, 0.6) 50%,
+      rgba(255, 105, 180, 0.9) 60%,
+      rgba(196, 30, 58, 0.8) 80%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle at var(--pointer-x, 50%) var(--pointer-y, 50%),
+      rgba(255, 105, 180, 0.4) 0%,
+      rgba(196, 30, 58, 0.3) 50%,
       transparent 100%
     );
-  background-size: 300% 300%, 250% 250%, 400% 400%;
-  animation: galaxy-swirl 8s linear infinite;
+  
+  background-size: 350% 350%, 200% 200%;
+  animation: lg-twins-shine var(--animation-speed, 3s) cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
 }
 
-@keyframes galaxy-swirl {
-  0% { 
-    background-position: 0% 0%, 100% 100%, 0% 50%;
-    filter: hue-rotate(0deg);
-  }
-  25% { 
-    background-position: 25% 25%, 75% 75%, 25% 75%;
-    filter: hue-rotate(90deg);
+@keyframes lg-twins-shine {
+  0%, 100% { 
+    background-position: 0% 50%, center;
+    filter: hue-rotate(0deg) brightness(1.1) saturate(1.3);
   }
   50% { 
-    background-position: 50% 50%, 50% 50%, 50% 100%;
-    filter: hue-rotate(180deg);
+    background-position: 100% 50%, center;
+    filter: hue-rotate(15deg) brightness(1.2) saturate(1.4);
+  }
+}
+
+/* 두산 베어스 - 네이비&블루 홀로그래픽 */
+.card--doosan .card__foil {
+  background: 
+    conic-gradient(
+      from calc(var(--reflection-angle, 60deg)) at var(--pointer-x, 50%) var(--pointer-y, 50%),
+      transparent 0%,
+      rgba(19, 18, 48, 0.9) 15%,
+      rgba(65, 105, 225, 0.8) 35%,
+      rgba(135, 206, 235, 0.7) 50%,
+      rgba(65, 105, 225, 0.8) 65%,
+      rgba(19, 18, 48, 0.9) 85%,
+      transparent 100%
+    ),
+    linear-gradient(
+      calc(var(--pointer-from-center-x, 0%) * 2deg + 240deg),
+      rgba(19, 18, 48, 0.3) 0%,
+      rgba(65, 105, 225, 0.5) 50%,
+      rgba(135, 206, 235, 0.3) 100%
+    );
+  
+  background-size: 400% 400%, 300% 300%;
+  animation: doosan-bears-glow var(--animation-speed, 4s) cubic-bezier(0.23, 1, 0.32, 1) infinite;
+}
+
+@keyframes doosan-bears-glow {
+  0%, 100% { 
+    background-position: 0% 50%, center;
+    filter: hue-rotate(240deg) brightness(1.0) saturate(1.4);
+  }
+  50% { 
+    background-position: 100% 50%, center;
+    filter: hue-rotate(260deg) brightness(1.15) saturate(1.5);
+  }
+}
+
+/* KT 위즈 - 블랙&레드 홀로그래픽 */
+.card--kt .card__foil {
+  background: 
+    conic-gradient(
+      from calc(var(--reflection-angle, 90deg)) at var(--pointer-x, 50%) var(--pointer-y, 50%),
+      transparent 0%,
+      rgba(0, 0, 0, 0.9) 20%,
+      rgba(255, 0, 0, 0.8) 40%,
+      rgba(255, 255, 255, 0.7) 50%,
+      rgba(255, 0, 0, 0.8) 60%,
+      rgba(0, 0, 0, 0.9) 80%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse at var(--pointer-x, 50%) var(--pointer-y, 50%),
+      rgba(255, 0, 0, 0.5) 0%,
+      rgba(0, 0, 0, 0.3) 70%,
+      transparent 100%
+    );
+  
+  background-size: 450% 450%, 250% 250%;
+  animation: kt-wiz-flash var(--animation-speed, 2.5s) cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+}
+
+@keyframes kt-wiz-flash {
+  0%, 100% { 
+    background-position: 0% 50%, center;
+    filter: brightness(1.2) saturate(1.5) contrast(1.3);
+  }
+  50% { 
+    background-position: 100% 50%, center;
+    filter: brightness(1.4) saturate(1.7) contrast(1.5);
+  }
+}
+
+/* 삼성 라이온즈 - 블루&라이트블루 홀로그래픽 */
+.card--samsung .card__foil {
+  background: 
+    conic-gradient(
+      from calc(var(--reflection-angle, 30deg)) at var(--pointer-x, 50%) var(--pointer-y, 50%),
+      transparent 0%,
+      rgba(7, 76, 161, 0.8) 25%,
+      rgba(135, 206, 235, 0.7) 45%,
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(135, 206, 235, 0.7) 55%,
+      rgba(7, 76, 161, 0.8) 75%,
+      transparent 100%
+    ),
+    linear-gradient(
+      calc(var(--pointer-from-center-y, 0%) * 1deg + 210deg),
+      rgba(7, 76, 161, 0.2) 0%,
+      rgba(135, 206, 235, 0.4) 50%,
+      rgba(7, 76, 161, 0.2) 100%
+    );
+  
+  background-size: 300% 300%, 200% 200%;
+  animation: samsung-lions-wave var(--animation-speed, 3.5s) cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite;
+}
+
+@keyframes samsung-lions-wave {
+  0%, 100% { 
+    background-position: 0% 50%, center;
+    filter: hue-rotate(210deg) brightness(1.0) saturate(1.2);
+  }
+  50% { 
+    background-position: 100% 50%, center;
+    filter: hue-rotate(230deg) brightness(1.1) saturate(1.3);
+  }
+}
+
+/* 롯데 자이언츠 - 네이비&레드 홀로그래픽 */
+.card--lotte .card__foil {
+  background: 
+    conic-gradient(
+      from calc(var(--reflection-angle, 75deg)) at var(--pointer-x, 50%) var(--pointer-y, 50%),
+      transparent 0%,
+      rgba(4, 30, 66, 0.8) 20%,
+      rgba(196, 30, 58, 0.9) 40%,
+      rgba(255, 255, 255, 0.6) 50%,
+      rgba(196, 30, 58, 0.9) 60%,
+      rgba(4, 30, 66, 0.8) 80%,
+      transparent 100%
+    );
+  
+  background-size: 380% 380%;
+  animation: lotte-giants-pulse var(--animation-speed, 3.2s) cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
+}
+
+@keyframes lotte-giants-pulse {
+  0%, 100% { 
+    background-position: 0% 50%;
+    filter: brightness(1.1) saturate(1.3) contrast(1.2);
+    transform: scale(1);
+  }
+  50% { 
+    background-position: 100% 50%;
+    filter: brightness(1.2) saturate(1.4) contrast(1.3);
+    transform: scale(1.02);
+  }
+}
+
+/* Galaxy Holo - 개선된 깊은 우주 효과 */
+.card--galaxy .card__foil {
+  background: 
+    /* 중심 블랙홀 효과 */
+    radial-gradient(
+      circle at var(--pointer-x, 50%) var(--pointer-y, 50%),
+      rgba(138, 43, 226, 0.9) 0%,
+      rgba(75, 0, 130, 0.7) 15%,
+      rgba(25, 25, 112, 0.5) 30%,
+      rgba(0, 0, 0, 0.3) 50%,
+      transparent 70%
+    ),
+    /* 나선팔 효과 */
+    conic-gradient(
+      from calc(var(--pointer-from-center-x, 0%) * 3deg),
+      rgba(138, 43, 226, 0.4) 0deg,
+      rgba(0, 191, 255, 0.6) 72deg,
+      rgba(255, 20, 147, 0.5) 144deg,
+      rgba(30, 144, 255, 0.4) 216deg,
+      rgba(138, 43, 226, 0.6) 288deg,
+      rgba(138, 43, 226, 0.4) 360deg
+    ),
+    /* 별빛 산란 */
+    linear-gradient(
+      calc(var(--pointer-from-center-y, 0%) * 2deg + 135deg),
+      transparent 0%,
+      rgba(255, 255, 255, 0.1) 25%,
+      rgba(0, 191, 255, 0.3) 50%,
+      rgba(255, 255, 255, 0.1) 75%,
+      transparent 100%
+    );
+  
+  background-size: 400% 400%, 500% 500%, 600% 600%;
+  background-position: 
+    var(--pointer-x, 50%) var(--pointer-y, 50%),
+    center,
+    var(--pointer-x, 50%) var(--pointer-y, 50%);
+  
+  /* 우주적 회전 애니메이션 */
+  animation: galaxy-rotation var(--animation-speed, 12s) linear infinite;
+  
+  /* 60fps 보장 최적화 */
+  transform: translateZ(0);
+  will-change: background-position, filter, transform;
+}
+
+@keyframes galaxy-rotation {
+  0% { 
+    background-position: 0% 0%, center, 0% 50%;
+    filter: hue-rotate(0deg) brightness(1) saturate(1.3);
+    transform: translateZ(0) rotate(0deg);
+  }
+  25% { 
+    background-position: 25% 25%, center, 25% 75%;
+    filter: hue-rotate(90deg) brightness(1.1) saturate(1.4);
+    transform: translateZ(0) rotate(1deg);
+  }
+  50% { 
+    background-position: 50% 50%, center, 50% 100%;
+    filter: hue-rotate(180deg) brightness(1.05) saturate(1.5);
+    transform: translateZ(0) rotate(2deg);
   }
   75% { 
-    background-position: 75% 75%, 25% 25%, 75% 25%;
-    filter: hue-rotate(270deg);
+    background-position: 75% 75%, center, 75% 25%;
+    filter: hue-rotate(270deg) brightness(1.1) saturate(1.4);
+    transform: translateZ(0) rotate(1deg);
   }
   100% { 
-    background-position: 100% 100%, 0% 0%, 100% 50%;
-    filter: hue-rotate(360deg);
+    background-position: 100% 100%, center, 100% 50%;
+    filter: hue-rotate(360deg) brightness(1) saturate(1.3);
+    transform: translateZ(0) rotate(0deg);
+  }
+}
+/*
+ ===== EDGE/FIREFOX 호환성 폴백 (how2effect.md 가이드) ===== */
+
+/* 기본 홀로그래픽 레이어 설정 */
+.card__foil,
+.card__shine,
+.card__glare,
+.card__sparkles {
+  mix-blend-mode: color-dodge;
+  filter: saturate(140%) contrast(120%) brightness(110%);
+}
+
+/* Edge에서 plus-lighter 지원 시 폴백 */
+@supports (mix-blend-mode: plus-lighter) {
+  .card__foil.edge-fallback,
+  .card__shine.edge-fallback,
+  .card__glare.edge-fallback {
+    mix-blend-mode: plus-lighter;
+    filter: saturate(160%) contrast(130%) brightness(120%);
+  }
+}
+
+/* color-dodge 미지원 시 screen 폴백 */
+@supports not (mix-blend-mode: color-dodge) {
+  .card__foil,
+  .card__shine,
+  .card__glare {
+    mix-blend-mode: screen;
+    filter: saturate(140%) contrast(120%) brightness(110%);
+  }
+}
+
+/* 블렌드 모드 완전 미지원 시 최종 폴백 */
+@supports not (mix-blend-mode: screen) {
+  .card__foil,
+  .card__shine,
+  .card__glare {
+    mix-blend-mode: normal;
+    opacity: 0.8;
+    filter: saturate(200%) contrast(150%) brightness(130%) hue-rotate(var(--hue-shift, 0deg));
+  }
+}
+
+/* 성능 최적화 - 저사양 기기용 */
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  .card__foil,
+  .card__shine,
+  .card__glare,
+  .card__sparkles {
+    animation-duration: 6s !important;
+    filter: saturate(120%) contrast(110%) brightness(105%);
+  }
+  
+  .card__sparkles {
+    display: none; /* 모바일에서 sparkles 비활성화 */
+  }
+}
+
+/* 고대비 모드 지원 */
+@media (prefers-contrast: high) {
+  .card__foil,
+  .card__shine,
+  .card__glare {
+    filter: contrast(200%) brightness(150%);
+    mix-blend-mode: screen;
+  }
+}
+
+/* 색공간 차이 보정을 위한 브라우저별 조정 */
+@supports (-webkit-appearance: none) {
+  /* WebKit 기반 브라우저 (Chrome, Safari) */
+  .card__foil {
+    filter: saturate(130%) contrast(115%) brightness(108%);
+  }
+}
+
+@supports (-moz-appearance: none) {
+  /* Firefox */
+  .card__foil {
+    filter: saturate(150%) contrast(125%) brightness(112%);
+  }
+}
+
+/* Edge 전용 조정 */
+@supports (-ms-ime-align: auto) {
+  .card__foil,
+  .card__shine,
+  .card__glare {
+    mix-blend-mode: screen;
+    filter: saturate(160%) contrast(130%) brightness(115%);
   }
 }
