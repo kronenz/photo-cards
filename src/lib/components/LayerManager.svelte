@@ -1,611 +1,601 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import type { TemplateElement } from '../data/kboTemplates.js';
-  
-  // Props
-  export let elements: TemplateElement[] = [];
-  export let selectedElementId: string | null = null;
-  
-  // 레이어 타입 아이콘 매핑
-  const typeIcons: Record<string, string> = {
-    text: '📝',
-    image: '🖼️',
-    logo: '🏆',
-    decoration: '✨',
-    stats: '📊'
-  };
-  
-  // 레이어 타입 이름 매핑
-  const typeNames: Record<string, string> = {
-    text: '텍스트',
-    image: '이미지',
-    logo: '로고',
-    decoration: '장식',
-    stats: '통계'
-  };
-  
-  // 상태 관리
-  let draggedElement: TemplateElement | null = null;
+  import { flip } from 'svelte/animate';
+  import { fade, slide } from 'svelte/transition';
+
+  const dispatch = createEventDispatcher();
+
+  export let elements: any[] = [];
+  export let selectedElement: any = null;
+
+  let draggedElement: any = null;
   let dragOverIndex = -1;
-  
-  // 이벤트 디스패처
-  const dispatch = createEventDispatcher<{
-    elementSelect: string;
-    elementReorder: { fromIndex: number; toIndex: number };
-    elementToggleVisibility: string;
-    elementDuplicate: string;
-    elementDelete: string;
-    elementLock: string;
-  }>();
-  
-  // 요소 선택
-  function selectElement(elementId: string) {
-    dispatch('elementSelect', elementId);
+
+  // Sort elements by z-index for display
+  $: sortedElements = [...elements].sort((a, b) => b.zIndex - a.zIndex);
+
+  function selectElement(element: any) {
+    dispatch('elementSelected', element);
   }
-  
-  // 드래그 시작
-  function handleDragStart(event: DragEvent, element: TemplateElement, index: number) {
-    if (!event.dataTransfer) return;
+
+  function toggleVisibility(element: any) {
+    dispatch('elementUpdated', {
+      id: element.id,
+      updates: { visible: !element.visible }
+    });
+  }
+
+  function toggleLock(element: any) {
+    dispatch('elementUpdated', {
+      id: element.id,
+      updates: { locked: !element.locked }
+    });
+  }
+
+  function deleteElement(element: any) {
+    dispatch('elementDeleted', element.id);
+  }
+
+  function duplicateElement(element: any) {
+    dispatch('elementDuplicated', element.id);
+  }
+
+  function moveLayer(element: any, direction: 'up' | 'down' | 'top' | 'bottom') {
+    let newZIndex = element.zIndex;
     
+    switch (direction) {
+      case 'up':
+        newZIndex = Math.min(elements.length - 1, element.zIndex + 1);
+        break;
+      case 'down':
+        newZIndex = Math.max(0, element.zIndex - 1);
+        break;
+      case 'top':
+        newZIndex = elements.length - 1;
+        break;
+      case 'bottom':
+        newZIndex = 0;
+        break;
+    }
+
+    // Adjust other elements' z-index
+    const updatedElements = elements.map(el => {
+      if (el.id === element.id) {
+        return { ...el, zIndex: newZIndex };
+      } else if (direction === 'up' && el.zIndex === newZIndex) {
+        return { ...el, zIndex: el.zIndex - 1 };
+      } else if (direction === 'down' && el.zIndex === newZIndex) {
+        return { ...el, zIndex: el.zIndex + 1 };
+      }
+      return el;
+    });
+
+    dispatch('elementUpdated', {
+      id: element.id,
+      updates: { zIndex: newZIndex }
+    });
+  }
+
+  // Drag and drop functionality
+  function handleDragStart(event: DragEvent, element: any) {
     draggedElement = element;
-    event.dataTransfer.effectAllowed = 'move';
-    event.dataTransfer.setData('text/plain', element.id);
-    
-    // 드래그 이미지 커스터마이징
-    const dragImage = event.target as HTMLElement;
-    dragImage.style.opacity = '0.5';
+    event.dataTransfer!.effectAllowed = 'move';
   }
-  
-  // 드래그 오버
+
   function handleDragOver(event: DragEvent, index: number) {
     event.preventDefault();
-    if (!event.dataTransfer) return;
-    
-    event.dataTransfer.dropEffect = 'move';
+    event.dataTransfer!.dropEffect = 'move';
     dragOverIndex = index;
   }
-  
-  // 드래그 리브
+
   function handleDragLeave() {
     dragOverIndex = -1;
   }
-  
-  // 드롭
-  function handleDrop(event: DragEvent, dropIndex: number) {
+
+  function handleDrop(event: DragEvent, targetIndex: number) {
     event.preventDefault();
     
     if (!draggedElement) return;
+
+    const sourceIndex = sortedElements.findIndex(el => el.id === draggedElement.id);
     
-    const dragIndex = elements.findIndex(el => el.id === draggedElement!.id);
-    
-    if (dragIndex !== -1 && dragIndex !== dropIndex) {
-      dispatch('elementReorder', { fromIndex: dragIndex, toIndex: dropIndex });
+    if (sourceIndex !== targetIndex) {
+      // Reorder elements
+      const newElements = [...sortedElements];
+      const [movedElement] = newElements.splice(sourceIndex, 1);
+      newElements.splice(targetIndex, 0, movedElement);
+
+      // Update z-index for all elements
+      newElements.forEach((element, index) => {
+        dispatch('elementUpdated', {
+          id: element.id,
+          updates: { zIndex: newElements.length - 1 - index }
+        });
+      });
     }
-    
-    // 상태 초기화
-    draggedElement = null;
-    dragOverIndex = -1;
-    
-    // 드래그 이미지 복원
-    const draggedEl = event.target as HTMLElement;
-    draggedEl.style.opacity = '1';
-  }
-  
-  // 드래그 종료
-  function handleDragEnd(event: DragEvent) {
-    const draggedEl = event.target as HTMLElement;
-    draggedEl.style.opacity = '1';
+
     draggedElement = null;
     dragOverIndex = -1;
   }
-  
-  // 가시성 토글
-  function toggleVisibility(elementId: string) {
-    dispatch('elementToggleVisibility', elementId);
+
+  function getElementIcon(type: string): string {
+    switch (type) {
+      case 'text': return '📝';
+      case 'image': return '🖼️';
+      case 'shape': return '⭕';
+      case 'particle': return '✨';
+      case 'collage': return '🎨';
+      default: return '📄';
+    }
   }
-  
-  // 요소 복제
-  function duplicateElement(elementId: string) {
-    dispatch('elementDuplicate', elementId);
+
+  function getElementName(element: any): string {
+    switch (element.type) {
+      case 'text':
+        return element.data.content?.substring(0, 20) + (element.data.content?.length > 20 ? '...' : '') || '텍스트';
+      case 'image':
+        return element.data.alt || '이미지';
+      case 'shape':
+        return element.data.shape || '도형';
+      case 'particle':
+        return element.data.type || '파티클';
+      case 'collage':
+        return '콜라주';
+      default:
+        return element.type;
+    }
   }
-  
-  // 요소 삭제
-  function deleteElement(elementId: string) {
-    dispatch('elementDelete', elementId);
-  }
-  
-  // 요소 잠금
-  function lockElement(elementId: string) {
-    dispatch('elementLock', elementId);
-  }
-  
-  // Z-Index 기준으로 정렬된 요소들
-  $: sortedElements = [...elements].sort((a, b) => (b.style?.zIndex || 0) - (a.style?.zIndex || 0));
 </script>
 
 <div class="layer-manager">
-  <!-- 헤더 -->
-  <div class="manager-header">
-    <h3 class="manager-title">
-      <span class="title-icon">📚</span>
-      레이어 관리
-    </h3>
-    <div class="layer-count">
-      {elements.length}개 레이어
+  <div class="layer-header">
+    <h3>레이어</h3>
+    <div class="layer-controls">
+      <button
+        class="control-btn"
+        title="모든 레이어 표시"
+        on:click={() => {
+          elements.forEach(element => {
+            if (!element.visible) {
+              dispatch('elementUpdated', {
+                id: element.id,
+                updates: { visible: true }
+              });
+            }
+          });
+        }}
+      >
+        👁️
+      </button>
+      <button
+        class="control-btn"
+        title="모든 레이어 숨김"
+        on:click={() => {
+          elements.forEach(element => {
+            if (element.visible) {
+              dispatch('elementUpdated', {
+                id: element.id,
+                updates: { visible: false }
+              });
+            }
+          });
+        }}
+      >
+        🙈
+      </button>
     </div>
   </div>
-  
-  <!-- 레이어 목록 -->
+
   <div class="layer-list">
     {#each sortedElements as element, index (element.id)}
       <div
         class="layer-item"
-        class:selected={selectedElementId === element.id}
+        class:selected={selectedElement?.id === element.id}
         class:drag-over={dragOverIndex === index}
         draggable="true"
-        on:dragstart={(e) => handleDragStart(e, element, index)}
+        animate:flip={{ duration: 300 }}
+        transition:slide={{ duration: 200 }}
+        on:click={() => selectElement(element)}
+        on:dragstart={(e) => handleDragStart(e, element)}
         on:dragover={(e) => handleDragOver(e, index)}
         on:dragleave={handleDragLeave}
         on:drop={(e) => handleDrop(e, index)}
-        on:dragend={handleDragEnd}
-        on:click={() => selectElement(element.id)}
-        role="button"
-        tabindex="0"
-        on:keydown={(e) => e.key === 'Enter' && selectElement(element.id)}
       >
-        <!-- 드래그 핸들 -->
-        <div class="drag-handle">
-          <div class="drag-dots">
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
+        <div class="layer-content">
+          <div class="layer-info">
+            <span class="layer-icon">{getElementIcon(element.type)}</span>
+            <span class="layer-name">{getElementName(element)}</span>
+            {#if element.locked}
+              <span class="lock-indicator">🔒</span>
+            {/if}
           </div>
-        </div>
-        
-        <!-- 레이어 정보 -->
-        <div class="layer-info">
-          <div class="layer-main">
-            <span class="layer-icon">
-              {typeIcons[element.type] || '📄'}
-            </span>
-            <div class="layer-details">
-              <div class="layer-name">
-                {typeNames[element.type] || element.type}
-                {#if element.content?.text}
-                  <span class="layer-preview">
-                    "{element.content.text.substring(0, 20)}{element.content.text.length > 20 ? '...' : ''}"
-                  </span>
-                {/if}
-              </div>
-              <div class="layer-meta">
-                Z: {element.style?.zIndex || 0}
-                • {Math.round(element.position.width)}×{Math.round(element.position.height)}
-              </div>
-            </div>
-          </div>
-          
-          <!-- 레이어 컨트롤 -->
-          <div class="layer-controls">
+
+          <div class="layer-actions">
             <button
-              class="control-button visibility"
-              class:hidden={element.style?.opacity === 0}
-              on:click|stopPropagation={() => toggleVisibility(element.id)}
-              title={element.style?.opacity === 0 ? '보이기' : '숨기기'}
+              class="action-btn"
+              class:active={element.visible}
+              title={element.visible ? '숨기기' : '표시'}
+              on:click|stopPropagation={() => toggleVisibility(element)}
             >
-              {element.style?.opacity === 0 ? '👁️‍🗨️' : '👁️'}
+              {element.visible ? '👁️' : '🙈'}
             </button>
             
             <button
-              class="control-button lock"
-              class:locked={!element.constraints?.movable}
-              on:click|stopPropagation={() => lockElement(element.id)}
-              title={element.constraints?.movable ? '잠금' : '잠금 해제'}
+              class="action-btn"
+              class:active={element.locked}
+              title={element.locked ? '잠금 해제' : '잠금'}
+              on:click|stopPropagation={() => toggleLock(element)}
             >
-              {element.constraints?.movable ? '🔓' : '🔒'}
+              {element.locked ? '🔒' : '🔓'}
             </button>
-            
-            <div class="control-dropdown">
-              <button class="control-button more" title="더보기">
-                ⋯
+
+            <div class="dropdown">
+              <button class="action-btn dropdown-toggle" title="더보기">
+                ⋮
               </button>
               <div class="dropdown-menu">
-                <button
-                  class="dropdown-item"
-                  on:click|stopPropagation={() => duplicateElement(element.id)}
-                >
-                  <span class="item-icon">📋</span>
-                  복제
+                <button on:click|stopPropagation={() => duplicateElement(element)}>
+                  📋 복제
                 </button>
-                <button
-                  class="dropdown-item delete"
-                  on:click|stopPropagation={() => deleteElement(element.id)}
+                <button on:click|stopPropagation={() => moveLayer(element, 'top')}>
+                  ⬆️ 맨 앞으로
+                </button>
+                <button on:click|stopPropagation={() => moveLayer(element, 'up')}>
+                  ↗️ 앞으로
+                </button>
+                <button on:click|stopPropagation={() => moveLayer(element, 'down')}>
+                  ↘️ 뒤로
+                </button>
+                <button on:click|stopPropagation={() => moveLayer(element, 'bottom')}>
+                  ⬇️ 맨 뒤로
+                </button>
+                <hr>
+                <button 
+                  class="delete-btn"
+                  on:click|stopPropagation={() => deleteElement(element)}
                 >
-                  <span class="item-icon">🗑️</span>
-                  삭제
+                  🗑️ 삭제
                 </button>
               </div>
             </div>
           </div>
         </div>
-        
-        <!-- 선택 표시 -->
-        {#if selectedElementId === element.id}
-          <div class="selection-indicator"></div>
+
+        <!-- Layer properties preview -->
+        {#if selectedElement?.id === element.id}
+          <div class="layer-properties" transition:slide={{ duration: 200 }}>
+            <div class="property-row">
+              <span>위치:</span>
+              <span>{Math.round(element.x)}, {Math.round(element.y)}</span>
+            </div>
+            <div class="property-row">
+              <span>크기:</span>
+              <span>{Math.round(element.width)} × {Math.round(element.height)}</span>
+            </div>
+            <div class="property-row">
+              <span>회전:</span>
+              <span>{element.rotation}°</span>
+            </div>
+            <div class="property-row">
+              <span>투명도:</span>
+              <span>{Math.round(element.opacity * 100)}%</span>
+            </div>
+          </div>
         {/if}
       </div>
     {/each}
-    
-    <!-- 빈 상태 -->
+
     {#if elements.length === 0}
-      <div class="empty-state">
+      <div class="empty-state" transition:fade>
         <div class="empty-icon">📄</div>
-        <div class="empty-text">레이어가 없습니다</div>
-        <div class="empty-subtitle">요소를 추가하여 시작하세요</div>
+        <p>레이어가 없습니다</p>
+        <p class="empty-hint">캔버스에 요소를 추가해보세요</p>
       </div>
     {/if}
   </div>
-  
-  <!-- 레이어 액션 -->
-  <div class="layer-actions">
-    <div class="action-group">
-      <button class="action-button" title="모든 레이어 보이기">
-        👁️ 모두 보이기
-      </button>
-      <button class="action-button" title="모든 레이어 숨기기">
-        👁️‍🗨️ 모두 숨기기
-      </button>
+
+  <!-- Layer statistics -->
+  <div class="layer-stats">
+    <div class="stat-item">
+      <span class="stat-label">총 레이어:</span>
+      <span class="stat-value">{elements.length}</span>
     </div>
-    
-    <div class="action-group">
-      <button class="action-button" title="레이어 정렬">
-        📊 정렬
-      </button>
-      <button class="action-button" title="레이어 그룹화">
-        📁 그룹화
-      </button>
+    <div class="stat-item">
+      <span class="stat-label">표시:</span>
+      <span class="stat-value">{elements.filter(e => e.visible).length}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">잠금:</span>
+      <span class="stat-value">{elements.filter(e => e.locked).length}</span>
     </div>
   </div>
 </div>
 
 <style>
   .layer-manager {
-    width: 100%;
-    max-width: 300px;
-    background: var(--apple-surface-primary);
-    border: 1px solid var(--apple-surface-border);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  
-  /* 헤더 */
-  .manager-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
-    background: var(--apple-surface-secondary);
-    border-bottom: 1px solid var(--apple-surface-border);
+    flex-direction: column;
+    height: 100%;
+    background: rgba(28, 28, 30, 0.95);
+    color: #ffffff;
   }
-  
-  .manager-title {
+
+  .layer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .layer-header h3 {
+    margin: 0;
     font-size: 16px;
     font-weight: 600;
-    margin: 0;
-    color: var(--apple-text-primary);
+    color: #ffffff;
+  }
+
+  .layer-controls {
+    display: flex;
+    gap: 4px;
+  }
+
+  .control-btn {
+    padding: 4px 8px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+  }
+
+  .control-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .layer-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+  }
+
+  .layer-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    margin-bottom: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+  }
+
+  .layer-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .layer-item.selected {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: #6366f1;
+  }
+
+  .layer-item.drag-over {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: #6366f1;
+    border-style: dashed;
+  }
+
+  .layer-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+  }
+
+  .layer-info {
     display: flex;
     align-items: center;
     gap: 8px;
-  }
-  
-  .title-icon {
-    font-size: 0.9em;
-  }
-  
-  .layer-count {
-    font-size: 12px;
-    color: var(--apple-text-secondary);
-    background: var(--apple-surface-tertiary);
-    padding: 2px 8px;
-    border-radius: 10px;
-  }
-  
-  /* 레이어 목록 */
-  .layer-list {
-    max-height: 400px;
-    overflow-y: auto;
-  }
-  
-  .layer-item {
-    position: relative;
-    display: flex;
-    align-items: center;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--apple-surface-border);
-    cursor: pointer;
-    transition: all var(--apple-duration-fast) var(--apple-easing-smooth);
-    user-select: none;
-  }
-  
-  .layer-item:hover {
-    background: var(--apple-surface-secondary);
-  }
-  
-  .layer-item.selected {
-    background: var(--apple-accent-blue);
-    color: white;
-  }
-  
-  .layer-item.selected .layer-meta {
-    color: rgba(255, 255, 255, 0.8);
-  }
-  
-  .layer-item.drag-over {
-    background: var(--apple-accent-green);
-    transform: scale(1.02);
-  }
-  
-  /* 드래그 핸들 */
-  .drag-handle {
-    margin-right: 12px;
-    cursor: grab;
-  }
-  
-  .drag-handle:active {
-    cursor: grabbing;
-  }
-  
-  .drag-dots {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2px;
-    width: 12px;
-    height: 12px;
-  }
-  
-  .dot {
-    width: 2px;
-    height: 2px;
-    background: var(--apple-text-tertiary);
-    border-radius: 50%;
-  }
-  
-  .layer-item.selected .dot {
-    background: rgba(255, 255, 255, 0.6);
-  }
-  
-  /* 레이어 정보 */
-  .layer-info {
-    flex: 1;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    min-width: 0;
-  }
-  
-  .layer-main {
-    display: flex;
-    align-items: center;
-    gap: 12px;
     flex: 1;
     min-width: 0;
   }
-  
+
   .layer-icon {
     font-size: 16px;
     flex-shrink: 0;
   }
-  
-  .layer-details {
-    flex: 1;
-    min-width: 0;
-  }
-  
+
   .layer-name {
     font-size: 14px;
     font-weight: 500;
-    color: var(--apple-text-primary);
-    margin-bottom: 2px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    color: #ebebf5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  
-  .layer-item.selected .layer-name {
-    color: white;
-  }
-  
-  .layer-preview {
+
+  .lock-indicator {
     font-size: 12px;
-    font-weight: 400;
     opacity: 0.7;
-    font-style: italic;
   }
-  
-  .layer-meta {
-    font-size: 11px;
-    color: var(--apple-text-tertiary);
-  }
-  
-  /* 레이어 컨트롤 */
-  .layer-controls {
+
+  .layer-actions {
     display: flex;
     align-items: center;
     gap: 4px;
   }
-  
-  .control-button {
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+  .action-btn {
+    padding: 4px 6px;
     background: transparent;
     border: none;
     border-radius: 4px;
+    color: #86868b;
     cursor: pointer;
     font-size: 12px;
-    transition: background var(--apple-duration-fast) var(--apple-easing-smooth);
+    transition: all 0.2s ease;
   }
-  
-  .control-button:hover {
-    background: var(--apple-surface-tertiary);
+
+  .action-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
   }
-  
-  .layer-item.selected .control-button:hover {
-    background: rgba(255, 255, 255, 0.2);
+
+  .action-btn.active {
+    color: #6366f1;
   }
-  
-  .control-button.hidden {
-    opacity: 0.5;
-  }
-  
-  .control-button.locked {
-    color: var(--apple-accent-red);
-  }
-  
-  /* 드롭다운 */
-  .control-dropdown {
+
+  .dropdown {
     position: relative;
   }
-  
-  .control-dropdown:hover .dropdown-menu {
-    display: block;
+
+  .dropdown-toggle {
+    font-size: 14px;
+    font-weight: bold;
   }
-  
+
   .dropdown-menu {
-    display: none;
     position: absolute;
     top: 100%;
     right: 0;
-    background: var(--apple-surface-primary);
-    border: 1px solid var(--apple-surface-border);
+    background: rgba(28, 28, 30, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
-    box-shadow: var(--apple-shadow-lg);
-    z-index: 1000;
+    padding: 8px;
     min-width: 120px;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
   }
-  
-  .dropdown-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+
+  .dropdown:hover .dropdown-menu {
+    display: block;
+  }
+
+  .dropdown-menu button {
+    display: block;
     width: 100%;
     padding: 8px 12px;
-    background: none;
+    background: transparent;
     border: none;
-    text-align: left;
-    font-size: 13px;
-    color: var(--apple-text-primary);
+    border-radius: 4px;
+    color: #ebebf5;
     cursor: pointer;
-    transition: background var(--apple-duration-fast) var(--apple-easing-smooth);
+    font-size: 12px;
+    text-align: left;
+    transition: background 0.2s ease;
   }
-  
-  .dropdown-item:hover {
-    background: var(--apple-surface-secondary);
+
+  .dropdown-menu button:hover {
+    background: rgba(255, 255, 255, 0.1);
   }
-  
-  .dropdown-item.delete {
-    color: var(--apple-accent-red);
+
+  .dropdown-menu .delete-btn {
+    color: #ff453a;
   }
-  
-  .dropdown-item.delete:hover {
-    background: var(--apple-accent-red);
-    color: white;
+
+  .dropdown-menu .delete-btn:hover {
+    background: rgba(255, 69, 58, 0.1);
   }
-  
-  .item-icon {
+
+  .dropdown-menu hr {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 4px 0;
+  }
+
+  .layer-properties {
+    padding: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .property-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
     font-size: 12px;
   }
-  
-  /* 선택 표시 */
-  .selection-indicator {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: var(--apple-accent-blue);
+
+  .property-row span:first-child {
+    color: #86868b;
   }
-  
-  /* 빈 상태 */
-  .empty-state {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--apple-text-secondary);
-  }
-  
-  .empty-icon {
-    font-size: 32px;
-    margin-bottom: 12px;
-    opacity: 0.5;
-  }
-  
-  .empty-text {
-    font-size: 16px;
+
+  .property-row span:last-child {
+    color: #ebebf5;
     font-weight: 500;
-    margin-bottom: 4px;
-    color: var(--apple-text-primary);
   }
-  
-  .empty-subtitle {
-    font-size: 14px;
-  }
-  
-  /* 레이어 액션 */
-  .layer-actions {
-    padding: 16px;
-    background: var(--apple-surface-secondary);
-    border-top: 1px solid var(--apple-surface-border);
+
+  .empty-state {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    color: #86868b;
   }
-  
-  .action-group {
+
+  .empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+
+  .empty-state p {
+    margin: 4px 0;
+    font-size: 14px;
+  }
+
+  .empty-hint {
+    font-size: 12px !important;
+    opacity: 0.7;
+  }
+
+  .layer-stats {
+    padding: 12px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .stat-item {
     display: flex;
-    gap: 8px;
-  }
-  
-  .action-button {
-    flex: 1;
-    padding: 8px 12px;
-    background: var(--apple-surface-primary);
-    border: 1px solid var(--apple-surface-border);
-    border-radius: 6px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
     font-size: 12px;
-    font-weight: 500;
-    color: var(--apple-text-secondary);
-    cursor: pointer;
-    transition: all var(--apple-duration-fast) var(--apple-easing-smooth);
   }
-  
-  .action-button:hover {
-    background: var(--apple-accent-blue);
-    color: white;
-    border-color: var(--apple-accent-blue);
+
+  .stat-label {
+    color: #86868b;
   }
-  
-  /* 반응형 디자인 */
-  @media (max-width: 768px) {
-    .layer-manager {
-      max-width: 100%;
-    }
-    
-    .layer-item {
-      padding: 16px 12px;
-    }
-    
-    .layer-name {
-      font-size: 16px;
-    }
-    
-    .control-button {
-      width: 32px;
-      height: 32px;
-      font-size: 14px;
-    }
+
+  .stat-value {
+    color: #ebebf5;
+    font-weight: 600;
+  }
+
+  /* Scrollbar styling */
+  .layer-list::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .layer-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+  }
+
+  .layer-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+  }
+
+  .layer-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
   }
 </style>

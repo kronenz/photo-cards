@@ -91,6 +91,18 @@
   - Apple Photos 스타일 드래그 앤 드롭 인터페이스
 
 
+
+
+
+
+
+
+
+
+
+
+
+
   - _Requirements: 1.1_
 
 

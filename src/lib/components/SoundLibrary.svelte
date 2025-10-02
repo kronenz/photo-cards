@@ -513,6 +513,7 @@
     outline: none;
     cursor: pointer;
     -webkit-appearance: none;
+    appearance: none;
   }
   
   .volume-slider::-webkit-slider-thumb {
@@ -526,6 +527,7 @@
   }
   
   .volume-slider::-moz-range-thumb {
+    -moz-appearance: none;
     appearance: none;
     width: 16px;
     height: 16px;

@@ -2,21 +2,26 @@
   import { createEventDispatcher, onMount } from 'svelte';
   import { browser } from '$app/environment';
   import type { GloryMomentTemplate, TemplateElement, KBOTeam } from '../data/kboTemplates.js';
-  import { KBO_TEAMS } from '../data/kboTemplates.js';
+  import AdvancedTextEditor from './AdvancedTextEditor.svelte';
   
   // Props
   export let template: GloryMomentTemplate;
   export let selectedTeam: KBOTeam | null = null;
   export let userImage: string | null = null;
-  export let editable = true;
   
   // 상태 관리
-  let editorContainer: HTMLDivElement;
-  let selectedElement: TemplateElement | null = null;
+  let canvasElement: HTMLElement;
+  let selectedElementId: string | null = null;
   let isDragging = false;
-  let dragOffset = { x: 0, y: 0 };
-  let templateData = { ...template };
-  let elementValues: Record<string, string> = {};
+  let isResizing = false;
+  let dragStartPos = { x: 0, y: 0 };
+  let elementStartPos = { x: 0, y: 0 };
+  let resizeHandle = '';
+  let canvasRect: DOMRect;
+  let scale = 1;
+  let showGrid = true;
+  let snapToGrid = true;
+  let gridSize = 10;
   
   // 이벤트 디스패처
   const dispatch = createEventDispatcher<{
@@ -28,906 +33,743 @@
   onMount(() => {
     if (!browser) return;
     
-    // 초기 요소 값 설정
-    templateData.layout.elements.forEach(element => {
-      if (element.content?.text) {
-        elementValues[element.id] = element.content.text;
-      }
-    });
-    
-    // 키보드 이벤트 리스너
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Delete' && selectedElement && selectedElement.constraints?.editable) {
-        deleteElement(selectedElement);
-      }
-      if (e.key === 'Escape') {
-        selectedElement = null;
-        dispatch('elementSelected', null);
-      }
-    };
-    
-    document.addEventListener('keydown', handleKeyDown);
+    updateCanvasRect();
+    window.addEventListener('resize', updateCanvasRect);
     
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('resize', updateCanvasRect);
     };
   });
   
-  // 요소 선택
-  function selectElement(element: TemplateElement, event?: MouseEvent) {
-    if (!editable) return;
-    
-    selectedElement = element;
-    dispatch('elementSelected', element);
-    
-    if (event) {
-      event.stopPropagation();
+  // 캔버스 크기 업데이트
+  function updateCanvasRect() {
+    if (canvasElement) {
+      canvasRect = canvasElement.getBoundingClientRect();
     }
   }
   
-  // 요소 드래그 시작
-  function startDrag(element: TemplateElement, event: MouseEvent) {
-    if (!editable || !element.constraints?.movable) return;
-    
-    isDragging = true;
-    selectedElement = element;
-    
-    const rect = editorContainer.getBoundingClientRect();
-    const elementRect = (event.target as HTMLElement).getBoundingClientRect();
-    
-    dragOffset = {
-      x: event.clientX - elementRect.left,
-      y: event.clientY - elementRect.top
-    };
+  // 요소 선택
+  function selectElement(elementId: string | null) {
+    selectedElementId = elementId;
+    const element = elementId ? template.layout.elements.find(el => el.id === elementId) : null;
+    dispatch('elementSelected', element);
+  }
+  
+  // 마우스 다운 (드래그 시작)
+  function handleMouseDown(event: MouseEvent, elementId: string) {
+    if (!canvasRect) updateCanvasRect();
     
     event.preventDefault();
-  }
-  
-  // 드래그 중
-  function handleDrag(event: MouseEvent) {
-    if (!isDragging || !selectedElement || !editorContainer) return;
+    event.stopPropagation();
     
-    const rect = editorContainer.getBoundingClientRect();
-    const x = ((event.clientX - rect.left - dragOffset.x) / rect.width) * 100;
-    const y = ((event.clientY - rect.top - dragOffset.y) / rect.height) * 100;
+    selectElement(elementId);
     
-    // 경계 체크
-    const clampedX = Math.max(0, Math.min(100 - selectedElement.position.width, x));
-    const clampedY = Math.max(0, Math.min(100 - selectedElement.position.height, y));
+    const target = event.target as HTMLElement;
+    const isResizeHandle = target.classList.contains('resize-handle');
     
-    // 요소 위치 업데이트
-    selectedElement.position.x = clampedX;
-    selectedElement.position.y = clampedY;
-    
-    // 반응성을 위해 템플릿 데이터 업데이트
-    templateData = { ...templateData };
-    dispatch('templateUpdated', templateData);
-  }
-  
-  // 드래그 종료
-  function endDrag() {
-    isDragging = false;
-  }
-  
-  // 텍스트 요소 값 변경
-  function updateElementText(elementId: string, value: string) {
-    const element = templateData.layout.elements.find(el => el.id === elementId);
-    if (element && element.content) {
-      element.content.text = value;
-      elementValues[elementId] = value;
-      templateData = { ...templateData };
-      dispatch('templateUpdated', templateData);
+    if (isResizeHandle) {
+      isResizing = true;
+      resizeHandle = target.dataset.handle || '';
+    } else {
+      isDragging = true;
     }
-  }
-  
-  // 요소 삭제
-  function deleteElement(element: TemplateElement) {
-    if (!element.constraints?.editable) return;
     
-    templateData.layout.elements = templateData.layout.elements.filter(el => el.id !== element.id);
-    selectedElement = null;
-    templateData = { ...templateData };
-    dispatch('templateUpdated', templateData);
-    dispatch('elementSelected', null);
-  }
-  
-  // 이미지 업로드 처리
-  function handleImageUpload(element: TemplateElement, event: Event) {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
+    dragStartPos = {
+      x: event.clientX,
+      y: event.clientY
+    };
     
-    if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imageUrl = e.target?.result as string;
-        // 실제 구현에서는 서버에 업로드하고 URL을 받아야 함
-        console.log('Image uploaded for element:', element.id, imageUrl);
+    const element = template.layout.elements.find(el => el.id === elementId);
+    if (element) {
+      elementStartPos = {
+        x: element.position.x,
+        y: element.position.y
       };
-      reader.readAsDataURL(file);
+    }
+    
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  }
+  
+  // 마우스 이동 (드래그/리사이즈)
+  function handleMouseMove(event: MouseEvent) {
+    if (!isDragging && !isResizing) return;
+    if (!selectedElementId || !canvasRect) return;
+    
+    const element = template.layout.elements.find(el => el.id === selectedElementId);
+    if (!element) return;
+    
+    const deltaX = event.clientX - dragStartPos.x;
+    const deltaY = event.clientY - dragStartPos.y;
+    
+    if (isDragging) {
+      // 드래그 처리
+      const newX = elementStartPos.x + (deltaX / canvasRect.width) * 100;
+      const newY = elementStartPos.y + (deltaY / canvasRect.height) * 100;
+      
+      element.position.x = snapToGrid ? Math.round(newX / gridSize) * gridSize : newX;
+      element.position.y = snapToGrid ? Math.round(newY / gridSize) * gridSize : newY;
+      
+      // 경계 제한
+      element.position.x = Math.max(0, Math.min(100 - element.position.width, element.position.x));
+      element.position.y = Math.max(0, Math.min(100 - element.position.height, element.position.y));
+      
+    } else if (isResizing) {
+      // 리사이즈 처리
+      const deltaWidthPercent = (deltaX / canvasRect.width) * 100;
+      const deltaHeightPercent = (deltaY / canvasRect.height) * 100;
+      
+      switch (resizeHandle) {
+        case 'se': // 남동쪽
+          element.position.width = Math.max(5, element.position.width + deltaWidthPercent);
+          element.position.height = Math.max(5, element.position.height + deltaHeightPercent);
+          break;
+        case 'sw': // 남서쪽
+          element.position.width = Math.max(5, element.position.width - deltaWidthPercent);
+          element.position.height = Math.max(5, element.position.height + deltaHeightPercent);
+          element.position.x = Math.max(0, element.position.x + deltaWidthPercent);
+          break;
+        case 'ne': // 북동쪽
+          element.position.width = Math.max(5, element.position.width + deltaWidthPercent);
+          element.position.height = Math.max(5, element.position.height - deltaHeightPercent);
+          element.position.y = Math.max(0, element.position.y + deltaHeightPercent);
+          break;
+        case 'nw': // 북서쪽
+          element.position.width = Math.max(5, element.position.width - deltaWidthPercent);
+          element.position.height = Math.max(5, element.position.height - deltaHeightPercent);
+          element.position.x = Math.max(0, element.position.x + deltaWidthPercent);
+          element.position.y = Math.max(0, element.position.y + deltaHeightPercent);
+          break;
+        case 'e': // 동쪽
+          element.position.width = Math.max(5, element.position.width + deltaWidthPercent);
+          break;
+        case 'w': // 서쪽
+          element.position.width = Math.max(5, element.position.width - deltaWidthPercent);
+          element.position.x = Math.max(0, element.position.x + deltaWidthPercent);
+          break;
+        case 'n': // 북쪽
+          element.position.height = Math.max(5, element.position.height - deltaHeightPercent);
+          element.position.y = Math.max(0, element.position.y + deltaHeightPercent);
+          break;
+        case 's': // 남쪽
+          element.position.height = Math.max(5, element.position.height + deltaHeightPercent);
+          break;
+      }
+      
+      // 경계 제한
+      if (element.position.x + element.position.width > 100) {
+        element.position.width = 100 - element.position.x;
+      }
+      if (element.position.y + element.position.height > 100) {
+        element.position.height = 100 - element.position.y;
+      }
+    }
+    
+    // 템플릿 업데이트
+    template = { ...template };
+    dispatch('templateUpdated', template);
+  }
+  
+  // 마우스 업 (드래그/리사이즈 종료)
+  function handleMouseUp() {
+    isDragging = false;
+    isResizing = false;
+    resizeHandle = '';
+    
+    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mouseup', handleMouseUp);
+  }
+  
+  // 캔버스 클릭 (요소 선택 해제)
+  function handleCanvasClick(event: MouseEvent) {
+    if (event.target === canvasElement) {
+      selectElement(null);
     }
   }
   
-  // 팀 로고 자동 설정
-  function setTeamLogo() {
-    if (!selectedTeam) return;
-    
-    const logoElement = templateData.layout.elements.find(el => el.type === 'logo');
-    if (logoElement) {
-      // 실제 구현에서는 팀 로고 이미지 URL 설정
-      console.log('Setting team logo for:', selectedTeam.name);
+  // 요소 더블클릭 (편집 모드)
+  function handleElementDoubleClick(elementId: string) {
+    const element = template.layout.elements.find(el => el.id === elementId);
+    if (element && element.type === 'text') {
+      // 텍스트 편집 모드 활성화
+      console.log('텍스트 편집 모드:', elementId);
     }
   }
   
-  // 팀 컬러 적용
-  function applyTeamColors() {
-    if (!selectedTeam) return;
+  // 키보드 단축키
+  function handleKeyDown(event: KeyboardEvent) {
+    if (!selectedElementId) return;
     
-    // 배경과 테두리에 팀 컬러 적용
-    templateData.style.background.value = `linear-gradient(135deg, ${selectedTeam.colors.primary}, ${selectedTeam.colors.secondary})`;
-    templateData.style.border.color = selectedTeam.colors.primary;
+    const element = template.layout.elements.find(el => el.id === selectedElementId);
+    if (!element) return;
     
-    templateData = { ...templateData };
-    dispatch('templateUpdated', templateData);
+    let moved = false;
+    const step = event.shiftKey ? 10 : 1;
+    
+    switch (event.key) {
+      case 'ArrowLeft':
+        element.position.x = Math.max(0, element.position.x - step);
+        moved = true;
+        break;
+      case 'ArrowRight':
+        element.position.x = Math.min(100 - element.position.width, element.position.x + step);
+        moved = true;
+        break;
+      case 'ArrowUp':
+        element.position.y = Math.max(0, element.position.y - step);
+        moved = true;
+        break;
+      case 'ArrowDown':
+        element.position.y = Math.min(100 - element.position.height, element.position.y + step);
+        moved = true;
+        break;
+      case 'Delete':
+      case 'Backspace':
+        // 요소 삭제
+        template.layout.elements = template.layout.elements.filter(el => el.id !== selectedElementId);
+        selectElement(null);
+        moved = true;
+        break;
+    }
+    
+    if (moved) {
+      event.preventDefault();
+      template = { ...template };
+      dispatch('templateUpdated', template);
+    }
   }
   
-  // 내보내기 요청
-  function requestExport() {
+  // 새 요소 추가
+  function addElement(type: string) {
+    const newElement: TemplateElement = {
+      id: `element-${Date.now()}`,
+      type: type as any,
+      position: {
+        x: 20 + Math.random() * 20,
+        y: 20 + Math.random() * 20,
+        width: type === 'text' ? 30 : 25,
+        height: type === 'text' ? 10 : 20
+      },
+      style: {
+        fontSize: 16,
+        fontWeight: 'normal',
+        color: selectedTeam?.colors.primary || '#FFFFFF',
+        textAlign: 'center',
+        zIndex: template.layout.elements.length + 1,
+        opacity: 1
+      },
+      content: {
+        text: type === 'text' ? '새 텍스트' : '',
+        placeholder: `${type} 내용`,
+        required: false
+      },
+      constraints: {
+        editable: true,
+        movable: true,
+        resizable: true
+      }
+    };
+    
+    template.layout.elements = [...template.layout.elements, newElement];
+    selectElement(newElement.id);
+    dispatch('templateUpdated', template);
+  }
+  
+  // 줌 조절
+  function adjustZoom(delta: number) {
+    scale = Math.max(0.25, Math.min(2, scale + delta));
+  }
+  
+  // 그리드 토글
+  function toggleGrid() {
+    showGrid = !showGrid;
+  }
+  
+  // 스냅 토글
+  function toggleSnap() {
+    snapToGrid = !snapToGrid;
+  }
+  
+  // 내보내기
+  function exportTemplate() {
     dispatch('exportRequested');
   }
   
-  // 요소 스타일 계산
-  function getElementStyle(element: TemplateElement): string {
-    const baseStyle = `
-      position: absolute;
-      left: ${element.position.x}%;
-      top: ${element.position.y}%;
-      width: ${element.position.width}%;
-      height: ${element.position.height}%;
-      z-index: ${element.style?.zIndex || 1};
-    `;
-    
-    const textStyle = element.type === 'text' ? `
-      font-size: ${element.style?.fontSize || 16}px;
-      font-weight: ${element.style?.fontWeight || 'normal'};
-      color: ${element.style?.color || '#000000'};
-      text-align: ${element.style?.textAlign || 'left'};
-    ` : '';
-    
-    const interactionStyle = editable && selectedElement?.id === element.id ? `
-      outline: 2px solid var(--apple-accent-blue);
-      outline-offset: 2px;
-    ` : '';
-    
-    return baseStyle + textStyle + interactionStyle;
-  }
+  // 선택된 요소
+  $: selectedElement = selectedElementId 
+    ? template.layout.elements.find(el => el.id === selectedElementId)
+    : null;
   
-  // 컨테이너 스타일 계산
-  function getContainerStyle(): string {
-    const background = templateData.style.background;
-    let backgroundStyle = '';
-    
-    switch (background.type) {
-      case 'gradient':
-        backgroundStyle = `background: ${background.value};`;
-        break;
-      case 'pattern':
-        backgroundStyle = `background: ${background.value};`;
-        break;
-      case 'image':
-        backgroundStyle = `background-image: url(${background.value}); background-size: cover; background-position: center;`;
-        break;
-    }
-    
-    if (background.overlay) {
-      backgroundStyle += `background-image: ${background.overlay}, ${backgroundStyle.replace('background:', '').replace(';', '')};`;
-    }
-    
-    const borderStyle = `
-      border: ${templateData.style.border.width}px ${templateData.style.border.style} ${templateData.style.border.color};
-      border-radius: 16px;
-    `;
-    
-    return backgroundStyle + borderStyle;
-  }
-  
-  // 반응형 처리
-  $: aspectRatio = templateData.layout.type === 'portrait' ? '3/4' : 
-                   templateData.layout.type === 'landscape' ? '4/3' : '1/1';
+  // 캔버스 스타일
+  $: canvasStyle = `
+    background: ${template.style.background.value};
+    transform: scale(${scale});
+    border: ${template.style.border.width}px ${template.style.border.style} ${selectedTeam?.colors.primary || template.style.border.color};
+  `;
 </script>
 
-<svelte:window 
-  on:mousemove={handleDrag}
-  on:mouseup={endDrag}
-/>
+<svelte:window on:keydown={handleKeyDown} />
 
 <div class="template-editor">
-  <!-- 편집기 헤더 -->
-  <div class="editor-header">
-    <div class="template-info">
-      <h3 class="template-title">{templateData.name}</h3>
-      <p class="template-description">{templateData.description}</p>
+  <!-- 도구바 -->
+  <div class="toolbar">
+    <div class="toolbar-group">
+      <button class="tool-button" on:click={() => addElement('text')} title="텍스트 추가">
+        📝 텍스트
+      </button>
+      <button class="tool-button" on:click={() => addElement('image')} title="이미지 추가">
+        🖼️ 이미지
+      </button>
+      <button class="tool-button" on:click={() => addElement('logo')} title="로고 추가">
+        🏆 로고
+      </button>
+      <button class="tool-button" on:click={() => addElement('decoration')} title="장식 추가">
+        ✨ 장식
+      </button>
     </div>
     
-    <div class="editor-actions">
-      {#if selectedTeam}
-        <button 
-          class="action-button team-colors"
-          on:click={applyTeamColors}
-          title="팀 컬러 적용"
-        >
-          <span class="team-color-preview" style="background: {selectedTeam.colors.primary}"></span>
-          팀 컬러 적용
-        </button>
-      {/if}
-      
+    <div class="toolbar-group">
       <button 
-        class="action-button export"
-        on:click={requestExport}
-        title="카드 내보내기"
+        class="tool-button"
+        class:active={showGrid}
+        on:click={toggleGrid}
+        title="그리드 표시"
       >
+        📐 그리드
+      </button>
+      <button 
+        class="tool-button"
+        class:active={snapToGrid}
+        on:click={toggleSnap}
+        title="그리드에 맞춤"
+      >
+        🧲 스냅
+      </button>
+    </div>
+    
+    <div class="toolbar-group">
+      <button class="tool-button" on:click={() => adjustZoom(-0.25)} title="축소">
+        🔍➖
+      </button>
+      <span class="zoom-level">{Math.round(scale * 100)}%</span>
+      <button class="tool-button" on:click={() => adjustZoom(0.25)} title="확대">
+        🔍➕
+      </button>
+    </div>
+    
+    <div class="toolbar-group">
+      <button class="tool-button export" on:click={exportTemplate} title="내보내기">
         📤 내보내기
       </button>
     </div>
   </div>
   
-  <!-- 메인 편집 영역 -->
-  <div class="editor-main">
-    <!-- 템플릿 캔버스 -->
-    <div class="template-canvas">
-      <div 
-        bind:this={editorContainer}
-        class="template-container"
-        class:portrait={templateData.layout.type === 'portrait'}
-        class:landscape={templateData.layout.type === 'landscape'}
-        class:square={templateData.layout.type === 'square'}
-        style="{getContainerStyle()}; aspect-ratio: {aspectRatio};"
-        on:click={() => {
-          selectedElement = null;
-          dispatch('elementSelected', null);
-        }}
-        role="button"
-        tabindex="0"
-        on:keydown={() => {}}
+  <!-- 캔버스 컨테이너 -->
+  <div class="canvas-container">
+    <div class="canvas-wrapper">
+      <!-- 캔버스 -->
+      <div
+        bind:this={canvasElement}
+        class="canvas"
+        class:show-grid={showGrid}
+        style={canvasStyle}
+        on:click={handleCanvasClick}
+        role="application"
+        aria-label="카드 편집 캔버스"
       >
+        <!-- 그리드 -->
+        {#if showGrid}
+          <div class="grid-overlay" style="--grid-size: {gridSize}px"></div>
+        {/if}
+        
         <!-- 템플릿 요소들 -->
-        {#each templateData.layout.elements as element (element.id)}
+        {#each template.layout.elements as element (element.id)}
           <div
-            class="template-element element-{element.type}"
-            class:selected={selectedElement?.id === element.id}
-            class:editable={element.constraints?.editable}
-            class:movable={element.constraints?.movable}
-            style={getElementStyle(element)}
-            on:click={(e) => selectElement(element, e)}
-            on:mousedown={(e) => startDrag(element, e)}
+            class="template-element"
+            class:selected={selectedElementId === element.id}
+            class:dragging={isDragging && selectedElementId === element.id}
+            style="
+              left: {element.position.x}%;
+              top: {element.position.y}%;
+              width: {element.position.width}%;
+              height: {element.position.height}%;
+              z-index: {element.style?.zIndex || 1};
+              opacity: {element.style?.opacity || 1};
+            "
+            on:mousedown={(e) => handleMouseDown(e, element.id)}
+            on:dblclick={() => handleElementDoubleClick(element.id)}
             role="button"
             tabindex="0"
-            on:keydown={() => {}}
+            aria-label={`${element.type} 요소`}
           >
-            {#if element.type === 'text'}
-              {#if editable && element.constraints?.editable}
-                <textarea
-                  class="text-input"
-                  value={elementValues[element.id] || element.content?.text || ''}
-                  placeholder={element.content?.placeholder || '텍스트를 입력하세요'}
-                  maxlength={element.content?.maxLength}
-                  on:input={(e) => updateElementText(element.id, e.currentTarget.value)}
-                  on:click={(e) => e.stopPropagation()}
-                ></textarea>
+            <!-- 요소 내용 -->
+            <div class="element-content">
+              {#if element.type === 'text'}
+                <AdvancedTextEditor
+                  bind:value={element.content.text}
+                  placeholder={element.content?.placeholder || '텍스트 입력'}
+                  fontSize={element.style?.fontSize || 16}
+                  fontWeight={element.style?.fontWeight || 'normal'}
+                  textAlign={element.style?.textAlign || 'center'}
+                  color={element.style?.color || '#FFFFFF'}
+                  editable={element.constraints?.editable !== false}
+                  multiline={true}
+                  on:change={() => dispatch('templateUpdated', template)}
+                />
+              {:else if element.type === 'image'}
+                <div class="image-placeholder">
+                  {#if userImage}
+                    <img src={userImage} alt="사용자 이미지" class="element-image" />
+                  {:else}
+                    <div class="placeholder-content">
+                      <span class="placeholder-icon">🖼️</span>
+                      <span class="placeholder-text">이미지</span>
+                    </div>
+                  {/if}
+                </div>
+              {:else if element.type === 'logo' && selectedTeam}
+                <div class="logo-element">
+                  <div 
+                    class="team-logo-circle"
+                    style="background: {selectedTeam.colors.primary}"
+                  >
+                    ⚾
+                  </div>
+                  <div class="team-name">{selectedTeam.name}</div>
+                </div>
+              {:else if element.type === 'decoration'}
+                <div class="decoration-element">
+                  <span class="decoration-icon">✨</span>
+                </div>
               {:else}
-                <div class="text-display">
-                  {elementValues[element.id] || element.content?.text || element.content?.placeholder || ''}
+                <div class="placeholder-content">
+                  <span class="placeholder-icon">📄</span>
+                  <span class="placeholder-text">{element.type}</span>
                 </div>
               {/if}
+            </div>
             
-            {:else if element.type === 'image'}
-              <div class="image-container">
-                {#if userImage}
-                  <img src={userImage} alt="사용자 이미지" class="user-image" />
-                {:else if editable}
-                  <label class="image-upload">
-                    <input 
-                      type="file" 
-                      accept="image/*" 
-                      on:change={(e) => handleImageUpload(element, e)}
-                      style="display: none;"
-                    />
-                    <div class="upload-placeholder">
-                      <div class="upload-icon">📷</div>
-                      <div class="upload-text">이미지 업로드</div>
-                    </div>
-                  </label>
-                {:else}
-                  <div class="image-placeholder">
-                    <div class="placeholder-icon">🖼️</div>
-                  </div>
-                {/if}
-              </div>
-            
-            {:else if element.type === 'logo'}
-              <div class="logo-container">
-                {#if selectedTeam}
-                  <div class="team-logo" style="color: {selectedTeam.colors.primary}">
-                    {selectedTeam.name}
-                  </div>
-                {:else}
-                  <div class="logo-placeholder">🏆</div>
-                {/if}
-              </div>
-            
-            {:else if element.type === 'stats'}
-              <div class="stats-container">
-                {#if editable && element.constraints?.editable}
-                  <textarea
-                    class="stats-input"
-                    value={elementValues[element.id] || element.content?.text || ''}
-                    placeholder={element.content?.placeholder || '통계 정보'}
-                    on:input={(e) => updateElementText(element.id, e.currentTarget.value)}
-                    on:click={(e) => e.stopPropagation()}
-                  ></textarea>
-                {:else}
-                  <div class="stats-display">
-                    {elementValues[element.id] || element.content?.text || '📊'}
-                  </div>
-                {/if}
-              </div>
-            
-            {:else if element.type === 'decoration'}
-              <div class="decoration-element">✨</div>
-            {/if}
-            
-            <!-- 선택된 요소 컨트롤 -->
-            {#if editable && selectedElement?.id === element.id}
-              <div class="element-controls">
-                {#if element.constraints?.editable}
-                  <button 
-                    class="control-button delete"
-                    on:click={() => deleteElement(element)}
-                    title="삭제"
-                  >
-                    🗑️
-                  </button>
-                {/if}
-              </div>
+            <!-- 선택 표시 및 리사이즈 핸들 -->
+            {#if selectedElementId === element.id && element.constraints?.resizable !== false}
+              <div class="selection-outline"></div>
+              
+              <!-- 리사이즈 핸들 -->
+              <div class="resize-handle nw" data-handle="nw"></div>
+              <div class="resize-handle n" data-handle="n"></div>
+              <div class="resize-handle ne" data-handle="ne"></div>
+              <div class="resize-handle e" data-handle="e"></div>
+              <div class="resize-handle se" data-handle="se"></div>
+              <div class="resize-handle s" data-handle="s"></div>
+              <div class="resize-handle sw" data-handle="sw"></div>
+              <div class="resize-handle w" data-handle="w"></div>
             {/if}
           </div>
         {/each}
       </div>
     </div>
-    
-    <!-- 속성 패널 -->
-    {#if editable && selectedElement}
-      <div class="properties-panel">
-        <h4 class="panel-title">요소 속성</h4>
-        
-        <div class="property-group">
-          <label class="property-label">요소 타입</label>
-          <div class="property-value">{selectedElement.type}</div>
-        </div>
-        
-        <div class="property-group">
-          <label class="property-label">위치</label>
-          <div class="position-controls">
-            <input 
-              type="number" 
-              min="0" 
-              max="100" 
-              step="1"
-              bind:value={selectedElement.position.x}
-              on:input={() => {
-                templateData = { ...templateData };
-                dispatch('templateUpdated', templateData);
-              }}
-            />
-            <span>%</span>
-            <input 
-              type="number" 
-              min="0" 
-              max="100" 
-              step="1"
-              bind:value={selectedElement.position.y}
-              on:input={() => {
-                templateData = { ...templateData };
-                dispatch('templateUpdated', templateData);
-              }}
-            />
-            <span>%</span>
-          </div>
-        </div>
-        
-        <div class="property-group">
-          <label class="property-label">크기</label>
-          <div class="size-controls">
-            <input 
-              type="number" 
-              min="1" 
-              max="100" 
-              step="1"
-              bind:value={selectedElement.position.width}
-              on:input={() => {
-                templateData = { ...templateData };
-                dispatch('templateUpdated', templateData);
-              }}
-            />
-            <span>%</span>
-            <input 
-              type="number" 
-              min="1" 
-              max="100" 
-              step="1"
-              bind:value={selectedElement.position.height}
-              on:input={() => {
-                templateData = { ...templateData };
-                dispatch('templateUpdated', templateData);
-              }}
-            />
-            <span>%</span>
-          </div>
-        </div>
-        
-        {#if selectedElement.type === 'text' && selectedElement.style}
-          <div class="property-group">
-            <label class="property-label">폰트 크기</label>
-            <input 
-              type="number" 
-              min="8" 
-              max="72" 
-              bind:value={selectedElement.style.fontSize}
-              on:input={() => {
-                templateData = { ...templateData };
-                dispatch('templateUpdated', templateData);
-              }}
-            />
-          </div>
-          
-          <div class="property-group">
-            <label class="property-label">텍스트 색상</label>
-            <input 
-              type="color" 
-              bind:value={selectedElement.style.color}
-              on:input={() => {
-                templateData = { ...templateData };
-                dispatch('templateUpdated', templateData);
-              }}
-            />
-          </div>
-        {/if}
-      </div>
-    {/if}
   </div>
-  
-  <!-- 편집 가이드 -->
-  {#if editable}
-    <div class="editor-guide">
-      <div class="guide-item">
-        <span class="guide-icon">🖱️</span>
-        <span class="guide-text">요소를 클릭하여 선택하고 드래그하여 이동</span>
-      </div>
-      <div class="guide-item">
-        <span class="guide-icon">⌨️</span>
-        <span class="guide-text">Delete 키로 선택된 요소 삭제, Esc로 선택 해제</span>
-      </div>
-      <div class="guide-item">
-        <span class="guide-icon">🎨</span>
-        <span class="guide-text">오른쪽 패널에서 선택된 요소의 속성 조정</span>
-      </div>
-    </div>
-  {/if}
 </div>
 
 <style>
   .template-editor {
     width: 100%;
-    max-width: 1400px;
-    margin: 0 auto;
-    background: var(--apple-surface-primary);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: var(--apple-shadow-lg);
-  }
-  
-  /* 편집기 헤더 */
-  .editor-header {
+    height: 100%;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 24px;
+    flex-direction: column;
     background: var(--apple-surface-secondary);
-    border-bottom: 1px solid var(--apple-surface-border);
   }
   
-  .template-info {
-    flex: 1;
-  }
-  
-  .template-title {
-    font-size: 20px;
-    font-weight: 600;
-    margin: 0 0 4px;
-    color: var(--apple-text-primary);
-  }
-  
-  .template-description {
-    font-size: 14px;
-    color: var(--apple-text-secondary);
-    margin: 0;
-  }
-  
-  .editor-actions {
+  /* 도구바 */
+  .toolbar {
     display: flex;
-    gap: 12px;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 20px;
+    background: var(--apple-surface-primary);
+    border-bottom: 1px solid var(--apple-surface-border);
+    flex-wrap: wrap;
   }
   
-  .action-button {
+  .toolbar-group {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 16px;
-    background: var(--apple-accent-blue);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
+    padding: 0 8px;
+    border-right: 1px solid var(--apple-surface-border);
+  }
+  
+  .toolbar-group:last-child {
+    border-right: none;
+  }
+  
+  .tool-button {
+    padding: 8px 12px;
+    background: var(--apple-surface-secondary);
+    border: 1px solid var(--apple-surface-border);
+    border-radius: 6px;
+    color: var(--apple-text-primary);
+    font-size: 13px;
     font-weight: 500;
     cursor: pointer;
     transition: all var(--apple-duration-fast) var(--apple-easing-smooth);
+    white-space: nowrap;
   }
   
-  .action-button:hover {
-    background: var(--apple-accent-blue-hover);
-    transform: translateY(-1px);
+  .tool-button:hover {
+    background: var(--apple-surface-tertiary);
+    border-color: var(--apple-accent-blue);
   }
   
-  .action-button.team-colors {
+  .tool-button.active {
+    background: var(--apple-accent-blue);
+    color: white;
+    border-color: var(--apple-accent-blue);
+  }
+  
+  .tool-button.export {
     background: var(--apple-accent-green);
+    color: white;
+    border-color: var(--apple-accent-green);
   }
   
-  .action-button.team-colors:hover {
+  .tool-button.export:hover {
     background: var(--apple-accent-green-hover);
   }
   
-  .team-color-preview {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+  .zoom-level {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--apple-text-secondary);
+    min-width: 40px;
+    text-align: center;
   }
   
-  /* 메인 편집 영역 */
-  .editor-main {
-    display: flex;
-    min-height: 600px;
-  }
-  
-  .template-canvas {
+  /* 캔버스 컨테이너 */
+  .canvas-container {
     flex: 1;
-    padding: 24px;
+    overflow: auto;
+    padding: 40px;
     display: flex;
-    justify-content: center;
     align-items: center;
-    background: var(--apple-surface-tertiary);
+    justify-content: center;
   }
   
-  .template-container {
+  .canvas-wrapper {
     position: relative;
-    max-width: 400px;
-    width: 100%;
-    background: white;
+  }
+  
+  /* 캔버스 */
+  .canvas {
+    position: relative;
+    width: 400px;
+    height: 560px;
+    border-radius: 20px;
     overflow: hidden;
     cursor: default;
-    user-select: none;
+    transform-origin: center;
+    transition: transform var(--apple-duration-normal) var(--apple-easing-smooth);
+    box-shadow: var(--apple-shadow-xl);
   }
   
-  .template-container.portrait {
-    max-width: 300px;
-  }
-  
-  .template-container.landscape {
-    max-width: 500px;
-  }
-  
-  .template-container.square {
-    max-width: 400px;
+  .grid-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: var(--grid-size) var(--grid-size);
+    pointer-events: none;
+    z-index: 1;
   }
   
   /* 템플릿 요소 */
   .template-element {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: outline var(--apple-duration-fast) var(--apple-easing-smooth);
-    border-radius: 4px;
-  }
-  
-  .template-element.editable {
-    cursor: pointer;
-  }
-  
-  .template-element.movable {
+    position: absolute;
     cursor: move;
+    transition: all var(--apple-duration-fast) var(--apple-easing-smooth);
+    z-index: 2;
+  }
+  
+  .template-element:hover {
+    outline: 2px solid rgba(0, 122, 255, 0.3);
+    outline-offset: -2px;
   }
   
   .template-element.selected {
     outline: 2px solid var(--apple-accent-blue);
-    outline-offset: 2px;
+    outline-offset: -2px;
   }
   
-  .template-element:hover.editable {
-    outline: 1px solid var(--apple-accent-blue);
-    outline-offset: 1px;
+  .template-element.dragging {
+    cursor: grabbing;
+    transform: scale(1.02);
+    z-index: 1000;
   }
   
-  /* 텍스트 요소 */
-  .text-input,
-  .stats-input {
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    border: none;
-    outline: none;
-    resize: none;
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    color: inherit;
-    text-align: inherit;
-    line-height: 1.2;
-    padding: 4px;
-  }
-  
-  .text-display,
-  .stats-display {
+  .element-content {
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    line-height: 1.2;
-    white-space: pre-line;
-    word-break: break-word;
-  }
-  
-  /* 이미지 요소 */
-  .image-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--apple-surface-secondary);
-    border-radius: 8px;
     overflow: hidden;
   }
   
-  .user-image {
+  /* 요소 타입별 스타일 */
+  .image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .element-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 6px;
   }
   
-  .image-upload {
-    width: 100%;
-    height: 100%;
+  .logo-element {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background var(--apple-duration-fast) var(--apple-easing-smooth);
-  }
-  
-  .image-upload:hover {
-    background: var(--apple-surface-tertiary);
-  }
-  
-  .upload-placeholder {
-    text-align: center;
-    color: var(--apple-text-secondary);
-  }
-  
-  .upload-icon {
-    font-size: 24px;
-    margin-bottom: 4px;
-  }
-  
-  .upload-text {
-    font-size: 12px;
-    font-weight: 500;
-  }
-  
-  .image-placeholder,
-  .logo-placeholder {
-    font-size: 32px;
-    opacity: 0.5;
-  }
-  
-  /* 로고 요소 */
-  .logo-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .team-logo {
-    font-size: 14px;
-    font-weight: 700;
-    text-align: center;
-    line-height: 1.2;
-  }
-  
-  /* 통계 요소 */
-  .stats-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-  }
-  
-  /* 장식 요소 */
-  .decoration-element {
-    font-size: 24px;
-    opacity: 0.8;
-  }
-  
-  /* 요소 컨트롤 */
-  .element-controls {
-    position: absolute;
-    top: -12px;
-    right: -12px;
-    display: flex;
-    gap: 4px;
-  }
-  
-  .control-button {
-    width: 24px;
-    height: 24px;
-    background: var(--apple-accent-red);
+    gap: 8px;
     color: white;
-    border: none;
+  }
+  
+  .team-logo-circle {
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    font-size: 12px;
-    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all var(--apple-duration-fast) var(--apple-easing-smooth);
+    font-size: 20px;
+    color: white;
   }
   
-  .control-button:hover {
-    transform: scale(1.1);
-  }
-  
-  /* 속성 패널 */
-  .properties-panel {
-    width: 280px;
-    background: var(--apple-surface-secondary);
-    border-left: 1px solid var(--apple-surface-border);
-    padding: 20px;
-    overflow-y: auto;
-  }
-  
-  .panel-title {
-    font-size: 16px;
+  .team-name {
+    font-size: 12px;
     font-weight: 600;
-    margin: 0 0 20px;
-    color: var(--apple-text-primary);
+    text-align: center;
   }
   
-  .property-group {
-    margin-bottom: 16px;
+  .decoration-element {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
   }
   
-  .property-label {
-    display: block;
+  .decoration-icon {
+    font-size: 24px;
+    animation: sparkle 2s infinite;
+  }
+  
+  @keyframes sparkle {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.1) rotate(180deg); }
+  }
+  
+  .placeholder-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .placeholder-icon {
+    font-size: 24px;
+    opacity: 0.7;
+  }
+  
+  .placeholder-text {
     font-size: 12px;
     font-weight: 500;
-    color: var(--apple-text-secondary);
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
   }
   
-  .property-value {
-    font-size: 14px;
-    color: var(--apple-text-primary);
-    padding: 8px 12px;
-    background: var(--apple-surface-tertiary);
-    border-radius: 6px;
+  /* 선택 표시 */
+  .selection-outline {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border: 2px solid var(--apple-accent-blue);
+    border-radius: 4px;
+    pointer-events: none;
   }
   
-  .position-controls,
-  .size-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  /* 리사이즈 핸들 */
+  .resize-handle {
+    position: absolute;
+    background: var(--apple-accent-blue);
+    border: 2px solid white;
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    z-index: 1001;
   }
   
-  .position-controls input,
-  .size-controls input,
-  .property-group input[type="number"],
-  .property-group input[type="color"] {
-    flex: 1;
-    padding: 8px 12px;
-    border: 1px solid var(--apple-surface-border);
-    border-radius: 6px;
-    background: var(--apple-surface-primary);
-    color: var(--apple-text-primary);
-    font-size: 14px;
-  }
+  .resize-handle.nw { top: -6px; left: -6px; cursor: nw-resize; }
+  .resize-handle.n { top: -6px; left: 50%; transform: translateX(-50%); cursor: n-resize; }
+  .resize-handle.ne { top: -6px; right: -6px; cursor: ne-resize; }
+  .resize-handle.e { top: 50%; right: -6px; transform: translateY(-50%); cursor: e-resize; }
+  .resize-handle.se { bottom: -6px; right: -6px; cursor: se-resize; }
+  .resize-handle.s { bottom: -6px; left: 50%; transform: translateX(-50%); cursor: s-resize; }
+  .resize-handle.sw { bottom: -6px; left: -6px; cursor: sw-resize; }
+  .resize-handle.w { top: 50%; left: -6px; transform: translateY(-50%); cursor: w-resize; }
   
-  .property-group input[type="color"] {
-    width: 40px;
-    height: 32px;
-    padding: 2px;
-    cursor: pointer;
-  }
-  
-  .position-controls span,
-  .size-controls span {
-    font-size: 12px;
-    color: var(--apple-text-secondary);
-  }
-  
-  /* 편집 가이드 */
-  .editor-guide {
-    padding: 16px 24px;
-    background: var(--apple-surface-secondary);
-    border-top: 1px solid var(--apple-surface-border);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-  
-  .guide-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    color: var(--apple-text-secondary);
-  }
-  
-  .guide-icon {
-    font-size: 14px;
+  .resize-handle:hover {
+    background: var(--apple-accent-blue-hover);
+    transform: scale(1.2);
   }
   
   /* 반응형 디자인 */
   @media (max-width: 1024px) {
-    .editor-main {
-      flex-direction: column;
+    .canvas-container {
+      padding: 20px;
     }
     
-    .properties-panel {
-      width: 100%;
-      max-height: 300px;
-    }
-    
-    .template-canvas {
-      padding: 16px;
+    .canvas {
+      width: 300px;
+      height: 420px;
     }
   }
   
   @media (max-width: 768px) {
-    .editor-header {
-      flex-direction: column;
-      gap: 16px;
-      align-items: flex-start;
+    .toolbar {
+      padding: 8px 12px;
+      gap: 8px;
     }
     
-    .editor-actions {
-      width: 100%;
-      justify-content: flex-end;
+    .toolbar-group {
+      gap: 4px;
+      padding: 0 4px;
     }
     
-    .template-container {
-      max-width: 280px;
+    .tool-button {
+      padding: 6px 8px;
+      font-size: 12px;
     }
     
-    .editor-guide {
-      flex-direction: column;
-      gap: 12px;
+    .canvas-container {
+      padding: 16px;
+    }
+    
+    .canvas {
+      width: 250px;
+      height: 350px;
     }
   }
 </style>

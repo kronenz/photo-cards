@@ -1,754 +1,951 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import type { GloryMomentTemplate } from '../data/kboTemplates.js';
-  
-  // Props
-  export let template: GloryMomentTemplate;
-  export let storyData: StoryData = {
-    backgroundStory: '',
-    playerQuote: '',
-    historicalContext: '',
-    emotionalTone: 'joy',
-    tags: []
+  import { slide, fade } from 'svelte/transition';
+
+  const dispatch = createEventDispatcher();
+
+  let activeCategory = 'moments';
+  let selectedStory: any = null;
+  let customStoryText = '';
+  let selectedEmotion = 'joy';
+
+  // KBO 스토리텔링 카테고리
+  const storyCategories = {
+    moments: {
+      name: '영광의 순간',
+      icon: '🏆',
+      stories: [
+        {
+          id: 'homerun',
+          title: '홈런의 순간',
+          description: '공이 담장을 넘어가는 그 순간의 감동',
+          template: '"{player}의 시원한 홈런! 공이 {direction} 담장을 넘어갑니다!"',
+          background: 'linear-gradient(135deg, #ff6b35, #f7931e)',
+          icon: '⚾'
+        },
+        {
+          id: 'steal',
+          title: '도루 성공',
+          description: '완벽한 타이밍의 도루 성공',
+          template: '"{player}의 번개같은 도루! {base}를 안전하게 훔쳤습니다!"',
+          background: 'linear-gradient(135deg, #4ecdc4, #44a08d)',
+          icon: '🏃'
+        },
+        {
+          id: 'defense',
+          title: '수비 명장면',
+          description: '환상적인 수비 플레이',
+          template: '"{player}의 신기에 가까운 수비! 관중들이 탄성을 지릅니다!"',
+          background: 'linear-gradient(135deg, #667eea, #764ba2)',
+          icon: '🤾'
+        },
+        {
+          id: 'walkoff',
+          title: '끝내기 안타',
+          description: '경기를 결정짓는 마지막 한 방',
+          template: '"{player}의 끝내기 안타! {team}이 극적인 승리를 거둡니다!"',
+          background: 'linear-gradient(135deg, #f093fb, #f5576c)',
+          icon: '🎯'
+        },
+        {
+          id: 'perfectgame',
+          title: '완전경기',
+          description: '역사에 남을 완벽한 경기',
+          template: '"{player}의 완전경기 달성! KBO 역사에 길이 남을 순간입니다!"',
+          background: 'linear-gradient(135deg, #ffecd2, #fcb69f)',
+          icon: '👑'
+        }
+      ]
+    },
+    emotions: {
+      name: '감정 표현',
+      icon: '💭',
+      stories: [
+        {
+          id: 'joy',
+          title: '기쁨과 환희',
+          description: '승리의 기쁨을 표현',
+          template: '"이 순간을 위해 얼마나 기다렸는지... 꿈만 같습니다!"',
+          background: 'linear-gradient(135deg, #ffeaa7, #fab1a0)',
+          icon: '😊'
+        },
+        {
+          id: 'determination',
+          title: '의지와 각오',
+          description: '강한 의지를 보여주는 순간',
+          template: '"포기하지 않겠습니다. 끝까지 최선을 다하겠습니다!"',
+          background: 'linear-gradient(135deg, #fd79a8, #e84393)',
+          icon: '💪'
+        },
+        {
+          id: 'gratitude',
+          title: '감사와 겸손',
+          description: '팬들과 동료들에 대한 감사',
+          template: '"팬 여러분의 응원이 있었기에 가능했습니다. 감사합니다!"',
+          background: 'linear-gradient(135deg, #a29bfe, #6c5ce7)',
+          icon: '🙏'
+        },
+        {
+          id: 'nostalgia',
+          title: '추억과 그리움',
+          description: '과거를 회상하는 감성',
+          template: '"그때 그 순간이 생각납니다... 시간이 참 빠르네요."',
+          background: 'linear-gradient(135deg, #81ecec, #74b9ff)',
+          icon: '🌅'
+        }
+      ]
+    },
+    quotes: {
+      name: '명언과 어록',
+      icon: '💬',
+      stories: [
+        {
+          id: 'legendary',
+          title: '레전드 어록',
+          description: 'KBO 역사에 남은 명언들',
+          template: '"야구는 실패의 스포츠다. 하지만 포기하지 않는 자가 승리한다."',
+          background: 'linear-gradient(135deg, #2d3436, #636e72)',
+          icon: '🎭'
+        },
+        {
+          id: 'motivation',
+          title: '동기부여',
+          description: '힘이 되는 격려의 말',
+          template: '"오늘의 노력이 내일의 기적을 만든다."',
+          background: 'linear-gradient(135deg, #00b894, #00cec9)',
+          icon: '🔥'
+        },
+        {
+          id: 'teamwork',
+          title: '팀워크',
+          description: '함께하는 힘에 대한 이야기',
+          template: '"혼자서는 할 수 없지만, 함께라면 무엇이든 가능하다."',
+          background: 'linear-gradient(135deg, #e17055, #d63031)',
+          icon: '🤝'
+        }
+      ]
+    },
+    history: {
+      name: '역사적 순간',
+      icon: '📚',
+      stories: [
+        {
+          id: 'debut',
+          title: '데뷔 첫 경기',
+          description: '프로 무대 첫 발을 내딛는 순간',
+          template: '"{year}년 {month}월 {day}일, {player}의 KBO 데뷔전"',
+          background: 'linear-gradient(135deg, #55a3ff, #003d82)',
+          icon: '🌟'
+        },
+        {
+          id: 'record',
+          title: '기록 달성',
+          description: '새로운 기록을 세우는 역사적 순간',
+          template: '"{player}, KBO 역사상 {number}번째 {record} 달성!"',
+          background: 'linear-gradient(135deg, #ffd700, #ffb300)',
+          icon: '📊'
+        },
+        {
+          id: 'retirement',
+          title: '은퇴식',
+          description: '선수 생활을 마무리하는 감동의 순간',
+          template: '"{player}의 {years}년 선수 생활이 막을 내립니다..."',
+          background: 'linear-gradient(135deg, #74b9ff, #0984e3)',
+          icon: '👋'
+        },
+        {
+          id: 'championship',
+          title: '우승의 순간',
+          description: '팀의 영광스러운 우승',
+          template: '"{team}, {year}년 한국시리즈 우승! 역사를 만들었습니다!"',
+          background: 'linear-gradient(135deg, #fd79a8, #fdcb6e)',
+          icon: '🏆'
+        }
+      ]
+    }
   };
-  
-  // 스토리텔링 데이터 타입
-  interface StoryData {
-    backgroundStory: string;
-    playerQuote: string;
-    historicalContext: string;
-    emotionalTone: 'joy' | 'triumph' | 'nostalgia' | 'excitement' | 'pride' | 'determination';
-    tags: string[];
+
+  // 감정 아이콘 매핑
+  const emotionIcons = {
+    joy: '😊',
+    excitement: '🤩',
+    determination: '💪',
+    gratitude: '🙏',
+    nostalgia: '🌅',
+    pride: '😤',
+    hope: '🌟',
+    sadness: '😢'
+  };
+
+  function selectStory(story: any) {
+    selectedStory = story;
+    dispatch('storySelected', story);
   }
-  
-  // 감정 톤 옵션
-  const emotionalTones = [
-    { value: 'joy', label: '기쁨', icon: '😊', color: '#FFD700' },
-    { value: 'triumph', label: '승리', icon: '🏆', color: '#FF6B35' },
-    { value: 'nostalgia', label: '그리움', icon: '🌅', color: '#667eea' },
-    { value: 'excitement', label: '흥분', icon: '⚡', color: '#FF6B6B' },
-    { value: 'pride', label: '자부심', icon: '💪', color: '#4ECDC4' },
-    { value: 'determination', label: '의지', icon: '🔥', color: '#e74c3c' }
-  ];
-  
-  // KBO 관련 태그 제안
-  const suggestedTags = [
-    '홈런', '끝내기', '역전', '완봉', '노히터', '사이클링히트',
-    '신인왕', 'MVP', '골든글러브', '최다승', '최다세이브',
-    '한국시리즈', '플레이오프', '올스타', '개막전', '마지막경기',
-    '감동', '눈물', '환호', '응원', '팬사랑', '가족',
-    '도전', '극복', '성장', '꿈', '열정', '우정'
-  ];
-  
-  // 명언 템플릿
-  const quoteTemplates = [
-    '야구는 실패의 스포츠다. 하지만 그 실패를 극복하는 것이 진정한 승리다.',
-    '팬들의 응원이 있기에 우리는 더 강해질 수 있습니다.',
-    '이 순간을 위해 얼마나 많은 땀을 흘렸는지 모릅니다.',
-    '야구장에서의 모든 순간이 소중한 추억이 됩니다.',
-    '동료들과 함께라면 어떤 어려움도 이겨낼 수 있습니다.',
-    '팬 여러분께 보답하고 싶은 마음뿐입니다.',
-    '매 경기가 새로운 도전이고, 새로운 기회입니다.',
-    '야구를 사랑하는 마음만큼은 누구에게도 지지 않습니다.'
-  ];
-  
-  // 상태 관리
-  let newTag = '';
-  let showQuoteTemplates = false;
-  let selectedQuoteTemplate = '';
-  
-  // 이벤트 디스패처
-  const dispatch = createEventDispatcher<{
-    storyUpdate: StoryData;
-    addStoryElement: { type: string; content: any };
-  }>();
-  
-  // 스토리 데이터 업데이트
-  function updateStoryData() {
-    dispatch('storyUpdate', storyData);
+
+  function addStoryElement() {
+    if (!selectedStory) return;
+
+    const storyElement = {
+      type: 'text',
+      width: 300,
+      height: 80,
+      data: {
+        content: selectedStory.template,
+        fontSize: 18,
+        fontFamily: 'Apple SD Gothic Neo',
+        color: '#ffffff',
+        fontWeight: '500',
+        textAlign: 'center',
+        background: selectedStory.background,
+        padding: 16,
+        borderRadius: 12,
+        textShadow: '2px 2px 4px rgba(0,0,0,0.8)'
+      }
+    };
+
+    dispatch('storyElementAdded', storyElement);
   }
-  
-  // 태그 추가
-  function addTag(tag: string) {
-    if (tag && !storyData.tags.includes(tag)) {
-      storyData.tags = [...storyData.tags, tag];
-      newTag = '';
-      updateStoryData();
-    }
+
+  function addCustomStory() {
+    if (!customStoryText.trim()) return;
+
+    const customElement = {
+      type: 'text',
+      width: 280,
+      height: 60,
+      data: {
+        content: customStoryText,
+        fontSize: 16,
+        fontFamily: 'Apple SD Gothic Neo',
+        color: '#ffffff',
+        fontWeight: '400',
+        textAlign: 'center',
+        background: 'rgba(0,0,0,0.7)',
+        padding: 12,
+        borderRadius: 8
+      }
+    };
+
+    dispatch('storyElementAdded', customElement);
+    customStoryText = '';
   }
-  
-  // 태그 제거
-  function removeTag(tagToRemove: string) {
-    storyData.tags = storyData.tags.filter(tag => tag !== tagToRemove);
-    updateStoryData();
+
+  function addEmotionOverlay() {
+    const emotionElement = {
+      type: 'text',
+      width: 60,
+      height: 60,
+      data: {
+        content: emotionIcons[selectedEmotion],
+        fontSize: 48,
+        fontFamily: 'Apple Color Emoji',
+        color: '#ffffff',
+        textAlign: 'center',
+        background: 'rgba(0,0,0,0.3)',
+        borderRadius: 30,
+        animation: 'pulse 1.5s ease-in-out infinite'
+      }
+    };
+
+    dispatch('storyElementAdded', emotionElement);
   }
-  
-  // 명언 템플릿 적용
-  function applyQuoteTemplate(quote: string) {
-    storyData.playerQuote = quote;
-    selectedQuoteTemplate = quote;
-    showQuoteTemplates = false;
-    updateStoryData();
-  }
-  
-  // 스토리 요소 추가
-  function addStoryElement(type: string) {
-    let content = {};
+
+  function addDateStamp() {
+    const today = new Date();
+    const dateString = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
     
-    switch (type) {
-      case 'timeline':
-        content = {
-          events: [
-            { time: '1회초', event: '경기 시작' },
-            { time: '9회말', event: '결정적 순간' }
-          ]
-        };
-        break;
-      case 'stats':
-        content = {
-          title: '경기 통계',
-          data: [
-            { label: '타율', value: '.350' },
-            { label: '홈런', value: '25' },
-            { label: 'RBI', value: '80' }
-          ]
-        };
-        break;
-      case 'quote-bubble':
-        content = {
-          text: storyData.playerQuote || '선수의 한마디',
-          speaker: '선수명',
-          style: 'speech-bubble'
-        };
-        break;
-    }
-    
-    dispatch('addStoryElement', { type, content });
+    const dateElement = {
+      type: 'text',
+      width: 120,
+      height: 30,
+      data: {
+        content: dateString,
+        fontSize: 14,
+        fontFamily: 'SF Mono',
+        color: '#86868b',
+        fontWeight: '400',
+        textAlign: 'center',
+        background: 'rgba(255,255,255,0.1)',
+        padding: 6,
+        borderRadius: 4
+      }
+    };
+
+    dispatch('storyElementAdded', dateElement);
   }
-  
-  // 감정 톤 변경
-  function changeEmotionalTone(tone: string) {
-    storyData.emotionalTone = tone as any;
-    updateStoryData();
+
+  function addPlayerNameplate() {
+    const nameplateElement = {
+      type: 'text',
+      width: 200,
+      height: 40,
+      data: {
+        content: '선수명',
+        fontSize: 20,
+        fontFamily: 'Apple SD Gothic Neo',
+        color: '#ffffff',
+        fontWeight: '700',
+        textAlign: 'center',
+        background: 'linear-gradient(135deg, #667eea, #764ba2)',
+        padding: 8,
+        borderRadius: 20,
+        textShadow: '1px 1px 2px rgba(0,0,0,0.8)'
+      }
+    };
+
+    dispatch('storyElementAdded', nameplateElement);
   }
-  
-  // 현재 감정 톤 정보
-  $: currentTone = emotionalTones.find(tone => tone.value === storyData.emotionalTone);
 </script>
 
 <div class="storytelling-panel">
-  <!-- 패널 헤더 -->
   <div class="panel-header">
-    <h3 class="panel-title">
-      <span class="title-icon">📖</span>
-      스토리텔링
-    </h3>
-    <p class="panel-subtitle">
-      카드에 감동적인 이야기를 추가하세요
-    </p>
-  </div>
-  
-  <!-- 배경 스토리 -->
-  <div class="story-section">
-    <h4 class="section-title">
-      <span class="section-icon">🎬</span>
-      배경 스토리
-    </h4>
-    <textarea
-      bind:value={storyData.backgroundStory}
-      on:input={updateStoryData}
-      placeholder="이 순간의 배경과 상황을 설명해주세요..."
-      class="story-textarea"
-      maxlength="500"
-    ></textarea>
-    <div class="character-count">
-      {storyData.backgroundStory.length}/500
-    </div>
-  </div>
-  
-  <!-- 선수 명언 -->
-  <div class="story-section">
-    <h4 class="section-title">
-      <span class="section-icon">💬</span>
-      선수 명언
-    </h4>
-    
-    <div class="quote-input-group">
-      <textarea
-        bind:value={storyData.playerQuote}
-        on:input={updateStoryData}
-        placeholder="선수의 인상적인 말이나 인터뷰 내용..."
-        class="story-textarea"
-        maxlength="200"
-      ></textarea>
-      
-      <button
-        class="template-button"
-        on:click={() => showQuoteTemplates = !showQuoteTemplates}
-        title="명언 템플릿"
-      >
-        💡 템플릿
+    <h3>스토리텔링</h3>
+    <div class="quick-actions">
+      <button class="quick-btn" on:click={addDateStamp} title="날짜 추가">
+        📅
+      </button>
+      <button class="quick-btn" on:click={addPlayerNameplate} title="선수명 추가">
+        👤
+      </button>
+      <button class="quick-btn" on:click={addEmotionOverlay} title="감정 표현 추가">
+        😊
       </button>
     </div>
-    
-    {#if showQuoteTemplates}
-      <div class="quote-templates">
-        <h5>명언 템플릿</h5>
-        <div class="template-list">
-          {#each quoteTemplates as quote}
-            <button
-              class="template-item"
-              class:selected={selectedQuoteTemplate === quote}
-              on:click={() => applyQuoteTemplate(quote)}
-            >
-              "{quote}"
-            </button>
-          {/each}
-        </div>
-      </div>
-    {/if}
-    
-    <div class="character-count">
-      {storyData.playerQuote.length}/200
-    </div>
   </div>
-  
-  <!-- 역사적 맥락 -->
-  <div class="story-section">
-    <h4 class="section-title">
-      <span class="section-icon">📅</span>
-      역사적 맥락
-    </h4>
-    <textarea
-      bind:value={storyData.historicalContext}
-      on:input={updateStoryData}
-      placeholder="경기 날짜, 상황, 의미 등을 설명해주세요..."
-      class="story-textarea"
-      maxlength="300"
-    ></textarea>
-    <div class="character-count">
-      {storyData.historicalContext.length}/300
-    </div>
-  </div>
-  
-  <!-- 감정 톤 -->
-  <div class="story-section">
-    <h4 class="section-title">
-      <span class="section-icon">🎭</span>
-      감정 표현
-    </h4>
-    
-    <div class="emotion-selector">
-      {#each emotionalTones as tone}
+
+  <div class="panel-content">
+    <!-- Category Navigation -->
+    <div class="category-nav">
+      {#each Object.entries(storyCategories) as [categoryId, category]}
         <button
-          class="emotion-button"
-          class:selected={storyData.emotionalTone === tone.value}
-          style="--emotion-color: {tone.color}"
-          on:click={() => changeEmotionalTone(tone.value)}
-          title={tone.label}
+          class="category-btn"
+          class:active={activeCategory === categoryId}
+          on:click={() => activeCategory = categoryId}
         >
-          <span class="emotion-icon">{tone.icon}</span>
-          <span class="emotion-label">{tone.label}</span>
+          <span class="category-icon">{category.icon}</span>
+          <span class="category-name">{category.name}</span>
         </button>
       {/each}
     </div>
-    
-    {#if currentTone}
-      <div class="current-emotion">
-        <span class="current-icon">{currentTone.icon}</span>
-        <span class="current-label">현재 감정: {currentTone.label}</span>
-      </div>
-    {/if}
-  </div>
-  
-  <!-- 태그 -->
-  <div class="story-section">
-    <h4 class="section-title">
-      <span class="section-icon">🏷️</span>
-      태그
-    </h4>
-    
-    <div class="tag-input-group">
-      <input
-        type="text"
-        bind:value={newTag}
-        on:keydown={(e) => e.key === 'Enter' && addTag(newTag)}
-        placeholder="태그 입력..."
-        class="tag-input"
-        maxlength="20"
-      />
-      <button
-        class="add-tag-button"
-        on:click={() => addTag(newTag)}
-        disabled={!newTag.trim()}
-      >
-        추가
-      </button>
+
+    <!-- Story Templates -->
+    <div class="story-templates">
+      {#each storyCategories[activeCategory].stories as story}
+        <div
+          class="story-card"
+          class:selected={selectedStory?.id === story.id}
+          on:click={() => selectStory(story)}
+        >
+          <div class="story-preview" style="background: {story.background}">
+            <span class="story-icon">{story.icon}</span>
+          </div>
+          <div class="story-info">
+            <h4>{story.title}</h4>
+            <p>{story.description}</p>
+            <div class="story-template">
+              "{story.template.substring(0, 50)}..."
+            </div>
+          </div>
+        </div>
+      {/each}
     </div>
-    
-    <!-- 제안 태그 -->
-    <div class="suggested-tags">
-      <h5>제안 태그</h5>
-      <div class="tag-suggestions">
-        {#each suggestedTags as tag}
-          <button
-            class="suggested-tag"
-            class:added={storyData.tags.includes(tag)}
-            on:click={() => addTag(tag)}
-            disabled={storyData.tags.includes(tag)}
-          >
-            {tag}
-          </button>
-        {/each}
-      </div>
-    </div>
-    
-    <!-- 현재 태그 -->
-    {#if storyData.tags.length > 0}
-      <div class="current-tags">
-        <h5>현재 태그</h5>
-        <div class="tag-list">
-          {#each storyData.tags as tag}
-            <span class="tag">
-              {tag}
-              <button
-                class="remove-tag"
-                on:click={() => removeTag(tag)}
-                title="태그 제거"
-              >
-                ✕
-              </button>
-            </span>
-          {/each}
+
+    <!-- Selected Story Details -->
+    {#if selectedStory}
+      <div class="selected-story" transition:slide={{ duration: 300 }}>
+        <h4>선택된 스토리</h4>
+        <div class="story-detail">
+          <div class="story-preview-large" style="background: {selectedStory.background}">
+            <span class="story-icon-large">{selectedStory.icon}</span>
+          </div>
+          <div class="story-content">
+            <h5>{selectedStory.title}</h5>
+            <p class="story-description">{selectedStory.description}</p>
+            <div class="story-template-full">
+              {selectedStory.template}
+            </div>
+            <button class="add-story-btn" on:click={addStoryElement}>
+              ➕ 카드에 추가
+            </button>
+          </div>
         </div>
       </div>
     {/if}
-  </div>
-  
-  <!-- 스토리 요소 추가 -->
-  <div class="story-section">
-    <h4 class="section-title">
-      <span class="section-icon">🎨</span>
-      스토리 요소 추가
-    </h4>
-    
+
+    <!-- Custom Story Input -->
+    <div class="custom-story">
+      <h4>커스텀 스토리</h4>
+      <textarea
+        bind:value={customStoryText}
+        placeholder="나만의 스토리를 입력하세요..."
+        rows="3"
+      ></textarea>
+      <button
+        class="add-custom-btn"
+        disabled={!customStoryText.trim()}
+        on:click={addCustomStory}
+      >
+        커스텀 스토리 추가
+      </button>
+    </div>
+
+    <!-- Emotion Selector -->
+    <div class="emotion-selector">
+      <h4>감정 표현</h4>
+      <div class="emotion-grid">
+        {#each Object.entries(emotionIcons) as [emotion, icon]}
+          {@const typedEmotion = emotion as keyof typeof emotionIcons}
+          <button
+            class="emotion-btn"
+            class:selected={selectedEmotion === emotion}
+            on:click={() => selectedEmotion = typedEmotion}
+            title={typedEmotion}
+          >
+            {icon}
+          </button>
+        {/each}
+      </div>
+      <button class="add-emotion-btn" on:click={addEmotionOverlay}>
+        감정 아이콘 추가
+      </button>
+    </div>
+
+    <!-- Story Elements Library -->
     <div class="story-elements">
-      <button
-        class="element-button"
-        on:click={() => addStoryElement('timeline')}
-        title="타임라인 추가"
-      >
-        <span class="element-icon">⏰</span>
-        <span class="element-label">타임라인</span>
-      </button>
-      
-      <button
-        class="element-button"
-        on:click={() => addStoryElement('stats')}
-        title="통계 차트 추가"
-      >
-        <span class="element-icon">📊</span>
-        <span class="element-label">통계</span>
-      </button>
-      
-      <button
-        class="element-button"
-        on:click={() => addStoryElement('quote-bubble')}
-        title="말풍선 추가"
-      >
-        <span class="element-icon">💭</span>
-        <span class="element-label">말풍선</span>
-      </button>
+      <h4>스토리 요소</h4>
+      <div class="elements-grid">
+        <button class="element-btn" on:click={() => dispatch('storyElementAdded', {
+          type: 'text',
+          width: 150,
+          height: 30,
+          data: {
+            content: '⚾ KBO 리그',
+            fontSize: 16,
+            fontFamily: 'Apple SD Gothic Neo',
+            color: '#ffffff',
+            fontWeight: '600',
+            textAlign: 'center',
+            background: 'rgba(99, 102, 241, 0.8)',
+            padding: 8,
+            borderRadius: 15
+          }
+        })}>
+          🏟️ 리그 배지
+        </button>
+
+        <button class="element-btn" on:click={() => dispatch('storyElementAdded', {
+          type: 'text',
+          width: 100,
+          height: 25,
+          data: {
+            content: '2024 시즌',
+            fontSize: 14,
+            fontFamily: 'SF Mono',
+            color: '#ffd700',
+            fontWeight: '500',
+            textAlign: 'center',
+            background: 'rgba(0,0,0,0.8)',
+            padding: 4,
+            borderRadius: 4
+          }
+        })}>
+          📅 시즌 태그
+        </button>
+
+        <button class="element-btn" on:click={() => dispatch('storyElementAdded', {
+          type: 'text',
+          width: 80,
+          height: 80,
+          data: {
+            content: '★',
+            fontSize: 60,
+            fontFamily: 'Apple Color Emoji',
+            color: '#ffd700',
+            textAlign: 'center',
+            textShadow: '0 0 20px #ffd700',
+            animation: 'glow 2s ease-in-out infinite alternate'
+          }
+        })}>
+          ⭐ 스타 마크
+        </button>
+
+        <button class="element-btn" on:click={() => dispatch('storyElementAdded', {
+          type: 'text',
+          width: 200,
+          height: 40,
+          data: {
+            content: '🏆 CHAMPION 🏆',
+            fontSize: 18,
+            fontFamily: 'Apple SD Gothic Neo',
+            color: '#ffffff',
+            fontWeight: '700',
+            textAlign: 'center',
+            background: 'linear-gradient(135deg, #ffd700, #ff8c00)',
+            padding: 10,
+            borderRadius: 20,
+            textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+            animation: 'pulse 1.5s ease-in-out infinite'
+          }
+        })}>
+          🏆 챔피언 배너
+        </button>
+      </div>
+    </div>
+
+    <!-- Story Templates by Team -->
+    <div class="team-stories">
+      <h4>구단별 스토리</h4>
+      <div class="team-grid">
+        <button class="team-btn lg" on:click={() => dispatch('storyElementAdded', {
+          type: 'text',
+          width: 180,
+          height: 35,
+          data: {
+            content: 'LG TWINS',
+            fontSize: 16,
+            fontFamily: 'Apple SD Gothic Neo',
+            color: '#ffffff',
+            fontWeight: '700',
+            textAlign: 'center',
+            background: 'linear-gradient(135deg, #c41e3a, #ff69b4)',
+            padding: 8,
+            borderRadius: 8
+          }
+        })}>
+          LG 트윈스
+        </button>
+
+        <button class="team-btn doosan" on:click={() => dispatch('storyElementAdded', {
+          type: 'text',
+          width: 180,
+          height: 35,
+          data: {
+            content: 'DOOSAN BEARS',
+            fontSize: 16,
+            fontFamily: 'Apple SD Gothic Neo',
+            color: '#ffffff',
+            fontWeight: '700',
+            textAlign: 'center',
+            background: 'linear-gradient(135deg, #131230, #4169e1)',
+            padding: 8,
+            borderRadius: 8
+          }
+        })}>
+          두산 베어스
+        </button>
+
+        <button class="team-btn kt" on:click={() => dispatch('storyElementAdded', {
+          type: 'text',
+          width: 180,
+          height: 35,
+          data: {
+            content: 'KT WIZ',
+            fontSize: 16,
+            fontFamily: 'Apple SD Gothic Neo',
+            color: '#ffffff',
+            fontWeight: '700',
+            textAlign: 'center',
+            background: 'linear-gradient(135deg, #000000, #ff0000)',
+            padding: 8,
+            borderRadius: 8
+          }
+        })}>
+          KT 위즈
+        </button>
+
+        <button class="team-btn samsung" on:click={() => dispatch('storyElementAdded', {
+          type: 'text',
+          width: 180,
+          height: 35,
+          data: {
+            content: 'SAMSUNG LIONS',
+            fontSize: 16,
+            fontFamily: 'Apple SD Gothic Neo',
+            color: '#ffffff',
+            fontWeight: '700',
+            textAlign: 'center',
+            background: 'linear-gradient(135deg, #074ca1, #87ceeb)',
+            padding: 8,
+            borderRadius: 8
+          }
+        })}>
+          삼성 라이온즈
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
 <style>
   .storytelling-panel {
-    width: 100%;
-    max-width: 400px;
-    background: var(--apple-surface-primary);
-    border: 1px solid var(--apple-surface-border);
-    border-radius: 16px;
-    padding: 20px;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-  
-  /* 패널 헤더 */
-  .panel-header {
-    margin-bottom: 24px;
-    text-align: center;
-  }
-  
-  .panel-title {
-    font-size: 20px;
-    font-weight: 600;
-    margin: 0 0 8px;
-    color: var(--apple-text-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-  
-  .title-icon {
-    font-size: 0.9em;
-  }
-  
-  .panel-subtitle {
-    font-size: 14px;
-    color: var(--apple-text-secondary);
-    margin: 0;
-  }
-  
-  /* 스토리 섹션 */
-  .story-section {
-    margin-bottom: 24px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--apple-surface-border);
-  }
-  
-  .story-section:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-  }
-  
-  .section-title {
-    font-size: 16px;
-    font-weight: 600;
-    margin: 0 0 12px;
-    color: var(--apple-text-primary);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  
-  .section-icon {
-    font-size: 0.9em;
-  }
-  
-  /* 텍스트 영역 */
-  .story-textarea {
-    width: 100%;
-    min-height: 80px;
-    padding: 12px;
-    border: 2px solid var(--apple-surface-border);
-    border-radius: 8px;
-    background: var(--apple-surface-secondary);
-    color: var(--apple-text-primary);
-    font-size: 14px;
-    font-family: inherit;
-    resize: vertical;
-    transition: border-color var(--apple-duration-fast) var(--apple-easing-smooth);
-  }
-  
-  .story-textarea:focus {
-    outline: none;
-    border-color: var(--apple-accent-blue);
-    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
-  }
-  
-  .character-count {
-    text-align: right;
-    font-size: 11px;
-    color: var(--apple-text-tertiary);
-    margin-top: 4px;
-  }
-  
-  /* 명언 입력 그룹 */
-  .quote-input-group {
-    position: relative;
-  }
-  
-  .template-button {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    padding: 4px 8px;
-    background: var(--apple-accent-blue);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: background var(--apple-duration-fast) var(--apple-easing-smooth);
-  }
-  
-  .template-button:hover {
-    background: var(--apple-accent-blue-hover);
-  }
-  
-  /* 명언 템플릿 */
-  .quote-templates {
-    margin-top: 12px;
-    padding: 12px;
-    background: var(--apple-surface-secondary);
-    border-radius: 8px;
-  }
-  
-  .quote-templates h5 {
-    font-size: 14px;
-    font-weight: 600;
-    margin: 0 0 8px;
-    color: var(--apple-text-primary);
-  }
-  
-  .template-list {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    height: 100%;
+    background: rgba(28, 28, 30, 0.95);
+    color: #ffffff;
   }
-  
-  .template-item {
-    padding: 8px 12px;
-    background: var(--apple-surface-primary);
-    border: 1px solid var(--apple-surface-border);
-    border-radius: 6px;
-    text-align: left;
-    font-size: 13px;
-    color: var(--apple-text-secondary);
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .panel-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .quick-actions {
+    display: flex;
+    gap: 4px;
+  }
+
+  .quick-btn {
+    padding: 6px 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: #ffffff;
     cursor: pointer;
-    transition: all var(--apple-duration-fast) var(--apple-easing-smooth);
+    font-size: 14px;
+    transition: all 0.2s ease;
   }
-  
-  .template-item:hover {
-    background: var(--apple-surface-tertiary);
-    color: var(--apple-text-primary);
+
+  .quick-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
   }
-  
-  .template-item.selected {
-    background: var(--apple-accent-blue);
-    color: white;
-    border-color: var(--apple-accent-blue);
+
+  .panel-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
   }
-  
-  /* 감정 선택기 */
-  .emotion-selector {
+
+  .category-nav {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 20px;
   }
-  
-  .emotion-button {
+
+  .category-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
     padding: 12px 8px;
-    background: var(--apple-surface-secondary);
-    border: 2px solid var(--apple-surface-border);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 8px;
+    color: #ffffff;
     cursor: pointer;
-    transition: all var(--apple-duration-fast) var(--apple-easing-smooth);
+    transition: all 0.2s ease;
   }
-  
-  .emotion-button:hover {
-    background: var(--apple-surface-tertiary);
-    transform: translateY(-2px);
+
+  .category-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
   }
-  
-  .emotion-button.selected {
-    background: var(--emotion-color);
-    color: white;
-    border-color: var(--emotion-color);
-    box-shadow: 0 4px 12px rgba(var(--emotion-color-rgb, 0, 122, 255), 0.3);
+
+  .category-btn.active {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: #6366f1;
   }
-  
-  .emotion-icon {
+
+  .category-icon {
     font-size: 20px;
+    margin-bottom: 4px;
   }
-  
-  .emotion-label {
+
+  .category-name {
     font-size: 12px;
     font-weight: 500;
+    text-align: center;
   }
-  
-  .current-emotion {
+
+  .story-templates {
+    margin-bottom: 24px;
+  }
+
+  .story-card {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    background: var(--apple-surface-secondary);
-    border-radius: 6px;
-    font-size: 14px;
-    color: var(--apple-text-primary);
-  }
-  
-  .current-icon {
-    font-size: 16px;
-  }
-  
-  /* 태그 입력 */
-  .tag-input-group {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-  
-  .tag-input {
-    flex: 1;
-    padding: 8px 12px;
-    border: 2px solid var(--apple-surface-border);
-    border-radius: 6px;
-    background: var(--apple-surface-secondary);
-    color: var(--apple-text-primary);
-    font-size: 14px;
-  }
-  
-  .tag-input:focus {
-    outline: none;
-    border-color: var(--apple-accent-blue);
-  }
-  
-  .add-tag-button {
-    padding: 8px 16px;
-    background: var(--apple-accent-blue);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    margin-bottom: 8px;
     cursor: pointer;
-    transition: background var(--apple-duration-fast) var(--apple-easing-smooth);
+    transition: all 0.2s ease;
   }
-  
-  .add-tag-button:hover:not(:disabled) {
-    background: var(--apple-accent-blue-hover);
+
+  .story-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
   }
-  
-  .add-tag-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+
+  .story-card.selected {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: #6366f1;
   }
-  
-  /* 제안 태그 */
-  .suggested-tags h5,
-  .current-tags h5 {
-    font-size: 13px;
-    font-weight: 600;
-    margin: 0 0 8px;
-    color: var(--apple-text-secondary);
-  }
-  
-  .tag-suggestions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 16px;
-  }
-  
-  .suggested-tag {
-    padding: 4px 8px;
-    background: var(--apple-surface-secondary);
-    border: 1px solid var(--apple-surface-border);
-    border-radius: 12px;
-    font-size: 12px;
-    color: var(--apple-text-secondary);
-    cursor: pointer;
-    transition: all var(--apple-duration-fast) var(--apple-easing-smooth);
-  }
-  
-  .suggested-tag:hover:not(:disabled) {
-    background: var(--apple-accent-blue);
-    color: white;
-  }
-  
-  .suggested-tag.added {
-    background: var(--apple-surface-tertiary);
-    color: var(--apple-text-tertiary);
-    cursor: not-allowed;
-  }
-  
-  /* 현재 태그 */
-  .tag-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  
-  .tag {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
-    background: var(--apple-accent-blue);
-    color: white;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 500;
-  }
-  
-  .remove-tag {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 10px;
-    cursor: pointer;
-    padding: 0;
-    width: 14px;
-    height: 14px;
+
+  .story-preview {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-    transition: background var(--apple-duration-fast) var(--apple-easing-smooth);
+    margin-right: 12px;
+    flex-shrink: 0;
   }
-  
-  .remove-tag:hover {
-    background: rgba(255, 255, 255, 0.2);
+
+  .story-icon {
+    font-size: 20px;
   }
-  
-  /* 스토리 요소 */
-  .story-elements {
+
+  .story-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .story-info h4 {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+  }
+
+  .story-info p {
+    margin: 0 0 6px 0;
+    font-size: 12px;
+    color: #86868b;
+    line-height: 1.3;
+  }
+
+  .story-template {
+    font-size: 11px;
+    color: #ebebf5;
+    font-style: italic;
+    opacity: 0.8;
+  }
+
+  .selected-story {
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+
+  .selected-story h4 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #6366f1;
+  }
+
+  .story-detail {
+    display: flex;
+    gap: 12px;
+  }
+
+  .story-preview-large {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .story-icon-large {
+    font-size: 30px;
+  }
+
+  .story-content {
+    flex: 1;
+  }
+
+  .story-content h5 {
+    margin: 0 0 6px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+  }
+
+  .story-description {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    color: #ebebf5;
+  }
+
+  .story-template-full {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #ffffff;
+    font-style: italic;
+    margin-bottom: 12px;
+  }
+
+  .add-story-btn {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border: none;
+    border-radius: 6px;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .add-story-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+
+  .custom-story,
+  .emotion-selector,
+  .story-elements,
+  .team-stories {
+    margin-bottom: 24px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .custom-story h4,
+  .emotion-selector h4,
+  .story-elements h4,
+  .team-stories h4 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ebebf5;
+  }
+
+  .custom-story textarea {
+    width: 100%;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    margin-bottom: 8px;
+  }
+
+  .custom-story textarea:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+
+  .add-custom-btn,
+  .add-emotion-btn {
+    width: 100%;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+
+  .add-custom-btn:hover,
+  .add-emotion-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .add-custom-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .emotion-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .emotion-btn {
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 24px;
+    transition: all 0.2s ease;
+  }
+
+  .emotion-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+  }
+
+  .emotion-btn.selected {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: #6366f1;
+  }
+
+  .elements-grid,
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
   }
-  
-  .element-button {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    padding: 12px 8px;
-    background: var(--apple-surface-secondary);
-    border: 2px solid var(--apple-surface-border);
-    border-radius: 8px;
+
+  .element-btn,
+  .team-btn {
+    padding: 10px 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #ffffff;
     cursor: pointer;
-    transition: all var(--apple-duration-fast) var(--apple-easing-smooth);
+    font-size: 12px;
+    text-align: center;
+    transition: all 0.2s ease;
   }
-  
-  .element-button:hover {
-    background: var(--apple-accent-blue);
-    color: white;
-    border-color: var(--apple-accent-blue);
-    transform: translateY(-2px);
+
+  .element-btn:hover,
+  .team-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
   }
-  
-  .element-icon {
-    font-size: 18px;
+
+  .team-btn.lg { border-left: 4px solid #c41e3a; }
+  .team-btn.doosan { border-left: 4px solid #131230; }
+  .team-btn.kt { border-left: 4px solid #ff0000; }
+  .team-btn.samsung { border-left: 4px solid #074ca1; }
+
+  /* Scrollbar styling */
+  .panel-content::-webkit-scrollbar {
+    width: 6px;
   }
-  
-  .element-label {
-    font-size: 11px;
-    font-weight: 500;
+
+  .panel-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
   }
-  
-  /* 반응형 디자인 */
-  @media (max-width: 768px) {
-    .storytelling-panel {
-      max-width: 100%;
-      padding: 16px;
-    }
-    
-    .emotion-selector {
-      grid-template-columns: repeat(3, 1fr);
-    }
-    
-    .story-elements {
-      grid-template-columns: 1fr;
-    }
+
+  .panel-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+  }
+
+  .panel-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
   }
 </style>

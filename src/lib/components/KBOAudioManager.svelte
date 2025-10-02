@@ -1,214 +1,225 @@
 <script lang="ts">
   import { createEventDispatcher, onMount, onDestroy } from 'svelte';
-  import { browser } from '$app/environment';
   import type { KBOCheerSound } from '../data/kboTemplates.js';
   import { KBO_CHEER_SOUNDS, KBO_TEAMS } from '../data/kboTemplates.js';
   
   // Props
   export let selectedTeam: string | null = null;
   export let autoPlay = false;
-  export let volume = 0.7;
   export let showVisualizer = true;
   export let showPlaylist = true;
   
-  // 오디오 상태 관리
+  // 상태 관리
   let currentAudio: HTMLAudioElement | null = null;
   let currentSound: KBOCheerSound | null = null;
   let isPlaying = false;
+  let isPaused = false;
   let currentTime = 0;
   let duration = 0;
-  let isLoading = false;
+  let volume = 0.7;
+  let isMuted = false;
   let playlist: KBOCheerSound[] = [];
   let currentIndex = 0;
-  let repeatMode: 'none' | 'one' | 'all' = 'none';
-  let shuffleMode = false;
+  let isLooping = false;
+  let isShuffling = false;
   let audioContext: AudioContext | null = null;
   let analyser: AnalyserNode | null = null;
-  let dataArray: Uint8Array | null = null;
-  let animationFrame: number;
+  let dataArray: Uint8Array<ArrayBuffer> | null = null;
+  let animationFrame: number | null = null;
   
   // 이벤트 디스패처
   const dispatch = createEventDispatcher<{
     soundChanged: KBOCheerSound | null;
     playStateChanged: boolean;
     volumeChanged: number;
-    timeUpdate: { current: number; duration: number };
+    playlistUpdated: KBOCheerSound[];
   }>();
   
+  // 필터링된 사운드 목록
+  $: filteredSounds = KBO_CHEER_SOUNDS.filter(sound => 
+    !selectedTeam || sound.team === selectedTeam || sound.team === 'all'
+  );
+  
+  // 플레이리스트 초기화
+  $: if (filteredSounds.length > 0 && playlist.length === 0) {
+    playlist = [...filteredSounds];
+    dispatch('playlistUpdated', playlist);
+  }
+  
   onMount(() => {
-    if (!browser) return;
-    
-    // 초기 플레이리스트 설정
-    updatePlaylist();
-    
-    // 오디오 컨텍스트 초기화 (사용자 상호작용 후)
-    const initAudioContext = () => {
-      if (!audioContext) {
-        audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-        analyser = audioContext.createAnalyser();
-        analyser.fftSize = 256;
-        dataArray = new Uint8Array(analyser.frequencyBinCount) as Uint8Array;
-      }
-    };
-    
-    document.addEventListener('click', initAudioContext, { once: true });
-    
-    return () => {
-      cleanup();
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
-      }
-    };
+    // Web Audio API 초기화
+    if (typeof window !== 'undefined' && window.AudioContext) {
+      audioContext = new AudioContext();
+      analyser = audioContext.createAnalyser();
+      analyser.fftSize = 256;
+      const bufferLength = analyser.frequencyBinCount;
+      dataArray = new Uint8Array(bufferLength) as Uint8Array<ArrayBuffer>;
+    }
   });
   
   onDestroy(() => {
     cleanup();
   });
   
-  // 플레이리스트 업데이트
-  function updatePlaylist() {
-    playlist = selectedTeam 
-      ? KBO_CHEER_SOUNDS.filter(sound => sound.team === selectedTeam || sound.team === 'all')
-      : KBO_CHEER_SOUNDS;
-  }
-  
-  // 오디오 정리
+  // 정리 함수
   function cleanup() {
     if (currentAudio) {
       currentAudio.pause();
-      currentAudio.removeEventListener('loadedmetadata', handleLoadedMetadata);
-      currentAudio.removeEventListener('timeupdate', handleTimeUpdate);
-      currentAudio.removeEventListener('ended', handleEnded);
-      currentAudio.removeEventListener('error', handleError);
       currentAudio = null;
     }
-    
+    if (animationFrame) {
+      cancelAnimationFrame(animationFrame);
+    }
     if (audioContext) {
       audioContext.close();
-      audioContext = null;
+    }
+  }
+  
+  // 사운드 로드
+  async function loadSound(sound: KBOCheerSound) {
+    if (currentAudio) {
+      currentAudio.pause();
+    }
+    
+    currentSound = sound;
+    currentAudio = new Audio(sound.audioUrl);
+    currentAudio.volume = isMuted ? 0 : volume;
+    
+    // Web Audio API 연결
+    if (audioContext && analyser) {
+      const source = audioContext.createMediaElementSource(currentAudio);
+      source.connect(analyser);
+      analyser.connect(audioContext.destination);
+    }
+    
+    // 이벤트 리스너 설정
+    currentAudio.addEventListener('loadedmetadata', () => {
+      duration = currentAudio?.duration || 0;
+    });
+    
+    currentAudio.addEventListener('timeupdate', () => {
+      currentTime = currentAudio?.currentTime || 0;
+    });
+    
+    currentAudio.addEventListener('ended', handleSoundEnded);
+    
+    currentAudio.addEventListener('error', (e) => {
+      console.error('오디오 로드 실패:', e);
+      handleSoundEnded();
+    });
+    
+    dispatch('soundChanged', sound);
+    
+    if (autoPlay) {
+      await playSound();
     }
   }
   
   // 사운드 재생
-  async function playSound(sound: KBOCheerSound, index?: number) {
+  async function playSound() {
+    if (!currentAudio) return;
+    
     try {
-      isLoading = true;
-      
-      // 기존 오디오 정리
-      if (currentAudio) {
-        currentAudio.pause();
-      }
-      
-      // 새 오디오 생성
-      currentAudio = new Audio(sound.audioUrl);
-      currentAudio.volume = volume;
-      currentSound = sound;
-      
-      if (typeof index === 'number') {
-        currentIndex = index;
-      }
-      
-      // 이벤트 리스너 추가
-      currentAudio.addEventListener('loadedmetadata', handleLoadedMetadata);
-      currentAudio.addEventListener('timeupdate', handleTimeUpdate);
-      currentAudio.addEventListener('ended', handleEnded);
-      currentAudio.addEventListener('error', handleError);
-      
-      // 오디오 컨텍스트 연결 (시각화용)
-      if (audioContext && analyser) {
-        const source = audioContext.createMediaElementSource(currentAudio);
-        source.connect(analyser);
-        analyser.connect(audioContext.destination);
+      if (audioContext?.state === 'suspended') {
+        await audioContext.resume();
       }
       
       await currentAudio.play();
       isPlaying = true;
-      isLoading = false;
+      isPaused = false;
       
-      dispatch('soundChanged', sound);
-      dispatch('playStateChanged', true);
-      
-      // 시각화 시작
       if (showVisualizer) {
         startVisualization();
       }
       
+      dispatch('playStateChanged', true);
     } catch (error) {
-      console.error('오디오 재생 실패:', error);
-      isLoading = false;
-      isPlaying = false;
+      console.error('재생 실패:', error);
     }
   }
   
-  // 재생/일시정지 토글
-  function togglePlayPause() {
-    if (!currentAudio) {
-      if (playlist.length > 0) {
-        playSound(playlist[0], 0);
-      }
-      return;
-    }
-    
-    if (isPlaying) {
+  // 사운드 일시정지
+  function pauseSound() {
+    if (currentAudio) {
       currentAudio.pause();
       isPlaying = false;
-    } else {
-      currentAudio.play();
-      isPlaying = true;
+      isPaused = true;
+      dispatch('playStateChanged', false);
     }
-    
-    dispatch('playStateChanged', isPlaying);
   }
   
-  // 정지
+  // 사운드 정지
   function stopSound() {
     if (currentAudio) {
       currentAudio.pause();
       currentAudio.currentTime = 0;
       isPlaying = false;
+      isPaused = false;
       currentTime = 0;
-      
       dispatch('playStateChanged', false);
     }
   }
   
-  // 다음 곡
-  function nextSound() {
-    if (playlist.length === 0) return;
+  // 사운드 종료 처리
+  function handleSoundEnded() {
+    isPlaying = false;
+    isPaused = false;
+    currentTime = 0;
     
-    let nextIndex;
-    
-    if (shuffleMode) {
-      nextIndex = Math.floor(Math.random() * playlist.length);
-    } else {
-      nextIndex = (currentIndex + 1) % playlist.length;
+    if (isLooping && currentSound) {
+      loadSound(currentSound);
+      return;
     }
     
-    playSound(playlist[nextIndex], nextIndex);
+    // 다음 곡 재생
+    if (playlist.length > 1) {
+      playNext();
+    }
+    
+    dispatch('playStateChanged', false);
+  }
+  
+  // 다음 곡
+  function playNext() {
+    if (playlist.length === 0) return;
+    
+    if (isShuffling) {
+      currentIndex = Math.floor(Math.random() * playlist.length);
+    } else {
+      currentIndex = (currentIndex + 1) % playlist.length;
+    }
+    
+    loadSound(playlist[currentIndex]);
   }
   
   // 이전 곡
-  function previousSound() {
+  function playPrevious() {
     if (playlist.length === 0) return;
     
-    let prevIndex;
-    
-    if (shuffleMode) {
-      prevIndex = Math.floor(Math.random() * playlist.length);
+    if (isShuffling) {
+      currentIndex = Math.floor(Math.random() * playlist.length);
     } else {
-      prevIndex = currentIndex === 0 ? playlist.length - 1 : currentIndex - 1;
+      currentIndex = currentIndex === 0 ? playlist.length - 1 : currentIndex - 1;
     }
     
-    playSound(playlist[prevIndex], prevIndex);
+    loadSound(playlist[currentIndex]);
   }
   
   // 볼륨 변경
   function changeVolume(newVolume: number) {
     volume = newVolume;
     if (currentAudio) {
-      currentAudio.volume = volume;
+      currentAudio.volume = isMuted ? 0 : volume;
     }
     dispatch('volumeChanged', volume);
+  }
+  
+  // 음소거 토글
+  function toggleMute() {
+    isMuted = !isMuted;
+    if (currentAudio) {
+      currentAudio.volume = isMuted ? 0 : volume;
+    }
   }
   
   // 시간 이동
@@ -219,79 +230,33 @@
     }
   }
   
-  // 반복 모드 변경
-  function toggleRepeatMode() {
-    switch (repeatMode) {
-      case 'none':
-        repeatMode = 'one';
-        break;
-      case 'one':
-        repeatMode = 'all';
-        break;
-      case 'all':
-        repeatMode = 'none';
-        break;
+  // 플레이리스트에 추가
+  function addToPlaylist(sound: KBOCheerSound) {
+    if (!playlist.find(s => s.id === sound.id)) {
+      playlist = [...playlist, sound];
+      dispatch('playlistUpdated', playlist);
     }
   }
   
-  // 셔플 모드 토글
-  function toggleShuffleMode() {
-    shuffleMode = !shuffleMode;
-  }
-  
-  // 오디오 이벤트 핸들러
-  function handleLoadedMetadata() {
-    if (currentAudio) {
-      duration = currentAudio.duration;
+  // 플레이리스트에서 제거
+  function removeFromPlaylist(soundId: string) {
+    playlist = playlist.filter(s => s.id !== soundId);
+    if (currentIndex >= playlist.length) {
+      currentIndex = 0;
     }
-  }
-  
-  function handleTimeUpdate() {
-    if (currentAudio) {
-      currentTime = currentAudio.currentTime;
-      dispatch('timeUpdate', { current: currentTime, duration });
-    }
-  }
-  
-  function handleEnded() {
-    isPlaying = false;
-    dispatch('playStateChanged', false);
-    
-    switch (repeatMode) {
-      case 'one':
-        if (currentAudio) {
-          currentAudio.currentTime = 0;
-          currentAudio.play();
-          isPlaying = true;
-        }
-        break;
-      case 'all':
-        nextSound();
-        break;
-      default:
-        if (currentIndex < playlist.length - 1) {
-          nextSound();
-        }
-        break;
-    }
-  }
-  
-  function handleError() {
-    console.error('오디오 로딩 오류');
-    isLoading = false;
-    isPlaying = false;
+    dispatch('playlistUpdated', playlist);
   }
   
   // 시각화 시작
   function startVisualization() {
     if (!analyser || !dataArray) return;
     
-    const animate = () => {
-      if (isPlaying && analyser && dataArray) {
-        analyser.getByteFrequencyData(dataArray);
-        animationFrame = requestAnimationFrame(animate);
-      }
-    };
+    function animate() {
+      if (!isPlaying) return;
+      
+      analyser!.getByteFrequencyData(dataArray!);
+      animationFrame = requestAnimationFrame(animate);
+    }
     
     animate();
   }
@@ -303,332 +268,358 @@
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
   
-  // 반응형 처리
-  $: if (selectedTeam !== null) {
-    updatePlaylist();
+  // 플레이리스트에서 선택
+  function selectFromPlaylist(index: number) {
+    currentIndex = index;
+    loadSound(playlist[index]);
   }
   
-  // 자동 재생
-  $: if (autoPlay && playlist.length > 0 && !currentSound) {
-    playSound(playlist[0], 0);
+  // 이벤트 핸들러들
+  function handleSeekInput(e: Event) {
+    const target = e.target as HTMLInputElement;
+    if (target) {
+      seekTo(parseFloat(target.value));
+    }
+  }
+  
+  function handleVolumeInput(e: Event) {
+    const target = e.target as HTMLInputElement;
+    if (target) {
+      changeVolume(parseFloat(target.value));
+    }
   }
 </script>
 
-<div class="kbo-audio-manager">
+<div class="audio-manager">
   <!-- 메인 플레이어 -->
   <div class="main-player">
-    <div class="player-info">
-      {#if currentSound}
-        <div class="sound-artwork">
-          <div class="artwork-placeholder">
-            {#if selectedTeam && KBO_TEAMS[selectedTeam]}
-              <span style="color: {KBO_TEAMS[selectedTeam].colors.primary}">
-                ⚾
+    <!-- 현재 재생 중인 사운드 정보 -->
+    {#if currentSound}
+      <div class="now-playing">
+        <div class="sound-info">
+          <div class="sound-title">{currentSound.name}</div>
+          <div class="sound-meta">
+            {#if currentSound.team !== 'all'}
+              <span class="team-name" style="color: {KBO_TEAMS[currentSound.team]?.colors.primary}">
+                {KBO_TEAMS[currentSound.team]?.name}
               </span>
             {:else}
-              🎵
+              <span class="team-name">공통</span>
             {/if}
+            <span class="duration">{formatTime(duration)}</span>
           </div>
-          
-          {#if showVisualizer && isPlaying}
-            <div class="audio-visualizer">
+        </div>
+        
+        {#if showVisualizer && isPlaying}
+          <div class="visualizer">
+            <div class="visualizer-bars">
               {#each Array(8) as _, i}
                 <div 
-                  class="visualizer-bar"
+                  class="bar"
                   style="animation-delay: {i * 0.1}s"
                 ></div>
               {/each}
             </div>
-          {/if}
-        </div>
-        
-        <div class="sound-details">
-          <h3 class="sound-title">{currentSound.name}</h3>
-          <p class="sound-description">{currentSound.description}</p>
-          {#if selectedTeam && KBO_TEAMS[selectedTeam]}
-            <p class="team-name">{KBO_TEAMS[selectedTeam].name}</p>
-          {/if}
-        </div>
-      {:else}
-        <div class="no-sound">
-          <div class="no-sound-icon">🎵</div>
-          <p>재생할 사운드를 선택하세요</p>
-        </div>
-      {/if}
-    </div>
+          </div>
+        {/if}
+      </div>
+    {:else}
+      <div class="no-sound">
+        <div class="no-sound-icon">🎵</div>
+        <div class="no-sound-text">사운드를 선택하세요</div>
+      </div>
+    {/if}
     
     <!-- 진행률 바 -->
     <div class="progress-container">
-      <span class="time-display">{formatTime(currentTime)}</span>
+      <span class="time-current">{formatTime(currentTime)}</span>
       <div class="progress-bar">
         <input
           type="range"
           min="0"
           max={duration || 100}
-          value={currentTime}
-          on:input={(e) => seekTo(parseFloat(e.currentTarget.value))}
+          bind:value={currentTime}
+          on:input={handleSeekInput}
           class="progress-slider"
-          disabled={!currentAudio}
         />
+        <div 
+          class="progress-fill"
+          style="width: {duration ? (currentTime / duration) * 100 : 0}%"
+        ></div>
       </div>
-      <span class="time-display">{formatTime(duration)}</span>
+      <span class="time-total">{formatTime(duration)}</span>
     </div>
     
-    <!-- 플레이어 컨트롤 -->
-    <div class="player-controls">
-      <button
-        class="control-button shuffle"
-        class:active={shuffleMode}
-        on:click={toggleShuffleMode}
-        title="셔플"
-      >
-        🔀
-      </button>
-      
-      <button
-        class="control-button"
-        on:click={previousSound}
-        disabled={playlist.length === 0}
-        title="이전"
+    <!-- 컨트롤 버튼 -->
+    <div class="controls">
+      <button 
+        class="control-btn"
+        on:click={playPrevious}
+        disabled={playlist.length <= 1}
+        title="이전 곡"
       >
         ⏮️
       </button>
       
-      <button
-        class="control-button play-pause"
-        class:loading={isLoading}
-        on:click={togglePlayPause}
-        disabled={isLoading}
+      <button 
+        class="control-btn play-btn"
+        on:click={isPlaying ? pauseSound : playSound}
+        disabled={!currentSound}
         title={isPlaying ? '일시정지' : '재생'}
       >
-        {#if isLoading}
-          <div class="spinner"></div>
-        {:else if isPlaying}
+        {#if isPlaying}
           ⏸️
         {:else}
           ▶️
         {/if}
       </button>
       
-      <button
-        class="control-button"
-        on:click={nextSound}
-        disabled={playlist.length === 0}
-        title="다음"
+      <button 
+        class="control-btn"
+        on:click={stopSound}
+        disabled={!currentSound}
+        title="정지"
+      >
+        ⏹️
+      </button>
+      
+      <button 
+        class="control-btn"
+        on:click={playNext}
+        disabled={playlist.length <= 1}
+        title="다음 곡"
       >
         ⏭️
       </button>
       
-      <button
-        class="control-button repeat"
-        class:active={repeatMode !== 'none'}
-        on:click={toggleRepeatMode}
-        title="반복: {repeatMode}"
+      <div class="volume-control">
+        <button 
+          class="control-btn volume-btn"
+          on:click={toggleMute}
+          title={isMuted ? '음소거 해제' : '음소거'}
+        >
+          {#if isMuted}
+            🔇
+          {:else if volume > 0.5}
+            🔊
+          {:else if volume > 0}
+            🔉
+          {:else}
+            🔈
+          {/if}
+        </button>
+        
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.1"
+          bind:value={volume}
+          on:input={handleVolumeInput}
+          class="volume-slider"
+        />
+      </div>
+      
+      <button 
+        class="control-btn"
+        class:active={isLooping}
+        on:click={() => isLooping = !isLooping}
+        title="반복 재생"
       >
-        {#if repeatMode === 'one'}
-          🔂
-        {:else if repeatMode === 'all'}
-          🔁
-        {:else}
-          🔁
-        {/if}
+        🔁
+      </button>
+      
+      <button 
+        class="control-btn"
+        class:active={isShuffling}
+        on:click={() => isShuffling = !isShuffling}
+        title="셔플"
+      >
+        🔀
       </button>
     </div>
+  </div>
+  
+  <!-- 사운드 라이브러리 -->
+  <div class="sound-library">
+    <h4 class="library-title">사운드 라이브러리</h4>
     
-    <!-- 볼륨 컨트롤 -->
-    <div class="volume-control">
-      <span class="volume-icon">🔊</span>
-      <input
-        type="range"
-        min="0"
-        max="1"
-        step="0.1"
-        bind:value={volume}
-        on:input={(e) => changeVolume(parseFloat(e.currentTarget.value))}
-        class="volume-slider"
-      />
-      <span class="volume-value">{Math.round(volume * 100)}%</span>
+    <div class="sound-grid">
+      {#each filteredSounds as sound (sound.id)}
+        <button
+          class="sound-item"
+          class:playing={currentSound?.id === sound.id && isPlaying}
+          class:selected={currentSound?.id === sound.id}
+          on:click={() => loadSound(sound)}
+        >
+          <div class="sound-icon">
+            {#if sound.type === 'cheer'}
+              📣
+            {:else if sound.type === 'fight_song'}
+              🎵
+            {:else if sound.type === 'victory'}
+              🎉
+            {:else}
+              🔊
+            {/if}
+          </div>
+          
+          <div class="sound-details">
+            <div class="sound-name">{sound.name}</div>
+            <div class="sound-duration">{formatTime(sound.duration)}</div>
+          </div>
+          
+          <button
+            class="add-to-playlist-btn"
+            on:click|stopPropagation={() => addToPlaylist(sound)}
+            title="플레이리스트에 추가"
+          >
+            ➕
+          </button>
+        </button>
+      {/each}
     </div>
   </div>
   
   <!-- 플레이리스트 -->
-  {#if showPlaylist}
-    <div class="playlist-container">
-      <div class="playlist-header">
-        <h4 class="playlist-title">
-          {#if selectedTeam && KBO_TEAMS[selectedTeam]}
-            {KBO_TEAMS[selectedTeam].name} 응원가
-          {:else}
-            KBO 사운드 라이브러리
-          {/if}
-        </h4>
-        <span class="playlist-count">{playlist.length}곡</span>
-      </div>
+  {#if showPlaylist && playlist.length > 0}
+    <div class="playlist">
+      <h4 class="playlist-title">
+        플레이리스트 ({playlist.length})
+      </h4>
       
       <div class="playlist-items">
         {#each playlist as sound, index (sound.id)}
-          <div
+          <div 
             class="playlist-item"
-            class:active={currentSound?.id === sound.id}
+            class:current={index === currentIndex}
             class:playing={currentSound?.id === sound.id && isPlaying}
-            on:click={() => playSound(sound, index)}
-            role="button"
-            tabindex="0"
-            on:keydown={(e) => e.key === 'Enter' && playSound(sound, index)}
           >
-            <div class="item-info">
-              <div class="item-icon">
-                {#if currentSound?.id === sound.id && isPlaying}
-                  <div class="playing-indicator">
-                    <div class="wave"></div>
-                    <div class="wave"></div>
-                    <div class="wave"></div>
-                  </div>
+            <button
+              class="playlist-play-btn"
+              on:click={() => selectFromPlaylist(index)}
+            >
+              {#if currentSound?.id === sound.id && isPlaying}
+                ⏸️
+              {:else}
+                ▶️
+              {/if}
+            </button>
+            
+            <div class="playlist-info">
+              <div class="playlist-name">{sound.name}</div>
+              <div class="playlist-meta">
+                {#if sound.team !== 'all'}
+                  <span style="color: {KBO_TEAMS[sound.team]?.colors.primary}">
+                    {KBO_TEAMS[sound.team]?.name}
+                  </span>
                 {:else}
-                  🎵
+                  <span>공통</span>
                 {/if}
-              </div>
-              
-              <div class="item-details">
-                <h5 class="item-title">{sound.name}</h5>
-                <p class="item-description">{sound.description}</p>
-                <div class="item-meta">
-                  <span class="item-type">{sound.type}</span>
-                  <span class="item-duration">{formatTime(sound.duration)}</span>
-                </div>
+                • {formatTime(sound.duration)}
               </div>
             </div>
             
-            <div class="item-actions">
-              <button
-                class="action-button"
-                on:click|stopPropagation={() => playSound(sound, index)}
-                title="재생"
-              >
-                ▶️
-              </button>
-            </div>
+            <button
+              class="playlist-remove-btn"
+              on:click={() => removeFromPlaylist(sound.id)}
+              title="플레이리스트에서 제거"
+            >
+              ✕
+            </button>
           </div>
         {/each}
-        
-        {#if playlist.length === 0}
-          <div class="empty-playlist">
-            <div class="empty-icon">🎵</div>
-            <p>사용 가능한 사운드가 없습니다</p>
-            {#if selectedTeam}
-              <p>다른 구단을 선택해보세요</p>
-            {/if}
-          </div>
-        {/if}
       </div>
     </div>
   {/if}
 </div>
 
 <style>
-  .kbo-audio-manager {
-    width: 100%;
-    max-width: 500px;
+  .audio-manager {
     background: var(--apple-surface-primary);
     border: 1px solid var(--apple-surface-border);
     border-radius: 16px;
-    overflow: hidden;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
   }
   
   /* 메인 플레이어 */
   .main-player {
-    padding: 24px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: var(--apple-surface-secondary);
+    border-radius: 12px;
+    padding: 20px;
   }
   
-  .player-info {
+  .now-playing {
     display: flex;
     align-items: center;
     gap: 16px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
   
-  .sound-artwork {
-    position: relative;
-    width: 80px;
-    height: 80px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 32px;
-    backdrop-filter: blur(10px);
-  }
-  
-  .artwork-placeholder {
-    z-index: 2;
-  }
-  
-  .audio-visualizer {
-    position: absolute;
-    bottom: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 2px;
-    z-index: 1;
-  }
-  
-  .visualizer-bar {
-    width: 3px;
-    height: 12px;
-    background: rgba(255, 255, 255, 0.6);
-    border-radius: 2px;
-    animation: visualize 1s ease-in-out infinite alternate;
-  }
-  
-  @keyframes visualize {
-    0% { height: 4px; }
-    100% { height: 16px; }
-  }
-  
-  .sound-details {
+  .sound-info {
     flex: 1;
-    min-width: 0;
   }
   
   .sound-title {
     font-size: 18px;
     font-weight: 600;
-    margin: 0 0 4px;
-    color: white;
+    color: var(--apple-text-primary);
+    margin-bottom: 4px;
   }
   
-  .sound-description {
+  .sound-meta {
+    display: flex;
+    gap: 12px;
     font-size: 14px;
-    margin: 0 0 4px;
-    opacity: 0.9;
-    line-height: 1.3;
+    color: var(--apple-text-secondary);
   }
   
   .team-name {
-    font-size: 12px;
-    margin: 0;
-    opacity: 0.8;
     font-weight: 500;
   }
   
   .no-sound {
     text-align: center;
-    padding: 20px;
-    opacity: 0.7;
+    padding: 40px 20px;
+    color: var(--apple-text-secondary);
   }
   
   .no-sound-icon {
-    font-size: 32px;
-    margin-bottom: 8px;
+    font-size: 48px;
+    margin-bottom: 12px;
+    opacity: 0.5;
   }
   
-  .no-sound p {
-    margin: 0;
-    font-size: 14px;
+  .no-sound-text {
+    font-size: 16px;
+  }
+  
+  /* 시각화 */
+  .visualizer {
+    width: 80px;
+    height: 40px;
+  }
+  
+  .visualizer-bars {
+    display: flex;
+    align-items: end;
+    gap: 2px;
+    height: 100%;
+  }
+  
+  .bar {
+    flex: 1;
+    background: linear-gradient(to top, #007AFF, #34C759);
+    border-radius: 1px;
+    animation: audioWave 1s ease-in-out infinite alternate;
+  }
+  
+  @keyframes audioWave {
+    0% { height: 20%; }
+    100% { height: 100%; }
   }
   
   /* 진행률 바 */
@@ -636,352 +627,319 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
   
-  .time-display {
+  .time-current,
+  .time-total {
     font-size: 12px;
-    font-weight: 500;
+    color: var(--apple-text-secondary);
     min-width: 35px;
     text-align: center;
   }
   
   .progress-bar {
     flex: 1;
+    position: relative;
+    height: 4px;
+    background: var(--apple-surface-border);
+    border-radius: 2px;
   }
   
   .progress-slider {
-    width: 100%;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 2px;
-    outline: none;
-    -webkit-appearance: none;
+    position: absolute;
+    top: -6px;
+    left: 0;
+    right: 0;
+    height: 16px;
+    background: transparent;
     cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
   }
   
   .progress-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
+    appearance: none;
     width: 16px;
     height: 16px;
-    background: white;
+    background: var(--apple-accent-blue);
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
   
-  .progress-slider::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
-    background: white;
-    border-radius: 50%;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  .progress-fill {
+    height: 100%;
+    background: var(--apple-accent-blue);
+    border-radius: 2px;
+    transition: width 0.1s ease;
   }
   
-  /* 플레이어 컨트롤 */
-  .player-controls {
+  /* 컨트롤 */
+  .controls {
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 16px;
-    margin-bottom: 20px;
+    justify-content: center;
+    gap: 12px;
   }
   
-  .control-button {
-    width: 48px;
-    height: 48px;
-    background: rgba(255, 255, 255, 0.2);
+  .control-btn {
+    width: 44px;
+    height: 44px;
     border: none;
     border-radius: 50%;
-    color: white;
+    background: var(--apple-surface-tertiary);
+    color: var(--apple-text-primary);
     font-size: 18px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all var(--apple-duration-fast) var(--apple-easing-smooth);
-    backdrop-filter: blur(10px);
   }
   
-  .control-button:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.3);
+  .control-btn:hover:not(:disabled) {
+    background: var(--apple-accent-blue);
+    color: white;
     transform: scale(1.05);
   }
   
-  .control-button:disabled {
+  .control-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
   
-  .control-button.play-pause {
+  .control-btn.active {
+    background: var(--apple-accent-blue);
+    color: white;
+  }
+  
+  .play-btn {
     width: 56px;
     height: 56px;
-    font-size: 20px;
-    background: rgba(255, 255, 255, 0.9);
-    color: #667eea;
+    font-size: 24px;
+    background: var(--apple-accent-blue);
+    color: white;
   }
   
-  .control-button.active {
-    background: rgba(255, 255, 255, 0.4);
-  }
-  
-  .spinner {
-    width: 20px;
-    height: 20px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-top: 2px solid #667eea;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
-  /* 볼륨 컨트롤 */
   .volume-control {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
   }
   
-  .volume-icon {
+  .volume-btn {
+    width: 36px;
+    height: 36px;
     font-size: 16px;
   }
   
   .volume-slider {
-    flex: 1;
+    width: 80px;
     height: 4px;
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--apple-surface-border);
     border-radius: 2px;
-    outline: none;
-    -webkit-appearance: none;
     cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
   }
   
   .volume-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 14px;
-    height: 14px;
-    background: white;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--apple-accent-blue);
     border-radius: 50%;
     cursor: pointer;
   }
   
-  .volume-value {
-    font-size: 12px;
-    font-weight: 500;
-    min-width: 35px;
-    text-align: right;
-  }
-  
-  /* 플레이리스트 */
-  .playlist-container {
-    background: var(--apple-surface-primary);
-  }
-  
-  .playlist-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--apple-surface-border);
-  }
-  
+  /* 사운드 라이브러리 */
+  .library-title,
   .playlist-title {
     font-size: 16px;
     font-weight: 600;
-    margin: 0;
     color: var(--apple-text-primary);
+    margin: 0 0 16px;
   }
   
-  .playlist-count {
+  .sound-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+  
+  .sound-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--apple-surface-secondary);
+    border: 2px solid var(--apple-surface-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all var(--apple-duration-fast) var(--apple-easing-smooth);
+    text-align: left;
+  }
+  
+  .sound-item:hover {
+    background: var(--apple-surface-tertiary);
+    border-color: var(--apple-accent-blue);
+  }
+  
+  .sound-item.selected {
+    border-color: var(--apple-accent-blue);
+    background: rgba(0, 122, 255, 0.1);
+  }
+  
+  .sound-item.playing {
+    border-color: var(--apple-accent-green);
+    background: rgba(52, 199, 89, 0.1);
+  }
+  
+  .sound-icon {
+    font-size: 24px;
+    width: 40px;
+    text-align: center;
+  }
+  
+  .sound-details {
+    flex: 1;
+  }
+  
+  .sound-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--apple-text-primary);
+    margin-bottom: 2px;
+  }
+  
+  .sound-duration {
     font-size: 12px;
     color: var(--apple-text-secondary);
+  }
+  
+  .add-to-playlist-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
     background: var(--apple-surface-tertiary);
-    padding: 2px 8px;
-    border-radius: 10px;
+    color: var(--apple-text-primary);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all var(--apple-duration-fast) var(--apple-easing-smooth);
+  }
+  
+  .add-to-playlist-btn:hover {
+    background: var(--apple-accent-green);
+    color: white;
+    transform: scale(1.1);
+  }
+  
+  /* 플레이리스트 */
+  .playlist {
+    background: var(--apple-surface-secondary);
+    border-radius: 12px;
+    padding: 16px;
   }
   
   .playlist-items {
-    max-height: 300px;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
   
   .playlist-item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 12px 20px;
-    border-bottom: 1px solid var(--apple-surface-border);
-    cursor: pointer;
+    gap: 12px;
+    padding: 8px;
+    border-radius: 6px;
     transition: background var(--apple-duration-fast) var(--apple-easing-smooth);
   }
   
   .playlist-item:hover {
-    background: var(--apple-surface-secondary);
-  }
-  
-  .playlist-item.active {
-    background: rgba(102, 126, 234, 0.1);
-    border-left: 3px solid #667eea;
-  }
-  
-  .item-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex: 1;
-    min-width: 0;
-  }
-  
-  .item-icon {
-    width: 40px;
-    height: 40px;
     background: var(--apple-surface-tertiary);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    flex-shrink: 0;
   }
   
-  .playing-indicator {
-    display: flex;
-    gap: 2px;
-    align-items: end;
+  .playlist-item.current {
+    background: rgba(0, 122, 255, 0.1);
   }
   
-  .wave {
-    width: 3px;
-    height: 12px;
-    background: #667eea;
-    border-radius: 2px;
-    animation: wave 1s ease-in-out infinite alternate;
+  .playlist-item.playing {
+    background: rgba(52, 199, 89, 0.1);
   }
   
-  .wave:nth-child(2) {
-    animation-delay: 0.2s;
-  }
-  
-  .wave:nth-child(3) {
-    animation-delay: 0.4s;
-  }
-  
-  @keyframes wave {
-    0% { height: 6px; }
-    100% { height: 16px; }
-  }
-  
-  .item-details {
-    flex: 1;
-    min-width: 0;
-  }
-  
-  .item-title {
-    font-size: 14px;
-    font-weight: 500;
-    margin: 0 0 2px;
-    color: var(--apple-text-primary);
-  }
-  
-  .item-description {
-    font-size: 12px;
-    color: var(--apple-text-secondary);
-    margin: 0 0 4px;
-    line-height: 1.3;
-  }
-  
-  .item-meta {
-    display: flex;
-    gap: 8px;
-    font-size: 11px;
-    color: var(--apple-text-tertiary);
-  }
-  
-  .item-type {
-    background: var(--apple-surface-tertiary);
-    padding: 1px 4px;
-    border-radius: 3px;
-  }
-  
-  .item-actions {
-    display: flex;
-    gap: 4px;
-  }
-  
-  .action-button {
+  .playlist-play-btn,
+  .playlist-remove-btn {
     width: 32px;
     height: 32px;
-    background: transparent;
     border: none;
-    border-radius: 6px;
+    border-radius: 50%;
+    background: var(--apple-surface-tertiary);
+    color: var(--apple-text-primary);
     font-size: 14px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background var(--apple-duration-fast) var(--apple-easing-smooth);
+    transition: all var(--apple-duration-fast) var(--apple-easing-smooth);
   }
   
-  .action-button:hover {
-    background: var(--apple-surface-tertiary);
+  .playlist-play-btn:hover {
+    background: var(--apple-accent-blue);
+    color: white;
   }
   
-  /* 빈 플레이리스트 */
-  .empty-playlist {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--apple-text-secondary);
+  .playlist-remove-btn:hover {
+    background: var(--apple-accent-red);
+    color: white;
   }
   
-  .empty-icon {
-    font-size: 32px;
-    margin-bottom: 12px;
-    opacity: 0.5;
+  .playlist-info {
+    flex: 1;
   }
   
-  .empty-playlist p {
-    margin: 0 0 4px;
+  .playlist-name {
     font-size: 14px;
+    font-weight: 500;
+    color: var(--apple-text-primary);
+    margin-bottom: 2px;
+  }
+  
+  .playlist-meta {
+    font-size: 12px;
+    color: var(--apple-text-secondary);
   }
   
   /* 반응형 디자인 */
   @media (max-width: 768px) {
-    .main-player {
-      padding: 20px;
+    .audio-manager {
+      padding: 16px;
     }
     
-    .player-info {
+    .controls {
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .volume-control {
+      order: 1;
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .volume-slider {
+      width: 120px;
+    }
+    
+    .sound-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .now-playing {
       flex-direction: column;
-      text-align: center;
+      align-items: flex-start;
       gap: 12px;
-    }
-    
-    .sound-artwork {
-      width: 100px;
-      height: 100px;
-      font-size: 40px;
-    }
-    
-    .player-controls {
-      gap: 12px;
-    }
-    
-    .control-button {
-      width: 44px;
-      height: 44px;
-      font-size: 16px;
-    }
-    
-    .control-button.play-pause {
-      width: 52px;
-      height: 52px;
-      font-size: 18px;
     }
   }
 </style>
+
