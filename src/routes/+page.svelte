@@ -1,157 +1,85 @@
-<script>
-  // @auth/sveltekit/client에서 signIn과 signOut 함수를 가져옵니다.
-  // 이 함수들은 사용자 인증 관련 작업을 수행합니다.
-  import {signIn, signOut} from "@auth/sveltekit/client"
-
-  // $app/stores에서 page 스토어를 가져옵니다.
-  // page 스토어는 현재 페이지의 정보를 포함하고 있습니다.
-  import {page} from "$app/stores";
-
-  // signIn 함수: 사용자 로그인을 처리합니다.
-  // 사용 예: signIn('google')로 구글 로그인을 시작할 수 있습니다.
-
-  // signOut 함수: 사용자 로그아웃을 처리합니다.
-  // 사용 예: signOut()으로 현재 사용자를 로그아웃할 수 있습니다.
-
-  // page 스토어: 현재 페이지의 URL, 파라미터, 쿼리 문자열 등의 정보에 접근할 수 있습니다.
-  // 사용 예: $page.url.searchParams로 URL의 쿼리 파라미터에 접근할 수 있습니다.
+<script lang="ts">
+	import { onMount } from 'svelte';
+	
+	let mounted = false;
+	
+	onMount(() => {
+		mounted = true;
+	});
 </script>
 
-<main class="community-home">
-  
-  <h1>포토 카드 온라인 커뮤니티</h1>
-  
-  <section >
-    <h1>Welcome to SvelteKit</h1>
-    <p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
-    <p>
-        {#if $page.data.session}
-            <span>
-                <small>Signed in as</small><br/>
-                <strong>{$page.data.session.user?.name ?? "User"}</strong>
-            </span>
-            <button on:click={() => signOut()} class="button">Sign out</button>
-        {:else}
-            <span>You are not signed in</span>
-            <button on:click={() => signIn("google")}>
-                Sign In with Google
-            </button>
-        {/if}
-    </p>
-  </section>
-  <section class="featured-posts">
-    <h2>인기 게시물</h2>
-    <div class="post-grid">
-      <div class="post-card">
-        <img src="https://via.placeholder.com/300x200.png?text=인기+게시물+1" alt="인기 게시물 1">
-        <h3>멋진 카드 컬렉션 공유합니다!</h3>
-        <p>작성자: 카드마스터</p>
-      </div>
-      <div class="post-card">
-        <img src="https://via.placeholder.com/300x200.png?text=인기+게시물+2" alt="인기 게시물 2">
-        <h3>새로운 카드 디자인 아이디어</h3>
-        <p>작성자: 크리에이티브디자이너</p>
-      </div>
-      <div class="post-card">
-        <img src="https://via.placeholder.com/300x200.png?text=인기+게시물+3" alt="인기 게시물 3">
-        <h3>이번 주 카드 교환 모임 안내</h3>
-        <p>작성자: 이벤트플래너</p>
-      </div>
-    </div>
-  </section>
-  
-  <section class="community-stats">
-    <h2>커뮤니티 현황</h2>
-    <div class="stats-grid">
-      <div class="stat-item">
-        <span class="stat-number">1,234</span>
-        <span class="stat-label">회원 수</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-number">5,678</span>
-        <span class="stat-label">총 게시물</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-number">9,876</span>
-        <span class="stat-label">오늘의 방문자</span>
-      </div>
-    </div>
-  </section>
-  
-  <section class="quick-links">
-    <h2>빠른 링크</h2>
-    <div class="link-buttons">
-      <a href="/card" class="link-button">카드 갤러리</a>
-      <a href="/forum" class="link-button">토론 게시판</a>
-      <a href="/events" class="link-button">이벤트 캘린더</a>
-    </div>
-  </section>
-</main>
+<svelte:head>
+	<title>홀로그래픽 카드 커뮤니티</title>
+</svelte:head>
+
+<div class="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
+	<div class="container mx-auto px-4 py-16">
+		<div class="text-center">
+			<h1 class="text-6xl font-bold text-white mb-6 gradient-text">
+				홀로그래픽 카드 커뮤니티
+			</h1>
+			<p class="text-xl text-gray-200 mb-12 max-w-3xl mx-auto">
+				야구 사진을 업로드하고 홀로그래픽 효과를 적용하여 나만의 특별한 카드를 만들어보세요. 
+				커뮤니티와 함께 포토카드 문화를 즐겨보세요.
+			</p>
+			
+			<div class="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
+				<a 
+					href="/auth/signin" 
+					class="inline-block bg-white text-purple-900 font-semibold px-8 py-4 rounded-lg hover:bg-gray-100 transition-colors shadow-lg"
+				>
+					시작하기
+				</a>
+				<a 
+					href="/gallery" 
+					class="inline-block border-2 border-white text-white font-semibold px-8 py-4 rounded-lg hover:bg-white hover:text-purple-900 transition-colors"
+				>
+					갤러리 둘러보기
+				</a>
+			</div>
+		</div>
+
+		{#if mounted}
+			<div class="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">
+				<div class="text-center text-white">
+					<div class="w-16 h-16 bg-gradient-to-r from-pink-500 to-violet-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+						<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+							<path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+						</svg>
+					</div>
+					<h3 class="text-xl font-semibold mb-2">카드 제작</h3>
+					<p class="text-gray-300">사진을 업로드하고 홀로그래픽 효과를 적용하여 멋진 카드를 만들어보세요</p>
+				</div>
+
+				<div class="text-center text-white">
+					<div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+						<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+							<path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
+						</svg>
+					</div>
+					<h3 class="text-xl font-semibold mb-2">커뮤니티</h3>
+					<p class="text-gray-300">다른 사용자들과 카드를 공유하고 소통하며 포토카드 문화를 즐겨보세요</p>
+				</div>
+
+				<div class="text-center text-white">
+					<div class="w-16 h-16 bg-gradient-to-r from-green-500 to-teal-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+						<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+							<path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+						</svg>
+					</div>
+					<h3 class="text-xl font-semibold mb-2">등급 시스템</h3>
+					<p class="text-gray-300">활동에 따라 등급이 올라가며 특별한 권한과 혜택을 받을 수 있습니다</p>
+				</div>
+			</div>
+		{/if}
+	</div>
+</div>
 
 <style>
-  .community-home {
-    margin: 0 auto;
-    padding: 2rem;
-  }
-  
-  h1, h2 {
-    text-align: center;
-    margin-bottom: 1.5rem;
-  }
-  
-  .post-grid, .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-  }
-  
-  .post-card {
-    background-color: #f5f5f5;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .post-card img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-  }
-  
-  .post-card h3, .post-card p {
-    padding: 0.5rem 1rem;
-  }
-  
-  .stat-item {
-    background-color: #e0e0e0;
-    border-radius: 8px;
-    padding: 1rem;
-    text-align: center;
-  }
-  
-  .stat-number {
-    font-size: 1.5rem;
-    font-weight: bold;
-    display: block;
-  }
-  
-  .link-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-  }
-  
-  .link-button {
-    background-color: #333;
-    color: #fff;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    text-decoration: none;
-    transition: background-color 0.3s;
-  }
-  
-  .link-button:hover {
-    background-color: #555;
-  }
+	.gradient-text {
+		background: linear-gradient(45deg, #fbbf24, #f59e0b, #d97706);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
 </style>

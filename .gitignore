@@ -7,12 +7,32 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+
+# Build outputs
 dist
 dist-ssr
+build
+.svelte-kit/
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Local development
 *.local
 public/**/tests
 public/img/foils/
+
+# PocketBase
+pocketbase/
+pb_data/
+pb_migrations/
+
+# File uploads
+uploads/
 
 # Editor directories and files
 .vscode/*
@@ -24,4 +44,7 @@ public/img/foils/
 *.njsproj
 *.sln
 *.sw?
-.svelte-kit/
+
+# OS generated files
+Thumbs.db
+.DS_Store

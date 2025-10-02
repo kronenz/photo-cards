@@ -1,25 +1,46 @@
 {
-  "name": "photo-card-builder",
+  "name": "holographic-card-community",
   "private": true,
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "NODE_OPTIONS='--max-old-space-size=4096' vite --host",
-    "build": "NODE_OPTIONS='--max-old-space-size=4096' vite build",
-    "preview": "NODE_OPTIONS='--max-old-space-size=4096' vite preview"
+    "dev": "vite dev --host",
+    "build": "vite build",
+    "preview": "vite preview --host",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "lint": "prettier --check . && eslint .",
+    "format": "prettier --write .",
+    "setup:pocketbase": "node scripts/setup-pocketbase.js",
+    "pocketbase": "cd pocketbase && ./pocketbase serve --http=127.0.0.1:8090",
+    "pocketbase:win": "cd pocketbase && pocketbase.exe serve --http=127.0.0.1:8090",
+    "dev:full": "concurrently \"npm run pocketbase\" \"npm run dev\""
   },
-  "devDependencies": {
-    "@sveltejs/kit": "^2.5.18",
-    "pokemontcgsdk": "^2.0.0",
-    "svelte": "^4.2.12",
-    "vite": "^5.3.5"
-  },
+
   "dependencies": {
     "@auth/core": "^0.34.2",
     "@auth/sveltekit": "^1.4.2",
-    "@sveltejs/adapter-auto": "^3.2.2",
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
     "pocketbase": "^0.21.4"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-static": "^3.0.1",
+    "@sveltejs/kit": "^2.5.18",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "autoprefixer": "^10.4.16",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-svelte": "^2.35.1",
+    "postcss": "^8.4.32",
+    "prettier": "^3.1.1",
+    "prettier-plugin-svelte": "^3.1.2",
+    "svelte": "^4.2.12",
+    "svelte-check": "^3.6.0",
+    "tailwindcss": "^3.3.6",
+    "typescript": "^5.0.0",
+    "vite": "^5.3.5"
   },
   "description": "This is a repository holder for the Pokemon Cards CSS Holographic effect.",
   "main": "svelte.config.js",

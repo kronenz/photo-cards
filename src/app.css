@@ -1,0 +1,91 @@
+/* Tailwind CSS base styles */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Global styles */
+html {
+	font-family: system-ui, sans-serif;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	background: #f8fafc;
+}
+
+/* Holographic effect base styles */
+:root {
+	/* Pointer position variables */
+	--pointer-x: 50%;
+	--pointer-y: 50%;
+	--pointer-from-center: 0;
+	--pointer-from-top: 0;
+	--pointer-from-left: 0;
+	
+	/* Card transformation variables */
+	--card-scale: 1;
+	--card-opacity: 0;
+	--rotate-x: 0deg;
+	--rotate-y: 0deg;
+	--translate-x: 0px;
+	--translate-y: 0px;
+	
+	/* Background and effect positioning */
+	--background-x: var(--pointer-x);
+	--background-y: var(--pointer-y);
+	
+	/* Holographic colors */
+	--red: #ff0000;
+	--yellow: #ffff00;
+	--green: #00ff00;
+	--blue: #0000ff;
+	--violet: #8b00ff;
+}
+
+/* Base holographic card styles */
+.holographic-card {
+	transform-style: preserve-3d;
+	transform: 
+		perspective(1000px)
+		rotateX(var(--rotate-x))
+		rotateY(var(--rotate-y))
+		scale(var(--card-scale))
+		translate3d(var(--translate-x), var(--translate-y), 0);
+	will-change: transform, opacity, background-image, background-position;
+	transition: transform 0.1s ease-out;
+}
+
+.card__shine {
+	background: linear-gradient(
+		var(--angle, 133deg),
+		transparent 0%,
+		rgba(255, 255, 255, 0.1) 45%,
+		rgba(255, 255, 255, 0.3) 50%,
+		rgba(255, 255, 255, 0.1) 55%,
+		transparent 100%
+	);
+	background-position: var(--pointer-x) var(--pointer-y);
+	background-size: 300% 300%;
+	mix-blend-mode: color-dodge;
+	opacity: var(--card-opacity);
+}
+
+.card__glare {
+	background: radial-gradient(
+		circle at var(--pointer-x) var(--pointer-y),
+		rgba(255, 255, 255, 0.8) 0%,
+		rgba(255, 255, 255, 0.2) 20%,
+		transparent 60%
+	);
+	mix-blend-mode: overlay;
+	opacity: calc(var(--pointer-from-center) * var(--card-opacity));
+}
+
+/* Utility classes */
+.gradient-text {
+	background: linear-gradient(45deg, #667eea, #764ba2);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}

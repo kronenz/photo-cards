@@ -1,13 +1,19 @@
-import adapter from '@sveltejs/adapter-auto';
-import { sveltekit } from '@sveltejs/kit/vite';
+import adapter from '@sveltejs/adapter-static';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-	preprocess: sveltekit(),
+	preprocess: vitePreprocess(),
 	
 	kit: {
-		// adapter-auto를 사용하여 자동으로 적절한 어댑터를 선택합니다.
-		adapter: adapter(),
+		// Static adapter for bare metal deployment
+		adapter: adapter({
+			pages: 'build',
+			assets: 'build',
+			fallback: 'index.html',
+			precompress: true,
+			strict: true
+		}),
 
 		// 파일 구조를 정의하는 객체입니다.
 		files: {
