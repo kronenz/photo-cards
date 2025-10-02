@@ -3,89 +3,1484 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-/* Global styles */
+/* CSS Variables for Design System - Actual Civitai Colors */
+:root {
+  /* Real Civitai.com Color Palette */
+  --color-bg-primary: #0B0F19;
+  --color-bg-secondary: #151922;
+  --color-bg-tertiary: #1E2329;
+  --color-bg-elevated: #252A34;
+  
+  --color-surface-primary: #151922;
+  --color-surface-secondary: #1E2329;
+  --color-surface-tertiary: #252A34;
+  --color-surface-glass: rgba(21, 25, 34, 0.8);
+  
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #9CA3AF;
+  --color-text-tertiary: #6B7280;
+  --color-text-accent: #3B82F6;
+  
+  --color-accent-primary: #3B82F6;
+  --color-accent-secondary: #8B5CF6;
+  --color-accent-success: #10B981;
+  --color-accent-warning: #F59E0B;
+  --color-accent-error: #EF4444;
+  --color-accent-info: #06B6D4;
+  
+  /* Holographic Effect Variables */
+  --pointer-x: 50%;
+  --pointer-y: 50%;
+  --pointer-from-center: 0;
+  --pointer-from-top: 0;
+  --pointer-from-left: 0;
+  
+  --card-scale: 1;
+  --card-opacity: 0;
+  --rotate-x: 0deg;
+  --rotate-y: 0deg;
+  --translate-x: 0px;
+  --translate-y: 0px;
+  
+  --background-x: var(--pointer-x);
+  --background-y: var(--pointer-y);
+  
+  /* Enhanced Holographic Colors */
+  --holo-red: #ff0080;
+  --holo-orange: #ff8c00;
+  --holo-yellow: #ffd700;
+  --holo-green: #40e0d0;
+  --holo-blue: #6366f1;
+  --holo-purple: #8b5cf6;
+  --holo-pink: #da70d6;
+  
+  /* Animation Timings */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+  --duration-slower: 500ms;
+  
+  /* Easing Functions */
+  --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-sharp: cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* Global Styles */
 html {
-	font-family: system-ui, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  scroll-behavior: smooth;
 }
 
 body {
-	margin: 0;
-	padding: 0;
-	background: #f8fafc;
+  margin: 0;
+  padding: 0;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  overflow-x: hidden;
 }
 
-/* Holographic effect base styles */
-:root {
-	/* Pointer position variables */
-	--pointer-x: 50%;
-	--pointer-y: 50%;
-	--pointer-from-center: 0;
-	--pointer-from-top: 0;
-	--pointer-from-left: 0;
-	
-	/* Card transformation variables */
-	--card-scale: 1;
-	--card-opacity: 0;
-	--rotate-x: 0deg;
-	--rotate-y: 0deg;
-	--translate-x: 0px;
-	--translate-y: 0px;
-	
-	/* Background and effect positioning */
-	--background-x: var(--pointer-x);
-	--background-y: var(--pointer-y);
-	
-	/* Holographic colors */
-	--red: #ff0000;
-	--yellow: #ffff00;
-	--green: #00ff00;
-	--blue: #0000ff;
-	--violet: #8b00ff;
-}
-
-/* Base holographic card styles */
+/* Pokemon Cards CSS - Enhanced Holographic Effects */
 .holographic-card {
-	transform-style: preserve-3d;
-	transform: 
-		perspective(1000px)
-		rotateX(var(--rotate-x))
-		rotateY(var(--rotate-y))
-		scale(var(--card-scale))
-		translate3d(var(--translate-x), var(--translate-y), 0);
-	will-change: transform, opacity, background-image, background-position;
-	transition: transform 0.1s ease-out;
+  --pointer-x: 50%;
+  --pointer-y: 50%;
+  --pointer-from-center: 0;
+  --pointer-from-top: 0;
+  --pointer-from-left: 0;
+  --card-opacity: 0;
+  --rotate-x: 0deg;
+  --rotate-y: 0deg;
+  --background-x: var(--pointer-x);
+  --background-y: var(--pointer-y);
+  --card-scale: 1;
+  --translate-x: 0px;
+  --translate-y: 0px;
+  --spin-rotation: 0deg;
+  
+  transform-style: preserve-3d;
+  transform: 
+    perspective(1000px)
+    rotateX(var(--rotate-x))
+    rotateY(calc(var(--rotate-y) + var(--spin-rotation)))
+    scale(var(--card-scale))
+    translate3d(var(--translate-x), var(--translate-y), 0);
+  will-change: transform, opacity, background-image, background-position;
+  transition: transform 0.1s ease-out;
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  cursor: pointer;
 }
 
+/* Enhanced hover effects */
+.holographic-card:hover {
+  --card-scale: 1.05;
+  z-index: 10;
+}
+
+.holographic-card:active {
+  --card-scale: 0.98;
+}
+
+/* Enhanced holographic layers with stronger effects */
 .card__shine {
-	background: linear-gradient(
-		var(--angle, 133deg),
-		transparent 0%,
-		rgba(255, 255, 255, 0.1) 45%,
-		rgba(255, 255, 255, 0.3) 50%,
-		rgba(255, 255, 255, 0.1) 55%,
-		transparent 100%
-	);
-	background-position: var(--pointer-x) var(--pointer-y);
-	background-size: 300% 300%;
-	mix-blend-mode: color-dodge;
-	opacity: var(--card-opacity);
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    calc(var(--pointer-x) * 1deg + 115deg),
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 255, 255, 0.4) 49%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0.4) 51%,
+    rgba(255, 255, 255, 0.1) 75%,
+    transparent 100%
+  );
+  background-position: var(--pointer-x) var(--pointer-y);
+  background-size: 400% 400%;
+  mix-blend-mode: color-dodge;
+  opacity: calc(var(--card-opacity) * 1.2);
+  pointer-events: none;
+  z-index: 4;
+  border-radius: inherit;
+}
+
+@keyframes shine-pulse {
+  0%, 100% { opacity: calc(var(--card-opacity) * 0.8); }
+  50% { opacity: calc(var(--card-opacity) * 1.4); }
 }
 
 .card__glare {
-	background: radial-gradient(
-		circle at var(--pointer-x) var(--pointer-y),
-		rgba(255, 255, 255, 0.8) 0%,
-		rgba(255, 255, 255, 0.2) 20%,
-		transparent 60%
-	);
-	mix-blend-mode: overlay;
-	opacity: calc(var(--pointer-from-center) * var(--card-opacity));
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 600px 200px at var(--pointer-x) var(--pointer-y),
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0.4) 20%,
+    rgba(255, 255, 255, 0.1) 40%,
+    transparent 60%
+  );
+  mix-blend-mode: overlay;
+  opacity: calc(var(--pointer-from-center) * var(--card-opacity) * 0.8);
+  pointer-events: none;
+  z-index: 5;
+  border-radius: inherit;
 }
 
-/* Utility classes */
+.card__foil {
+  position: absolute;
+  inset: 0;
+  background-position: var(--background-x) var(--background-y);
+  background-size: 400% 400%;
+  mix-blend-mode: color-dodge;
+  opacity: calc(var(--card-opacity) * 1.1);
+  pointer-events: none;
+  z-index: 3;
+  border-radius: inherit;
+}
+
+.card__texture {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 1px,
+      rgba(255, 255, 255, 0.03) 1px,
+      rgba(255, 255, 255, 0.03) 2px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 1px,
+      rgba(255, 255, 255, 0.02) 1px,
+      rgba(255, 255, 255, 0.02) 2px
+    );
+  mix-blend-mode: overlay;
+  opacity: calc(var(--card-opacity) * 0.6);
+  pointer-events: none;
+  z-index: 2;
+  border-radius: inherit;
+}
+
+.card__sparkles {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.8) 1px, transparent 1px),
+    radial-gradient(circle at 60% 80%, rgba(255, 255, 255, 0.6) 1px, transparent 1px),
+    radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.9) 0.5px, transparent 0.5px),
+    radial-gradient(circle at 40% 60%, rgba(255, 255, 255, 0.7) 1px, transparent 1px),
+    radial-gradient(circle at 90% 90%, rgba(255, 255, 255, 0.5) 0.8px, transparent 0.8px);
+  background-size: 
+    calc(50px + var(--pointer-x) * 0.5px) calc(50px + var(--pointer-y) * 0.5px),
+    calc(80px + var(--pointer-x) * 0.3px) calc(80px + var(--pointer-y) * 0.3px),
+    calc(30px + var(--pointer-x) * 0.7px) calc(30px + var(--pointer-y) * 0.7px),
+    calc(60px + var(--pointer-x) * 0.4px) calc(60px + var(--pointer-y) * 0.4px),
+    calc(40px + var(--pointer-x) * 0.6px) calc(40px + var(--pointer-y) * 0.6px);
+  background-position: 
+    calc(var(--pointer-x) * 0.1%) calc(var(--pointer-y) * 0.1%),
+    calc(var(--pointer-x) * -0.2%) calc(var(--pointer-y) * -0.2%),
+    calc(var(--pointer-x) * 0.3%) calc(var(--pointer-y) * 0.3%),
+    calc(var(--pointer-x) * -0.1%) calc(var(--pointer-y) * -0.1%),
+    calc(var(--pointer-x) * 0.2%) calc(var(--pointer-y) * 0.2%);
+  opacity: calc(var(--card-opacity) * 0.8);
+  animation: sparkle-twinkle 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 6;
+  border-radius: inherit;
+}
+
+@keyframes sparkle-twinkle {
+  0%, 100% { 
+    opacity: calc(var(--card-opacity) * 0.4);
+    transform: scale(1);
+  }
+  25% { 
+    opacity: calc(var(--card-opacity) * 0.8);
+    transform: scale(1.05);
+  }
+  50% { 
+    opacity: calc(var(--card-opacity) * 1);
+    transform: scale(1.1);
+  }
+  75% { 
+    opacity: calc(var(--card-opacity) * 0.6);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes shine-pulse {
+  0%, 100% { 
+    background-size: 400% 400%; 
+  }
+  50% { 
+    background-size: 450% 450%; 
+  }
+}
+
+/* Enhanced Pokemon-style Holographic Effects */
+
+/* Basic Holo - Enhanced rainbow gradient */
+.card--basic .card__foil {
+  background: 
+    linear-gradient(
+      calc(var(--pointer-x) * 2deg + 115deg),
+      transparent 0%,
+      rgba(255, 0, 153, 0.6) 20%,
+      rgba(255, 204, 0, 0.8) 30%,
+      rgba(255, 0, 153, 0.6) 40%,
+      rgba(0, 255, 255, 0.8) 50%,
+      rgba(255, 0, 153, 0.6) 60%,
+      rgba(255, 204, 0, 0.8) 70%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle at var(--pointer-x) var(--pointer-y),
+      rgba(255, 255, 255, 0.3) 0%,
+      transparent 40%
+    );
+  animation: basic-shimmer 3s ease-in-out infinite;
+}
+
+@keyframes basic-shimmer {
+  0%, 100% { filter: hue-rotate(0deg) brightness(1); }
+  50% { filter: hue-rotate(30deg) brightness(1.2); }
+}
+
+/* Cosmic Holo - Enhanced galaxy effect */
+.card--cosmic .card__foil {
+  background: 
+    radial-gradient(
+      ellipse at var(--pointer-x) var(--pointer-y),
+      rgba(138, 43, 226, 0.4) 0%,
+      rgba(75, 0, 130, 0.3) 25%,
+      rgba(25, 25, 112, 0.2) 50%,
+      transparent 70%
+    ),
+    linear-gradient(
+      calc(var(--pointer-x) * 1.5deg + 115deg),
+      transparent 0%,
+      rgba(0, 231, 255, 0.5) 25%,
+      rgba(255, 0, 231, 0.6) 50%,
+      rgba(255, 206, 84, 0.5) 75%,
+      transparent 100%
+    ),
+    conic-gradient(
+      from calc(var(--pointer-y) * 3.6deg),
+      rgba(138, 43, 226, 0.3) 0deg,
+      rgba(0, 191, 255, 0.3) 120deg,
+      rgba(255, 20, 147, 0.3) 240deg,
+      rgba(138, 43, 226, 0.3) 360deg
+    );
+  animation: cosmic-rotate 8s linear infinite;
+}
+
+@keyframes cosmic-rotate {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+/* Rainbow Holo - Enhanced full spectrum */
+.card--rainbow .card__foil {
+  background: 
+    linear-gradient(
+      calc(var(--pointer-x) * 2deg + 45deg),
+      #ff0000 0%,
+      #ff4000 8%,
+      #ff8000 16%,
+      #ffbf00 24%,
+      #ffff00 32%,
+      #bfff00 40%,
+      #80ff00 48%,
+      #40ff00 56%,
+      #00ff00 64%,
+      #00ff40 72%,
+      #00ff80 80%,
+      #00ffbf 88%,
+      #00ffff 96%,
+      #0000ff 100%
+    ),
+    radial-gradient(
+      circle at var(--pointer-x) var(--pointer-y),
+      rgba(255, 255, 255, 0.4) 0%,
+      rgba(255, 255, 255, 0.1) 30%,
+      transparent 60%
+    );
+  background-size: 500% 500%, 200% 200%;
+  animation: rainbow-shift 4s ease-in-out infinite, rainbow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes rainbow-shift {
+  0%, 100% { background-position: 0% 50%, center; }
+  50% { background-position: 100% 50%, center; }
+}
+
+@keyframes rainbow-pulse {
+  0%, 100% { filter: saturate(1) brightness(1); }
+  50% { filter: saturate(1.5) brightness(1.3); }
+}
+
+/* Aurora Holo - Enhanced pastel effect */
+.card--aurora .card__foil {
+  background: 
+    linear-gradient(
+      calc(var(--pointer-x) * 1.2deg + 115deg),
+      transparent 0%,
+      rgba(168, 237, 234, 0.6) 20%,
+      rgba(254, 214, 227, 0.7) 40%,
+      rgba(210, 153, 194, 0.6) 60%,
+      rgba(254, 249, 215, 0.5) 80%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse at calc(var(--pointer-x) * 0.8) calc(var(--pointer-y) * 0.8),
+      rgba(168, 237, 234, 0.4) 0%,
+      rgba(254, 214, 227, 0.3) 30%,
+      rgba(210, 153, 194, 0.2) 60%,
+      transparent 80%
+    );
+  animation: aurora-wave 6s ease-in-out infinite;
+}
+
+@keyframes aurora-wave {
+  0%, 100% { 
+    filter: hue-rotate(0deg) brightness(1);
+    background-size: 300% 300%, 150% 150%;
+  }
+  33% { 
+    filter: hue-rotate(10deg) brightness(1.1);
+    background-size: 350% 350%, 180% 180%;
+  }
+  66% { 
+    filter: hue-rotate(-10deg) brightness(1.2);
+    background-size: 320% 320%, 160% 160%;
+  }
+}
+
+/* Neon Holo - Enhanced electric effect */
+.card--neon .card__foil {
+  background: 
+    linear-gradient(
+      calc(var(--pointer-x) * 3deg + 115deg),
+      transparent 0%,
+      rgba(18, 194, 233, 0.7) 20%,
+      rgba(196, 113, 237, 0.8) 40%,
+      rgba(246, 79, 89, 0.7) 60%,
+      rgba(255, 215, 0, 0.6) 80%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle at var(--pointer-x) var(--pointer-y),
+      rgba(255, 255, 255, 0.5) 0%,
+      rgba(0, 255, 255, 0.3) 20%,
+      rgba(255, 0, 255, 0.2) 40%,
+      transparent 60%
+    ),
+    conic-gradient(
+      from calc(var(--pointer-x) * 5deg),
+      rgba(18, 194, 233, 0.3) 0deg,
+      rgba(196, 113, 237, 0.3) 90deg,
+      rgba(246, 79, 89, 0.3) 180deg,
+      rgba(255, 215, 0, 0.3) 270deg,
+      rgba(18, 194, 233, 0.3) 360deg
+    );
+  animation: neon-flicker 1.5s ease-in-out infinite, neon-rotate 4s linear infinite;
+}
+
+@keyframes neon-flicker {
+  0%, 100% { 
+    filter: brightness(1) contrast(1);
+    opacity: calc(var(--card-opacity) * 1.1);
+  }
+  50% { 
+    filter: brightness(1.3) contrast(1.2);
+    opacity: calc(var(--card-opacity) * 1.3);
+  }
+}
+
+@keyframes neon-rotate {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+/* Texture overlays for more realistic effects */
+.card--cosmic::before,
+.card--rainbow::before,
+.card--aurora::before,
+.card--neon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(120, 255, 198, 0.3) 0%, transparent 50%);
+  mix-blend-mode: color-dodge;
+  opacity: calc(var(--card-opacity) * 0.3);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Sparkle effect for premium cards */
+.card--rainbow::after,
+.card--cosmic::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 25% 25%, white 1px, transparent 1px),
+    radial-gradient(circle at 75% 75%, white 1px, transparent 1px),
+    radial-gradient(circle at 50% 50%, white 0.5px, transparent 0.5px);
+  background-size: 50px 50px, 60px 60px, 30px 30px;
+  background-position: 
+    calc(var(--pointer-x) * 0.5) calc(var(--pointer-y) * 0.5),
+    calc(var(--pointer-x) * -0.3) calc(var(--pointer-y) * -0.3),
+    calc(var(--pointer-x) * 0.8) calc(var(--pointer-y) * 0.8);
+  opacity: calc(var(--card-opacity) * 0.4);
+  animation: sparkle 2s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 5;
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: calc(var(--card-opacity) * 0.2); }
+  50% { opacity: calc(var(--card-opacity) * 0.6); }
+}
+
+/* Glass Morphism Components */
+.glass {
+  background: var(--color-surface-glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-elevated {
+  background: rgba(58, 59, 92, 0.9);
+  backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+/* Button Components */
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+  color: var(--color-text-primary);
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  transition: all var(--duration-normal) var(--ease-smooth);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-holographic {
+  background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c);
+  background-size: 200% 200%;
+  animation: shimmer 3s ease-in-out infinite;
+  color: var(--color-text-primary);
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  transition: all var(--duration-normal) var(--ease-smooth);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-holographic:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 40px rgba(99, 102, 241, 0.4);
+}
+
+.btn-secondary {
+  background: var(--color-surface-secondary);
+  color: var(--color-text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: all var(--duration-normal) var(--ease-smooth);
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: var(--color-surface-tertiary);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-accent-primary);
+  border: 1px solid transparent;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: all var(--duration-normal) var(--ease-smooth);
+  cursor: pointer;
+}
+
+.btn-ghost:hover {
+  background: rgba(99, 102, 241, 0.1);
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+/* Card Components */
+.card {
+  background: var(--color-surface-primary);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.card-elevated {
+  background: var(--color-surface-secondary);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.card-holographic {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+}
+
+/* Input Components */
+.input {
+  background: var(--color-surface-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  transition: all var(--duration-normal) var(--ease-smooth);
+  width: 100%;
+}
+
+.input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Utility Classes */
 .gradient-text {
-	background: linear-gradient(45deg, #667eea, #764ba2);
-	-webkit-background-clip: text;
-	-webkit-text-fill-color: transparent;
-	background-clip: text;
+  background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-cosmic {
+  background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-tertiary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-primary);
+}
+
+/* Selection Styling */
+::selection {
+  background: rgba(99, 102, 241, 0.3);
+  color: var(--color-text-primary);
+}
+
+/* Focus Visible for Accessibility */
+*:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .holographic-card {
+    transform: none !important;
+  }
+}/* 
+Advanced Pokemon-style Holographic Effects */
+
+/* Reverse Holo - Background holographic with clear image area */
+.card--reverse .card__foil {
+  background: 
+    linear-gradient(
+      115deg,
+      transparent 0%,
+      rgba(255, 0, 153, 0.1) 25%,
+      rgba(255, 204, 0, 0.1) 35%,
+      rgba(255, 0, 153, 0.1) 45%,
+      rgba(0, 255, 255, 0.1) 55%,
+      rgba(255, 0, 153, 0.1) 65%,
+      rgba(255, 204, 0, 0.1) 75%,
+      transparent 100%
+    );
+  clip-path: polygon(0% 0%, 100% 0%, 100% 60%, 0% 60%);
+}
+
+/* Secret Rare - Ultra premium effect */
+.card--secret .card__foil {
+  background: 
+    radial-gradient(
+      circle at var(--pointer-x) var(--pointer-y),
+      rgba(255, 215, 0, 0.4) 0%,
+      rgba(255, 140, 0, 0.3) 25%,
+      rgba(255, 69, 0, 0.2) 50%,
+      transparent 70%
+    ),
+    linear-gradient(
+      45deg,
+      #ffd700 0%,
+      #ffed4e 25%,
+      #ffc107 50%,
+      #ff8f00 75%,
+      #ffd700 100%
+    );
+  background-size: 100% 100%, 200% 200%;
+}
+
+/* Galaxy Holo - Deep space effect */
+.card--galaxy .card__foil {
+  background: 
+    radial-gradient(
+      circle at 20% 80%,
+      rgba(120, 119, 198, 0.4) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(255, 119, 198, 0.4) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 40% 40%,
+      rgba(120, 255, 198, 0.4) 0%,
+      transparent 50%
+    ),
+    linear-gradient(
+      115deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.2) 25%,
+      rgba(0, 0, 0, 0.3) 50%,
+      rgba(0, 0, 0, 0.2) 75%,
+      transparent 100%
+    );
+}
+
+/* Prism Holo - Light refraction effect */
+.card--prism .card__foil {
+  background: 
+    linear-gradient(
+      calc(var(--pointer-x) * 1deg + 45deg),
+      transparent 0%,
+      rgba(255, 0, 0, 0.2) 16.66%,
+      rgba(255, 165, 0, 0.2) 33.33%,
+      rgba(255, 255, 0, 0.2) 50%,
+      rgba(0, 255, 0, 0.2) 66.66%,
+      rgba(0, 0, 255, 0.2) 83.33%,
+      transparent 100%
+    ),
+    linear-gradient(
+      calc(var(--pointer-y) * 1deg + 135deg),
+      transparent 0%,
+      rgba(75, 0, 130, 0.2) 50%,
+      transparent 100%
+    );
+}
+
+/* Texture overlays for premium effects */
+.card--secret::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 215, 0, 0.1) 2px,
+      rgba(255, 215, 0, 0.1) 4px
+    );
+  mix-blend-mode: overlay;
+  opacity: calc(var(--card-opacity) * 0.5);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.card--galaxy::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 10% 20%, white 1px, transparent 1px),
+    radial-gradient(circle at 80% 80%, white 0.5px, transparent 0.5px),
+    radial-gradient(circle at 40% 40%, white 0.8px, transparent 0.8px),
+    radial-gradient(circle at 90% 10%, white 0.3px, transparent 0.3px);
+  background-size: 100px 100px, 150px 150px, 80px 80px, 200px 200px;
+  opacity: calc(var(--card-opacity) * 0.6);
+  animation: stars-twinkle 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes stars-twinkle {
+  0%, 100% { opacity: calc(var(--card-opacity) * 0.3); }
+  50% { opacity: calc(var(--card-opacity) * 0.8); }
+}
+
+/* Enhanced mobile touch support */
+@media (hover: none) and (pointer: coarse) {
+  .holographic-card {
+    --card-opacity: 0.3;
+  }
+  
+  .holographic-card:active {
+    --card-opacity: 0.8;
+    transform: scale(0.98);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .holographic-card {
+    transform: none !important;
+  }
+  
+  .card__foil,
+  .card__shine,
+  .card__glare {
+    animation: none !important;
+    opacity: 0.3 !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .card__foil {
+    opacity: 0.1 !important;
+  }
+  
+  .card__shine,
+  .card__glare {
+    opacity: 0.05 !important;
+  }
+}/* Secret
+ Rare - Premium gold effect */
+.card--secret .card__foil {
+  background: 
+    linear-gradient(
+      calc(var(--pointer-x) * 2deg + 135deg),
+      transparent 0%,
+      rgba(255, 215, 0, 0.8) 15%,
+      rgba(255, 140, 0, 0.9) 30%,
+      rgba(255, 215, 0, 0.8) 45%,
+      rgba(255, 69, 0, 0.7) 60%,
+      rgba(255, 215, 0, 0.8) 75%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle at var(--pointer-x) var(--pointer-y),
+      rgba(255, 255, 255, 0.6) 0%,
+      rgba(255, 215, 0, 0.4) 25%,
+      transparent 60%
+    ),
+    repeating-linear-gradient(
+      calc(var(--pointer-x) * 0.5deg + 45deg),
+      transparent,
+      transparent 2px,
+      rgba(255, 215, 0, 0.1) 2px,
+      rgba(255, 215, 0, 0.1) 4px
+    );
+  animation: secret-shimmer 2s ease-in-out infinite;
+}
+
+@keyframes secret-shimmer {
+  0%, 100% { 
+    filter: brightness(1) saturate(1);
+    background-size: 400% 400%, 200% 200%, 20px 20px;
+  }
+  50% { 
+    filter: brightness(1.4) saturate(1.3);
+    background-size: 450% 450%, 250% 250%, 25px 25px;
+  }
+}
+
+/* Galaxy Holo - Deep space with stars */
+.card--galaxy .card__foil {
+  background: 
+    radial-gradient(
+      circle at calc(var(--pointer-x) * 0.8) calc(var(--pointer-y) * 0.8),
+      rgba(138, 43, 226, 0.6) 0%,
+      rgba(75, 0, 130, 0.4) 20%,
+      rgba(25, 25, 112, 0.3) 40%,
+      rgba(0, 0, 0, 0.2) 60%,
+      transparent 80%
+    ),
+    linear-gradient(
+      calc(var(--pointer-x) * 1.8deg + 225deg),
+      transparent 0%,
+      rgba(147, 0, 211, 0.4) 25%,
+      rgba(75, 0, 130, 0.5) 50%,
+      rgba(25, 25, 112, 0.4) 75%,
+      transparent 100%
+    ),
+    conic-gradient(
+      from calc(var(--pointer-x) * 2deg),
+      rgba(138, 43, 226, 0.3) 0deg,
+      rgba(0, 191, 255, 0.3) 60deg,
+      rgba(255, 20, 147, 0.3) 120deg,
+      rgba(50, 205, 50, 0.3) 180deg,
+      rgba(255, 140, 0, 0.3) 240deg,
+      rgba(138, 43, 226, 0.3) 300deg,
+      rgba(138, 43, 226, 0.3) 360deg
+    );
+  animation: galaxy-swirl 10s linear infinite, galaxy-pulse 3s ease-in-out infinite;
+}
+
+@keyframes galaxy-swirl {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+@keyframes galaxy-pulse {
+  0%, 100% { 
+    opacity: calc(var(--card-opacity) * 1.1);
+    background-size: 300% 300%, 400% 400%, 200% 200%;
+  }
+  50% { 
+    opacity: calc(var(--card-opacity) * 1.4);
+    background-size: 350% 350%, 450% 450%, 250% 250%;
+  }
+}
+
+/* Prism Holo - Light refraction effect */
+.card--prism .card__foil {
+  background: 
+    linear-gradient(
+      calc(var(--pointer-x) * 3deg + 45deg),
+      transparent 0%,
+      rgba(255, 0, 0, 0.4) 12%,
+      rgba(255, 127, 0, 0.4) 24%,
+      rgba(255, 255, 0, 0.4) 36%,
+      rgba(127, 255, 0, 0.4) 48%,
+      rgba(0, 255, 0, 0.4) 60%,
+      rgba(0, 255, 127, 0.4) 72%,
+      rgba(0, 255, 255, 0.4) 84%,
+      transparent 100%
+    ),
+    linear-gradient(
+      calc(var(--pointer-y) * -2deg + 135deg),
+      transparent 0%,
+      rgba(0, 127, 255, 0.3) 25%,
+      rgba(127, 0, 255, 0.3) 50%,
+      rgba(255, 0, 127, 0.3) 75%,
+      transparent 100%
+    );
+  animation: prism-refract 4s ease-in-out infinite;
+}
+
+@keyframes prism-refract {
+  0%, 100% { 
+    filter: brightness(1) contrast(1);
+    background-size: 300% 300%, 250% 250%;
+  }
+  25% { 
+    filter: brightness(1.2) contrast(1.1);
+    background-size: 350% 350%, 300% 300%;
+  }
+  50% { 
+    filter: brightness(1.4) contrast(1.2);
+    background-size: 400% 400%, 350% 350%;
+  }
+  75% { 
+    filter: brightness(1.2) contrast(1.1);
+    background-size: 350% 350%, 300% 300%;
+  }
+}
+
+/* Enhanced sparkle effects for all premium cards */
+.card--rainbow::after,
+.card--cosmic::after,
+.card--secret::after,
+.card--galaxy::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.8) 1px, transparent 1px),
+    radial-gradient(circle at 85% 25%, rgba(255, 255, 255, 0.6) 1px, transparent 1px),
+    radial-gradient(circle at 25% 85%, rgba(255, 255, 255, 0.7) 0.5px, transparent 0.5px),
+    radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+    radial-gradient(circle at 45% 15%, rgba(255, 255, 255, 0.4) 0.5px, transparent 0.5px),
+    radial-gradient(circle at 65% 65%, rgba(255, 255, 255, 0.6) 0.8px, transparent 0.8px);
+  background-size: 
+    80px 80px, 
+    120px 120px, 
+    60px 60px, 
+    100px 100px,
+    40px 40px,
+    90px 90px;
+  background-position: 
+    calc(var(--pointer-x) * 0.3) calc(var(--pointer-y) * 0.3),
+    calc(var(--pointer-x) * -0.2) calc(var(--pointer-y) * -0.2),
+    calc(var(--pointer-x) * 0.6) calc(var(--pointer-y) * 0.6),
+    calc(var(--pointer-x) * -0.4) calc(var(--pointer-y) * -0.4),
+    calc(var(--pointer-x) * 0.8) calc(var(--pointer-y) * 0.8),
+    calc(var(--pointer-x) * -0.6) calc(var(--pointer-y) * -0.6);
+  opacity: calc(var(--card-opacity) * 0.7);
+  animation: sparkle-dance 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 5;
+}
+
+@keyframes sparkle-dance {
+  0%, 100% { 
+    opacity: calc(var(--card-opacity) * 0.4);
+    transform: scale(1);
+  }
+  33% { 
+    opacity: calc(var(--card-opacity) * 0.8);
+    transform: scale(1.05);
+  }
+  66% { 
+    opacity: calc(var(--card-opacity) * 0.6);
+    transform: scale(0.95);
+  }
+}
+
+/* Card tilt shadow effect */
+.holographic-card::before {
+  content: '';
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  right: 5%;
+  bottom: 5%;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 1rem;
+  filter: blur(20px);
+  transform: 
+    rotateX(calc(var(--rotate-x) * 0.5))
+    rotateY(calc(var(--rotate-y) * 0.5))
+    translateZ(-50px);
+  opacity: calc(var(--card-opacity) * 0.5);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Enhanced mobile and touch interactions */
+@media (hover: none) and (pointer: coarse) {
+  .holographic-card {
+    --card-opacity: 0.4;
+  }
+  
+  .holographic-card:active {
+    --card-opacity: 1.2;
+    --card-scale: 0.95;
+    transform: 
+      perspective(1000px)
+      rotateX(5deg)
+      rotateY(-5deg)
+      scale(var(--card-scale));
+  }
+  
+  /* Auto-animate effects on mobile */
+  .card__foil {
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+  }
+  
+  .card--basic .card__foil {
+    animation-name: basic-shimmer;
+  }
+  
+  .card--cosmic .card__foil {
+    animation-name: cosmic-rotate;
+  }
+  
+  .card--rainbow .card__foil {
+    animation-name: rainbow-shift, rainbow-pulse;
+  }
+  
+  .card--aurora .card__foil {
+    animation-name: aurora-wave;
+  }
+  
+  .card--neon .card__foil {
+    animation-name: neon-flicker, neon-rotate;
+  }
+}/* Enhanc
+ed image overlay effects */
+.card-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: 
+    linear-gradient(
+      135deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.1) 25%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.1) 75%,
+      transparent 100%
+    );
+  mix-blend-mode: overlay;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.holographic-card:hover .card-image-overlay {
+  opacity: 1;
+}
+
+/* Dynamic glare effect that follows mouse */
+.card-dynamic-glare {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(
+      600px circle at var(--pointer-x) var(--pointer-y),
+      rgba(255, 255, 255, 0.4) 0%,
+      rgba(255, 255, 255, 0.2) 20%,
+      rgba(255, 255, 255, 0.1) 40%,
+      transparent 70%
+    );
+  mix-blend-mode: overlay;
+  opacity: calc(var(--card-opacity) * 0.8);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Enhanced backdrop blur for better text readability */
+.enhanced-backdrop {
+  backdrop-filter: blur(8px) saturate(1.2);
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Improved text shadows for better visibility */
+.enhanced-text-shadow {
+  text-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.8),
+    0 2px 4px rgba(0, 0, 0, 0.6),
+    0 0 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Animated shimmer effect for premium cards */
+.card-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 70%
+  );
+  background-size: 200% 200%;
+  animation: shimmer 3s ease-in-out infinite;
+  mix-blend-mode: overlay;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.holographic-card:hover .card-shimmer {
+  opacity: 1;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% -200%; }
+  50% { background-position: 200% 200%; }
+  100% { background-position: -200% -200%; }
+}
+
+/* Enhanced card border glow */
+.card-border-glow {
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 215, 0, 0.6),
+    rgba(255, 140, 0, 0.6),
+    rgba(255, 69, 0, 0.6),
+    rgba(255, 215, 0, 0.6)
+  );
+  background-size: 400% 400%;
+  border-radius: inherit;
+  opacity: 0;
+  animation: border-glow 3s ease-in-out infinite;
+  z-index: -1;
+}
+
+.holographic-card:hover .card-border-glow {
+  opacity: 1;
+}
+
+@keyframes border-glow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+/* ==
+=== UPDATED HOLOGRAPHIC CARD EFFECTS ===== */
+
+/* Override existing effects with improved versions */
+
+/* Basic Holo - Simple rainbow gradient */
+.card--basic .card__foil {
+  background: linear-gradient(
+    calc(var(--pointer-x) * 2deg + 115deg),
+    transparent 0%,
+    rgba(255, 0, 153, 0.6) 25%,
+    rgba(255, 204, 0, 0.7) 35%,
+    rgba(255, 0, 153, 0.6) 45%,
+    rgba(0, 255, 255, 0.7) 55%,
+    rgba(255, 0, 153, 0.6) 65%,
+    rgba(255, 204, 0, 0.7) 75%,
+    transparent 100%
+  ) !important;
+  background-size: 300% 300% !important;
+  animation: basic-shift-new 3s ease-in-out infinite !important;
+}
+
+@keyframes basic-shift-new {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Cosmic Holo - Galaxy effect */
+.card--cosmic .card__foil {
+  background: 
+    radial-gradient(
+      ellipse 600px 200px at var(--pointer-x) var(--pointer-y),
+      rgba(138, 43, 226, 0.8) 0%,
+      rgba(30, 144, 255, 0.6) 30%,
+      rgba(255, 20, 147, 0.4) 60%,
+      transparent 100%
+    ),
+    linear-gradient(
+      calc(var(--pointer-x) * 2deg + 45deg),
+      transparent 0%,
+      rgba(0, 231, 255, 0.4) 20%,
+      rgba(255, 0, 231, 0.6) 40%,
+      rgba(255, 206, 84, 0.4) 60%,
+      rgba(138, 43, 226, 0.3) 80%,
+      transparent 100%
+    ),
+    conic-gradient(
+      from calc(var(--pointer-y) * 3.6deg),
+      rgba(138, 43, 226, 0.3) 0deg,
+      rgba(0, 191, 255, 0.3) 120deg,
+      rgba(255, 20, 147, 0.3) 240deg,
+      rgba(138, 43, 226, 0.3) 360deg
+    ) !important;
+  background-size: 200% 200%, 400% 400%, 300% 300% !important;
+  animation: cosmic-pulse-new 4s ease-in-out infinite !important;
+}
+
+@keyframes cosmic-pulse-new {
+  0%, 100% { 
+    background-size: 200% 200%, 400% 400%, 300% 300%;
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  50% { 
+    background-size: 250% 250%, 500% 500%, 400% 400%;
+    filter: hue-rotate(60deg) brightness(1.2);
+  }
+}
+
+/* Rainbow Holo - Full spectrum */
+.card--rainbow .card__foil {
+  background: 
+    linear-gradient(
+      calc(var(--pointer-x) * 3deg + 45deg),
+      rgba(255, 0, 0, 0.9) 0%,
+      rgba(255, 128, 0, 0.9) 12.5%,
+      rgba(255, 255, 0, 0.9) 25%,
+      rgba(128, 255, 0, 0.9) 37.5%,
+      rgba(0, 255, 0, 0.9) 50%,
+      rgba(0, 255, 128, 0.9) 62.5%,
+      rgba(0, 255, 255, 0.9) 75%,
+      rgba(0, 128, 255, 0.9) 87.5%,
+      rgba(0, 0, 255, 0.9) 100%
+    ),
+    radial-gradient(
+      circle at var(--pointer-x) var(--pointer-y),
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(255, 255, 255, 0.1) 30%,
+      transparent 60%
+    ) !important;
+  background-size: 400% 400%, 200% 200% !important;
+  animation: rainbow-wave-new 2s ease-in-out infinite !important;
+}
+
+@keyframes rainbow-wave-new {
+  0%, 100% { 
+    background-position: 0% 50%, center;
+    filter: hue-rotate(0deg) saturate(1);
+  }
+  33% { 
+    background-position: 50% 100%, center;
+    filter: hue-rotate(120deg) saturate(1.3);
+  }
+  66% { 
+    background-position: 100% 50%, center;
+    filter: hue-rotate(240deg) saturate(1.1);
+  }
+}
+
+/* Aurora Holo - Pastel northern lights */
+.card--aurora .card__foil {
+  background: 
+    linear-gradient(
+      calc(var(--pointer-x) * 2deg + 60deg),
+      transparent 0%,
+      rgba(168, 237, 234, 0.6) 20%,
+      rgba(254, 214, 227, 0.8) 40%,
+      rgba(210, 153, 194, 0.6) 60%,
+      rgba(254, 249, 215, 0.4) 80%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 400px 100px at var(--pointer-x) var(--pointer-y),
+      rgba(168, 237, 234, 0.4) 0%,
+      rgba(254, 214, 227, 0.3) 50%,
+      transparent 100%
+    ),
+    linear-gradient(
+      calc(var(--pointer-y) * -1deg + 120deg),
+      transparent 0%,
+      rgba(210, 153, 194, 0.3) 30%,
+      rgba(254, 249, 215, 0.5) 60%,
+      transparent 100%
+    ) !important;
+  background-size: 300% 300%, 200% 200%, 250% 250% !important;
+  animation: aurora-dance-new 5s ease-in-out infinite !important;
+}
+
+@keyframes aurora-dance-new {
+  0%, 100% { 
+    background-position: 0% 50%, center, 0% 50%;
+    filter: brightness(1) saturate(1);
+  }
+  33% { 
+    background-position: 50% 100%, center, 100% 50%;
+    filter: brightness(1.2) saturate(1.3);
+  }
+  66% { 
+    background-position: 100% 0%, center, 50% 100%;
+    filter: brightness(0.9) saturate(0.8);
+  }
+}
+
+/* Secret Rare - Premium gold effect */
+.card--secret .card__foil {
+  background: 
+    radial-gradient(
+      circle at var(--pointer-x) var(--pointer-y),
+      rgba(255, 215, 0, 0.9) 0%,
+      rgba(255, 140, 0, 0.7) 20%,
+      rgba(255, 69, 0, 0.5) 40%,
+      rgba(255, 215, 0, 0.3) 60%,
+      transparent 80%
+    ),
+    linear-gradient(
+      calc(var(--pointer-x) * 1deg + 45deg),
+      rgba(255, 215, 0, 0.8) 0%,
+      rgba(255, 140, 0, 0.9) 25%,
+      rgba(255, 69, 0, 0.7) 50%,
+      rgba(255, 140, 0, 0.9) 75%,
+      rgba(255, 215, 0, 0.8) 100%
+    ),
+    repeating-linear-gradient(
+      calc(var(--pointer-y) * 0.5deg + 90deg),
+      transparent,
+      transparent 3px,
+      rgba(255, 215, 0, 0.2) 3px,
+      rgba(255, 215, 0, 0.2) 6px
+    ) !important;
+  background-size: 150% 150%, 200% 200%, 20px 20px !important;
+  animation: secret-gleam-new 3s ease-in-out infinite !important;
+}
+
+@keyframes secret-gleam-new {
+  0%, 100% { 
+    background-position: center, 0% 50%, 0px 0px;
+    filter: brightness(1) contrast(1);
+  }
+  50% { 
+    background-position: center, 100% 50%, 10px 10px;
+    filter: brightness(1.3) contrast(1.2);
+  }
+}
+
+/* Galaxy Holo - Deep space effect */
+.card--galaxy .card__foil {
+  background: 
+    radial-gradient(
+      circle at calc(var(--pointer-x) * 0.8%) calc(var(--pointer-y) * 0.8%),
+      rgba(138, 43, 226, 0.8) 0%,
+      rgba(75, 0, 130, 0.6) 20%,
+      rgba(25, 25, 112, 0.4) 40%,
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at calc(100% - var(--pointer-x) * 0.5%) calc(100% - var(--pointer-y) * 0.5%),
+      rgba(0, 191, 255, 0.6) 0%,
+      rgba(30, 144, 255, 0.4) 30%,
+      transparent 50%
+    ),
+    linear-gradient(
+      calc(var(--pointer-x) * 1deg + 135deg),
+      transparent 0%,
+      rgba(138, 43, 226, 0.3) 25%,
+      rgba(255, 20, 147, 0.5) 50%,
+      rgba(0, 191, 255, 0.3) 75%,
+      transparent 100%
+    ) !important;
+  background-size: 300% 300%, 250% 250%, 400% 400% !important;
+  animation: galaxy-swirl-new 8s linear infinite !important;
+}
+
+@keyframes galaxy-swirl-new {
+  0% { 
+    background-position: 0% 0%, 100% 100%, 0% 50%;
+    filter: hue-rotate(0deg);
+  }
+  25% { 
+    background-position: 25% 25%, 75% 75%, 25% 75%;
+    filter: hue-rotate(90deg);
+  }
+  50% { 
+    background-position: 50% 50%, 50% 50%, 50% 100%;
+    filter: hue-rotate(180deg);
+  }
+  75% { 
+    background-position: 75% 75%, 25% 25%, 75% 25%;
+    filter: hue-rotate(270deg);
+  }
+  100% { 
+    background-position: 100% 100%, 0% 0%, 100% 50%;
+    filter: hue-rotate(360deg);
+  }
+}
+
+/* Enhanced card hover effects */
+.holographic-card:hover {
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.2),
+    0 0 50px rgba(99, 102, 241, 0.3) !important;
+}
+
+/* Enhanced floating animation when not hovered */
+.holographic-card:not(:hover) {
+  animation: card-float-new 6s ease-in-out infinite;
+}
+
+@keyframes card-float-new {
+  0%, 100% { 
+    transform: perspective(1000px) translateY(0px) rotateX(0deg) rotateY(0deg);
+  }
+  25% { 
+    transform: perspective(1000px) translateY(-2px) rotateX(1deg) rotateY(-0.5deg);
+  }
+  50% { 
+    transform: perspective(1000px) translateY(-4px) rotateX(0deg) rotateY(1deg);
+  }
+  75% { 
+    transform: perspective(1000px) translateY(-2px) rotateX(-1deg) rotateY(-0.5deg);
+  }
 }

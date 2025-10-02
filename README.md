@@ -123,6 +123,10 @@ npm run dev              # Start SvelteKit dev server
 npm run dev:full         # Start both frontend and backend
 npm run pocketbase       # Start PocketBase only
 
+# Remote Access
+npm run tunnel           # Create ngrok tunnel for port 5173
+npm run dev:tunnel       # Start dev server and ngrok tunnel together
+
 # Building
 npm run build            # Build for production
 npm run preview          # Preview production build
@@ -135,6 +139,64 @@ npm run format           # Prettier formatting
 # Setup
 npm run setup:pocketbase # Download and configure PocketBase
 ```
+
+## 🌐 Remote Access with ngrok
+
+To share your local development server with others or access it remotely:
+
+### Quick Setup
+
+1. **Start development server and tunnel**
+   ```bash
+   npm run dev:tunnel
+   ```
+
+2. **Or run them separately**
+   ```bash
+   # Terminal 1: Start dev server
+   npm run dev
+   
+   # Terminal 2: Create tunnel
+   npm run tunnel
+   ```
+
+### Manual ngrok Setup
+
+1. **Install ngrok** (if not already installed)
+   ```bash
+   # Download from https://ngrok.com/download
+   # Or install via chocolatey: choco install ngrok
+   ```
+
+2. **Authenticate ngrok** (already configured)
+   ```bash
+   ngrok config add-authtoken 2ksPM73of7qikDZdLAwnH11LFeW_4NJhxLQ4jNm77LGD1x6SL
+   ```
+
+3. **Create tunnel**
+   ```bash
+   ngrok http 5173
+   ```
+
+### Features
+- **Public HTTPS URL**: Share your holographic cards with anyone
+- **Traffic Inspection**: Visit `http://localhost:4040` to inspect requests
+- **Real-time Updates**: Changes reflect immediately on the public URL
+- **Mobile Testing**: Test holographic effects on real mobile devices
+
+### Example Usage
+```bash
+# Start the development server
+npm run dev
+
+# In another terminal, create the tunnel
+ngrok http 5173
+
+# ngrok will output something like:
+# Forwarding: https://abc123.ngrok.io -> http://localhost:5173
+```
+
+Now you can share the `https://abc123.ngrok.io` URL to showcase your holographic cards!
 
 ## 🎨 Holographic Effects
 

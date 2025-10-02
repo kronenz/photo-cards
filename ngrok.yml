@@ -1,0 +1,10 @@
+version: "2"
+authtoken: 2ksPM73of7qikDZdLAwnH11LFeW_4NJhxLQ4jNm77LGD1x6SL
+tunnels:
+  holographic-cards:
+    addr: 5173
+    proto: http
+    hostname: holographic-cards-demo.ngrok.io
+    bind_tls: true
+    inspect: true
+    metadata: "Holographic Card Community - Demo"

@@ -6,13 +6,9 @@ const config = {
 	preprocess: vitePreprocess(),
 	
 	kit: {
-		// Static adapter for bare metal deployment
+		// Static adapter for development
 		adapter: adapter({
-			pages: 'build',
-			assets: 'build',
-			fallback: 'index.html',
-			precompress: true,
-			strict: true
+			fallback: 'index.html'
 		}),
 
 		// 파일 구조를 정의하는 객체입니다.

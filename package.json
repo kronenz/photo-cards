@@ -14,13 +14,15 @@
     "setup:pocketbase": "node scripts/setup-pocketbase.js",
     "pocketbase": "cd pocketbase && ./pocketbase serve --http=127.0.0.1:8090",
     "pocketbase:win": "cd pocketbase && pocketbase.exe serve --http=127.0.0.1:8090",
-    "dev:full": "concurrently \"npm run pocketbase\" \"npm run dev\""
+    "dev:full": "concurrently \"npm run pocketbase\" \"npm run dev\"",
+    "tunnel": "ngrok http 5173",
+    "dev:tunnel": "concurrently \"npm run dev\" \"npm run tunnel\""
   },
-
   "dependencies": {
     "@auth/core": "^0.34.2",
     "@auth/sveltekit": "^1.4.2",
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
+    "@tailwindcss/postcss": "^4.1.14",
     "pocketbase": "^0.21.4"
   },
   "devDependencies": {

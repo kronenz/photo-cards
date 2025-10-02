@@ -709,49 +709,331 @@ interface AppError {
 
 ## Design System & Look and Feel
 
-### Visual Identity
-- **Primary Colors**: 홀로그래픽 효과를 강조하는 무지개 스펙트럼
-- **Secondary Colors**: 야구 테마 색상 (그린, 브라운, 화이트)
-- **Typography**: 모던하고 읽기 쉬운 폰트 (Roboto, Noto Sans KR)
-- **Iconography**: 일관된 아이콘 시스템
+### Civitai-Inspired Modern Design System
 
-### Component Library
+#### Visual Identity & Brand Guidelines
+
+**Design Philosophy**: 전문적이고 세련된 AI 아트 커뮤니티의 미학을 홀로그래픽 카드 문화에 적용하여, 고급스럽고 현대적인 디지털 경험을 제공합니다.
+
+#### Color System (Dark Theme Primary)
 ```typescript
-// 디자인 토큰
-const designTokens = {
-  colors: {
-    primary: {
-      50: '#f0f9ff',
-      500: '#3b82f6',
-      900: '#1e3a8a'
+const colorSystem = {
+  // Primary Dark Theme (Civitai-inspired)
+  dark: {
+    background: {
+      primary: '#0f0f23',      // 메인 배경 (진한 네이비)
+      secondary: '#1a1b3e',    // 카드/섹션 배경
+      tertiary: '#2d2d44',     // 호버/액티브 상태
+      elevated: '#3a3b5c'      // 모달/드롭다운
     },
-    holographic: {
-      rainbow: 'linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3)',
-      silver: 'linear-gradient(135deg, #c0c0c0, #ffffff, #c0c0c0)',
-      gold: 'linear-gradient(135deg, #ffd700, #ffed4e, #ffd700)'
+    surface: {
+      primary: '#2d2d44',      // 카드 표면
+      secondary: '#3a3b5c',    // 입력 필드
+      tertiary: '#4a4b6c',     // 비활성 요소
+      glass: 'rgba(45, 45, 68, 0.8)'  // 글래스모피즘
+    },
+    text: {
+      primary: '#ffffff',      // 메인 텍스트
+      secondary: '#b4b6cd',    // 보조 텍스트
+      tertiary: '#8b8ca8',     // 비활성 텍스트
+      accent: '#6366f1'        // 강조 텍스트
+    },
+    accent: {
+      primary: '#6366f1',      // 메인 액센트 (인디고)
+      secondary: '#8b5cf6',    // 보조 액센트 (보라)
+      success: '#10b981',      // 성공 상태
+      warning: '#f59e0b',      // 경고 상태
+      error: '#ef4444',        // 오류 상태
+      info: '#3b82f6'          // 정보 상태
     }
   },
-  spacing: {
-    xs: '0.25rem',
-    sm: '0.5rem',
-    md: '1rem',
-    lg: '1.5rem',
-    xl: '2rem'
+  
+  // Holographic Spectrum (기존 유지하되 다크 테마에 최적화)
+  holographic: {
+    rainbow: 'linear-gradient(135deg, #ff0080, #ff8c00, #40e0d0, #da70d6, #98fb98)',
+    cosmic: 'linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c)',
+    aurora: 'linear-gradient(135deg, #a8edea, #fed6e3, #d299c2, #fef9d7)',
+    neon: 'linear-gradient(135deg, #12c2e9, #c471ed, #f64f59)',
+    gold: 'linear-gradient(135deg, #ffd700, #ffed4e, #ffc107)',
+    silver: 'linear-gradient(135deg, #c0c0c0, #e8e8e8, #b8b8b8)'
+  }
+}
+```
+
+#### Typography System
+```typescript
+const typography = {
+  fontFamilies: {
+    primary: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    secondary: '"Poppins", sans-serif',
+    korean: '"Pretendard", "Noto Sans KR", sans-serif',
+    mono: '"JetBrains Mono", "Fira Code", monospace'
   },
-  borderRadius: {
-    sm: '0.25rem',
-    md: '0.5rem',
-    lg: '1rem',
-    card: '1.5rem'
+  
+  scale: {
+    // Fluid typography scale
+    xs: 'clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem)',
+    sm: 'clamp(0.875rem, 0.8rem + 0.375vw, 1rem)',
+    base: 'clamp(1rem, 0.9rem + 0.5vw, 1.125rem)',
+    lg: 'clamp(1.125rem, 1rem + 0.625vw, 1.25rem)',
+    xl: 'clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem)',
+    '2xl': 'clamp(1.5rem, 1.3rem + 1vw, 2rem)',
+    '3xl': 'clamp(1.875rem, 1.6rem + 1.375vw, 2.5rem)',
+    '4xl': 'clamp(2.25rem, 1.9rem + 1.75vw, 3rem)',
+    '5xl': 'clamp(3rem, 2.5rem + 2.5vw, 4rem)'
+  },
+  
+  weights: {
+    light: 300,
+    normal: 400,
+    medium: 500,
+    semibold: 600,
+    bold: 700,
+    extrabold: 800
+  }
+}
+```
+
+#### Spacing & Layout System
+```typescript
+const spacing = {
+  // 8px base unit system
+  px: '1px',
+  0: '0',
+  0.5: '0.125rem',  // 2px
+  1: '0.25rem',     // 4px
+  2: '0.5rem',      // 8px
+  3: '0.75rem',     // 12px
+  4: '1rem',        // 16px
+  5: '1.25rem',     // 20px
+  6: '1.5rem',      // 24px
+  8: '2rem',        // 32px
+  10: '2.5rem',     // 40px
+  12: '3rem',       // 48px
+  16: '4rem',       // 64px
+  20: '5rem',       // 80px
+  24: '6rem',       // 96px
+  32: '8rem',       // 128px
+  
+  // Container sizes
+  container: {
+    sm: '640px',
+    md: '768px',
+    lg: '1024px',
+    xl: '1280px',
+    '2xl': '1536px'
+  }
+}
+```
+
+#### Border Radius & Shadows
+```typescript
+const borderRadius = {
+  none: '0',
+  sm: '0.25rem',    // 4px
+  md: '0.375rem',   // 6px
+  lg: '0.5rem',     // 8px
+  xl: '0.75rem',    // 12px
+  '2xl': '1rem',    // 16px
+  '3xl': '1.5rem',  // 24px
+  card: '1rem',     // 카드 기본
+  full: '9999px'    // 완전 둥근
+}
+
+const shadows = {
+  // Civitai-style elevated shadows
+  sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+  md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+  lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+  xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+  
+  // Holographic glow effects
+  holographic: {
+    subtle: '0 0 20px rgba(99, 102, 241, 0.15)',
+    medium: '0 0 40px rgba(99, 102, 241, 0.25)',
+    strong: '0 0 60px rgba(99, 102, 241, 0.35)'
+  },
+  
+  // Glass morphism
+  glass: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+  
+  // Inner shadows for depth
+  inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)'
+}
+```
+
+#### Component Design Tokens
+```typescript
+interface ComponentTokens {
+  // Button System
+  button: {
+    primary: {
+      background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+      hover: 'linear-gradient(135deg, #5855eb, #7c3aed)',
+      text: '#ffffff',
+      shadow: shadows.md,
+      borderRadius: borderRadius.lg
+    },
+    secondary: {
+      background: colorSystem.dark.surface.secondary,
+      hover: colorSystem.dark.surface.tertiary,
+      text: colorSystem.dark.text.primary,
+      border: '1px solid rgba(255, 255, 255, 0.1)'
+    },
+    ghost: {
+      background: 'transparent',
+      hover: 'rgba(99, 102, 241, 0.1)',
+      text: colorSystem.dark.accent.primary
+    },
+    holographic: {
+      background: colorSystem.holographic.cosmic,
+      hover: 'brightness(1.1)',
+      text: '#ffffff',
+      shadow: shadows.holographic.medium
+    }
+  },
+  
+  // Card System
+  card: {
+    default: {
+      background: colorSystem.dark.surface.primary,
+      border: '1px solid rgba(255, 255, 255, 0.08)',
+      borderRadius: borderRadius.card,
+      shadow: shadows.lg,
+      hover: {
+        transform: 'translateY(-2px)',
+        shadow: shadows.xl
+      }
+    },
+    elevated: {
+      background: colorSystem.dark.surface.secondary,
+      shadow: shadows.xl,
+      backdrop: 'blur(20px)'
+    },
+    holographic: {
+      background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1))',
+      border: '1px solid rgba(99, 102, 241, 0.2)',
+      shadow: shadows.holographic.subtle
+    }
+  },
+  
+  // Input System
+  input: {
+    default: {
+      background: colorSystem.dark.surface.secondary,
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      borderRadius: borderRadius.lg,
+      text: colorSystem.dark.text.primary,
+      placeholder: colorSystem.dark.text.tertiary,
+      focus: {
+        border: `1px solid ${colorSystem.dark.accent.primary}`,
+        shadow: `0 0 0 3px rgba(99, 102, 241, 0.1)`
+      }
+    }
+  },
+  
+  // Navigation System
+  navigation: {
+    background: 'rgba(15, 15, 35, 0.95)',
+    backdrop: 'blur(20px)',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    item: {
+      default: colorSystem.dark.text.secondary,
+      hover: colorSystem.dark.text.primary,
+      active: colorSystem.dark.accent.primary
+    }
+  }
+}
+```
+
+#### Animation & Interaction System
+```typescript
+const animations = {
+  // Easing functions
+  easing: {
+    default: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    smooth: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+    bounce: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+    sharp: 'cubic-bezier(0.4, 0, 1, 1)'
+  },
+  
+  // Duration scale
+  duration: {
+    fast: '150ms',
+    normal: '250ms',
+    slow: '350ms',
+    slower: '500ms'
+  },
+  
+  // Micro-interactions
+  microInteractions: {
+    buttonHover: {
+      transform: 'translateY(-1px)',
+      transition: `all ${animations.duration.fast} ${animations.easing.smooth}`
+    },
+    cardHover: {
+      transform: 'translateY(-4px) scale(1.02)',
+      transition: `all ${animations.duration.normal} ${animations.easing.smooth}`
+    },
+    holographicShimmer: {
+      animation: 'shimmer 2s linear infinite',
+      backgroundSize: '200% 200%'
+    }
   }
 }
 
-// 컴포넌트 스타일 가이드
-interface ComponentStyles {
-  button: ButtonVariants
-  card: CardVariants
-  input: InputVariants
-  modal: ModalVariants
+// CSS Keyframes
+const keyframes = `
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes holographicRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(0px); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(-20px); opacity: 0; }
+}
+`
+```
+
+#### Layout Patterns
+```typescript
+interface LayoutPatterns {
+  // Grid Systems
+  gallery: {
+    mobile: 'repeat(1, 1fr)',
+    tablet: 'repeat(2, 1fr)',
+    desktop: 'repeat(auto-fill, minmax(280px, 1fr))',
+    gap: spacing[6]
+  },
+  
+  masonry: {
+    columns: {
+      mobile: 1,
+      tablet: 2,
+      desktop: 3,
+      wide: 4
+    },
+    gap: spacing[4]
+  },
+  
+  // Container patterns
+  pageContainer: {
+    maxWidth: spacing.container.xl,
+    margin: '0 auto',
+    padding: `0 ${spacing[4]}`
+  },
+  
+  sectionContainer: {
+    padding: `${spacing[16]} 0`,
+    marginBottom: spacing[12]
+  }
 }
 ```
 
@@ -1045,3 +1327,586 @@ interface ImageProcessor {
 ```
 
 이 홀로그래픽 효과 시스템은 기존 Pokémon Cards CSS Holographic Effect의 검증된 기술을 기반으로 하여, 사용자가 업로드한 야구 사진에 실물 카드와 같은 홀로그래픽 효과를 적용할 수 있게 합니다.
+#
+## Page-Specific Design Specifications
+
+#### 1. Landing Page (홈페이지) - Civitai-Inspired Hero Design
+
+```typescript
+interface LandingPageDesign {
+  hero: {
+    layout: 'full-screen-gradient',
+    background: {
+      primary: 'linear-gradient(135deg, #0f0f23 0%, #1a1b3e 50%, #2d2d44 100%)',
+      overlay: 'radial-gradient(circle at 30% 70%, rgba(99, 102, 241, 0.15) 0%, transparent 50%)',
+      particles: 'floating holographic particles animation'
+    },
+    content: {
+      headline: {
+        text: '홀로그래픽 야구카드의\n새로운 차원을 경험하세요',
+        typography: typography.scale['5xl'],
+        weight: typography.weights.bold,
+        gradient: colorSystem.holographic.cosmic,
+        animation: 'fadeInUp with stagger'
+      },
+      subtitle: {
+        text: 'AI 기반 홀로그래픽 효과로 당신만의 특별한 야구카드를 제작하고\n전 세계 컬렉터들과 공유해보세요',
+        typography: typography.scale.xl,
+        color: colorSystem.dark.text.secondary,
+        maxWidth: '600px'
+      },
+      cta: {
+        primary: {
+          text: '카드 제작 시작하기',
+          style: ComponentTokens.button.holographic,
+          size: 'large',
+          icon: 'sparkles'
+        },
+        secondary: {
+          text: '갤러리 둘러보기',
+          style: ComponentTokens.button.secondary,
+          size: 'large',
+          icon: 'gallery'
+        }
+      }
+    },
+    showcase: {
+      type: '3D holographic card carousel',
+      cards: 'featured community cards with live holographic effects',
+      interaction: 'mouse-follow 3D rotation',
+      autoplay: true,
+      interval: 4000
+    }
+  }
+}
+```
+
+#### 2. Navigation System - Modern Sidebar + Top Bar
+
+```typescript
+interface NavigationDesign {
+  topBar: {
+    height: '64px',
+    background: ComponentTokens.navigation.background,
+    backdrop: ComponentTokens.navigation.backdrop,
+    border: ComponentTokens.navigation.border,
+    position: 'sticky',
+    zIndex: 1000,
+    
+    content: {
+      logo: {
+        type: 'animated holographic logo',
+        size: '32px',
+        effect: 'subtle shimmer on hover'
+      },
+      search: {
+        width: '400px',
+        placeholder: '카드, 사용자, 태그 검색...',
+        style: ComponentTokens.input.default,
+        features: ['instant search', 'recent searches', 'suggestions']
+      },
+      userMenu: {
+        avatar: 'circular with holographic border',
+        dropdown: 'glass morphism style',
+        items: ['프로필', '내 카드', '설정', '로그아웃']
+      }
+    }
+  },
+  
+  sidebar: {
+    width: {
+      collapsed: '64px',
+      expanded: '240px'
+    },
+    background: ComponentTokens.navigation.background,
+    items: [
+      { icon: 'home', label: '홈', route: '/' },
+      { icon: 'gallery', label: '갤러리', route: '/gallery' },
+      { icon: 'create', label: '카드 제작', route: '/create' },
+      { icon: 'community', label: '커뮤니티', route: '/community' },
+      { icon: 'trending', label: '트렌딩', route: '/trending' },
+      { icon: 'collections', label: '내 컬렉션', route: '/collections' }
+    ],
+    activeIndicator: {
+      type: 'holographic accent bar',
+      color: colorSystem.dark.accent.primary,
+      animation: 'smooth slide transition'
+    }
+  }
+}
+```
+
+#### 3. Gallery Page - Masonry Layout with Advanced Filtering
+
+```typescript
+interface GalleryDesign {
+  layout: {
+    type: 'masonry grid',
+    columns: LayoutPatterns.masonry.columns,
+    gap: LayoutPatterns.masonry.gap,
+    responsive: true
+  },
+  
+  filters: {
+    position: 'sticky top bar',
+    background: 'glass morphism',
+    categories: [
+      { label: '전체', value: 'all' },
+      { label: '홀로포일', value: 'holo' },
+      { label: '레인보우', value: 'rainbow' },
+      { label: '코스믹', value: 'cosmic' },
+      { label: '골드', value: 'gold' }
+    ],
+    sorting: ['최신순', '인기순', '조회순', '좋아요순'],
+    search: {
+      placeholder: '카드 제목, 태그, 제작자 검색',
+      realtime: true,
+      filters: ['태그', '제작자', '효과 타입', '날짜 범위']
+    }
+  },
+  
+  cardItem: {
+    aspectRatio: '66:92', // 실제 트레이딩 카드 비율
+    borderRadius: borderRadius.card,
+    shadow: shadows.md,
+    hover: {
+      transform: 'translateY(-8px) scale(1.05)',
+      shadow: shadows.holographic.medium,
+      transition: animations.duration.normal
+    },
+    overlay: {
+      gradient: 'linear-gradient(transparent 60%, rgba(0,0,0,0.8) 100%)',
+      content: {
+        title: typography.scale.sm,
+        author: typography.scale.xs,
+        stats: ['likes', 'views', 'comments'],
+        actions: ['like', 'bookmark', 'share']
+      }
+    },
+    holographicPreview: {
+      trigger: 'hover',
+      intensity: 'medium',
+      duration: animations.duration.slow
+    }
+  }
+}
+```
+
+#### 4. Card Creation Studio - Professional Editor Interface
+
+```typescript
+interface CardEditorDesign {
+  layout: {
+    type: 'three-panel',
+    panels: {
+      toolbar: {
+        width: '280px',
+        position: 'left',
+        background: ComponentTokens.card.elevated.background,
+        sections: [
+          'image upload',
+          'holographic effects',
+          'text elements',
+          'stickers & shapes',
+          'layers panel'
+        ]
+      },
+      canvas: {
+        flex: 1,
+        background: 'checkered pattern',
+        card: {
+          size: 'responsive with fixed aspect ratio',
+          maxWidth: '500px',
+          shadow: shadows.xl,
+          realTimePreview: true
+        }
+      },
+      properties: {
+        width: '320px',
+        position: 'right',
+        background: ComponentTokens.card.elevated.background,
+        sections: [
+          'effect parameters',
+          'element properties',
+          'export settings'
+        ]
+      }
+    }
+  },
+  
+  toolbar: {
+    imageUpload: {
+      dropzone: {
+        style: 'dashed border with holographic accent',
+        text: '이미지를 드래그하거나 클릭하여 업로드',
+        acceptedFormats: ['JPG', 'PNG', 'WebP'],
+        maxSize: '10MB'
+      },
+      preview: {
+        thumbnail: 'rounded with edit overlay',
+        actions: ['crop', 'rotate', 'filters']
+      }
+    },
+    
+    holographicEffects: {
+      presets: [
+        { name: '기본 홀로', preview: 'animated thumbnail' },
+        { name: '레인보우', preview: 'animated thumbnail' },
+        { name: '코스믹', preview: 'animated thumbnail' },
+        { name: '골드 포일', preview: 'animated thumbnail' },
+        { name: '커스텀', preview: 'user-defined' }
+      ],
+      customization: {
+        intensity: 'slider with live preview',
+        colorShift: 'color picker with gradient',
+        pattern: 'pattern selector',
+        animation: 'speed and direction controls'
+      }
+    },
+    
+    textElements: {
+      presets: [
+        'player name',
+        'team name',
+        'position',
+        'stats',
+        'custom text'
+      ],
+      styling: {
+        font: 'dropdown with preview',
+        size: 'slider',
+        color: 'color picker with gradients',
+        effects: ['shadow', 'outline', 'glow', 'holographic']
+      }
+    }
+  }
+}
+```
+
+#### 5. Community Feed - Social Media Style Layout
+
+```typescript
+interface CommunityFeedDesign {
+  layout: {
+    type: 'centered feed with sidebars',
+    maxWidth: '800px',
+    sidebars: {
+      left: 'trending tags, featured creators',
+      right: 'activity feed, suggestions'
+    }
+  },
+  
+  feedItem: {
+    background: ComponentTokens.card.default.background,
+    borderRadius: borderRadius.card,
+    padding: spacing[6],
+    marginBottom: spacing[6],
+    
+    header: {
+      avatar: {
+        size: '48px',
+        border: 'holographic gradient',
+        hover: 'subtle glow effect'
+      },
+      userInfo: {
+        name: typography.scale.base,
+        username: typography.scale.sm,
+        timestamp: typography.scale.xs,
+        badge: 'user grade indicator'
+      },
+      actions: ['follow', 'more options']
+    },
+    
+    content: {
+      card: {
+        aspectRatio: '66:92',
+        maxWidth: '400px',
+        centerAligned: true,
+        holographicPreview: 'on hover',
+        fullscreenModal: 'on click'
+      },
+      description: {
+        typography: typography.scale.base,
+        maxLines: 3,
+        expandable: true
+      },
+      tags: {
+        style: 'pill-shaped with holographic accent',
+        clickable: true,
+        maxVisible: 5
+      }
+    },
+    
+    interactions: {
+      stats: {
+        layout: 'horizontal with icons',
+        items: ['likes', 'comments', 'shares', 'bookmarks'],
+        animations: 'count up on change'
+      },
+      actions: {
+        like: {
+          icon: 'heart with fill animation',
+          color: colorSystem.dark.accent.error,
+          haptic: 'light impact'
+        },
+        comment: {
+          icon: 'chat bubble',
+          expandInline: true
+        },
+        share: {
+          icon: 'share with options dropdown',
+          options: ['copy link', 'social media', 'embed']
+        }
+      }
+    }
+  }
+}
+```
+
+#### 6. User Profile - Creator Showcase Design
+
+```typescript
+interface UserProfileDesign {
+  layout: {
+    type: 'cover + content',
+    cover: {
+      height: '300px',
+      background: 'user-customizable gradient or image',
+      overlay: 'subtle dark gradient for text readability'
+    }
+  },
+  
+  profileHeader: {
+    avatar: {
+      size: '120px',
+      position: 'overlapping cover',
+      border: '4px solid holographic gradient',
+      hover: 'holographic shimmer effect'
+    },
+    
+    info: {
+      name: {
+        typography: typography.scale['3xl'],
+        weight: typography.weights.bold,
+        color: colorSystem.dark.text.primary
+      },
+      username: {
+        typography: typography.scale.lg,
+        color: colorSystem.dark.text.secondary,
+        prefix: '@'
+      },
+      grade: {
+        badge: 'holographic badge with icon',
+        tooltip: 'grade requirements and benefits'
+      },
+      bio: {
+        typography: typography.scale.base,
+        maxWidth: '600px',
+        lineHeight: 1.6
+      }
+    },
+    
+    stats: {
+      layout: 'horizontal grid',
+      items: [
+        { label: '카드', value: 'cardsCreated', format: 'number' },
+        { label: '팔로워', value: 'followers', format: 'compact' },
+        { label: '팔로잉', value: 'following', format: 'compact' },
+        { label: '좋아요', value: 'totalLikes', format: 'compact' }
+      ],
+      style: {
+        value: typography.scale.xl + ' ' + typography.weights.bold,
+        label: typography.scale.sm + ' ' + colorSystem.dark.text.secondary
+      }
+    },
+    
+    actions: {
+      follow: ComponentTokens.button.primary,
+      message: ComponentTokens.button.secondary,
+      share: ComponentTokens.button.ghost,
+      more: 'dropdown menu'
+    }
+  },
+  
+  contentTabs: {
+    tabs: ['카드', '컬렉션', '좋아요', '활동'],
+    style: {
+      background: 'transparent',
+      border: 'bottom border only',
+      active: {
+        color: colorSystem.dark.accent.primary,
+        border: `2px solid ${colorSystem.dark.accent.primary}`
+      }
+    }
+  },
+  
+  cardGrid: {
+    layout: LayoutPatterns.gallery,
+    loadMore: 'infinite scroll with loading skeleton',
+    emptyState: {
+      illustration: 'holographic card placeholder',
+      message: 'contextual empty state message'
+    }
+  }
+}
+```
+
+#### 7. Authentication Pages - Minimalist & Secure
+
+```typescript
+interface AuthDesign {
+  layout: {
+    type: 'centered card',
+    maxWidth: '400px',
+    background: ComponentTokens.card.elevated.background,
+    backdrop: 'blur(40px)',
+    shadow: shadows.xl
+  },
+  
+  signIn: {
+    header: {
+      logo: 'animated holographic logo',
+      title: '홀로그래픽 카드 커뮤니티',
+      subtitle: '로그인하여 나만의 카드를 만들어보세요'
+    },
+    
+    socialAuth: {
+      providers: [
+        {
+          name: 'GitHub',
+          icon: 'github-logo',
+          style: ComponentTokens.button.secondary,
+          fullWidth: true
+        },
+        {
+          name: 'Google',
+          icon: 'google-logo',
+          style: ComponentTokens.button.secondary,
+          fullWidth: true
+        }
+      ],
+      spacing: spacing[3]
+    },
+    
+    divider: {
+      text: '또는',
+      style: 'line with centered text',
+      color: colorSystem.dark.text.tertiary
+    },
+    
+    emailForm: {
+      fields: [
+        {
+          type: 'email',
+          placeholder: '이메일 주소',
+          style: ComponentTokens.input.default
+        },
+        {
+          type: 'password',
+          placeholder: '비밀번호',
+          style: ComponentTokens.input.default,
+          showToggle: true
+        }
+      ],
+      submitButton: {
+        text: '로그인',
+        style: ComponentTokens.button.primary,
+        fullWidth: true,
+        loading: 'spinner with text change'
+      }
+    },
+    
+    footer: {
+      links: [
+        { text: '비밀번호 찾기', route: '/forgot-password' },
+        { text: '계정이 없으신가요? 회원가입', route: '/signup' }
+      ],
+      style: {
+        typography: typography.scale.sm,
+        color: colorSystem.dark.text.secondary,
+        textAlign: 'center'
+      }
+    }
+  }
+}
+```
+
+### Responsive Design Strategy
+
+#### Breakpoint System
+```typescript
+const breakpoints = {
+  xs: '320px',   // 최소 모바일
+  sm: '640px',   // 모바일
+  md: '768px',   // 태블릿
+  lg: '1024px',  // 데스크톱
+  xl: '1280px',  // 대형 데스크톱
+  '2xl': '1536px' // 초대형 화면
+}
+
+interface ResponsivePatterns {
+  navigation: {
+    mobile: 'bottom tab bar',
+    tablet: 'collapsible sidebar',
+    desktop: 'persistent sidebar'
+  },
+  
+  gallery: {
+    mobile: '1 column with large cards',
+    tablet: '2 columns',
+    desktop: '3-4 columns with hover effects',
+    large: '4-5 columns'
+  },
+  
+  cardEditor: {
+    mobile: 'single panel with tabs',
+    tablet: 'two panel (canvas + floating toolbar)',
+    desktop: 'three panel layout'
+  }
+}
+```
+
+### Accessibility & Performance
+
+#### Accessibility Features
+```typescript
+interface AccessibilityFeatures {
+  colorContrast: 'WCAG AA compliant (4.5:1 minimum)',
+  focusManagement: 'visible focus indicators with holographic accent',
+  keyboardNavigation: 'full keyboard support for all interactions',
+  screenReader: 'semantic HTML with proper ARIA labels',
+  reducedMotion: 'respect prefers-reduced-motion setting',
+  
+  holographicEffects: {
+    toggle: 'accessibility setting to disable effects',
+    alternatives: 'static versions for motion-sensitive users',
+    descriptions: 'alt text for effect types'
+  }
+}
+```
+
+#### Performance Optimizations
+```typescript
+interface PerformanceStrategy {
+  images: {
+    formats: ['WebP', 'AVIF', 'fallback to JPEG'],
+    lazyLoading: 'intersection observer based',
+    responsive: 'srcset with multiple sizes',
+    placeholder: 'blur-up technique'
+  },
+  
+  holographicEffects: {
+    gpuAcceleration: 'transform3d and will-change properties',
+    throttling: 'requestAnimationFrame for smooth animations',
+    levelOfDetail: 'reduce effect complexity on lower-end devices'
+  },
+  
+  codeOptimization: {
+    bundleSplitting: 'route-based code splitting',
+    treeshaking: 'eliminate unused CSS and JS',
+    compression: 'gzip and brotli compression'
+  }
+}
+```
+
+이 디자인 시스템은 Civitai의 세련되고 전문적인 미학을 홀로그래픽 카드 커뮤니티에 맞게 적용한 것입니다. 다크 테마 기반의 현대적인 UI와 홀로그래픽 효과가 조화롭게 어우러져 사용자들에게 프리미엄 경험을 제공할 것입니다.
