@@ -2,15 +2,34 @@
   "mcpServers": {
     "chrome-devtools": {
       "command": "npx",
-      "args": ["chrome-devtools-mcp@latest", "--executablePath", "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"],
+      "args": [
+        "chrome-devtools-mcp@latest",
+        "--executablePath",
+        "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+        "--isolated",
+        "--viewport",
+        "1280x720"
+      ],
       "env": {
         "CHROME_PATH": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
         "CHROME_EXECUTABLE_PATH": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
         "PUPPETEER_EXECUTABLE_PATH": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-        "GOOGLE_CHROME_BIN": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+        "GOOGLE_CHROME_BIN": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+        "DEBUG": "*"
       },
       "disabled": false,
-      "autoApprove": []
+      "autoApprove": [
+        "new_page",
+        "navigate_page",
+        "take_screenshot",
+        "take_snapshot",
+        "list_pages",
+        "select_page",
+        "click",
+        "fill",
+        "evaluate_script",
+        "list_console_messages"
+      ]
     }
   }
 }

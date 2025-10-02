@@ -5,7 +5,7 @@
   import '../lib/styles/apple-design-system.css';
   import '../app.css';
   
-  // Apple-style theme management
+  // 테마 관리
   let theme = 'dark';
   let mounted = false;
   
@@ -38,7 +38,7 @@
     };
   });
   
-  // Apple-style theme toggle function
+  // 테마 전환 함수
   function toggleTheme() {
     theme = theme === 'dark' ? 'light' : 'dark';
     localStorage.setItem('kbo-cards-theme', theme);
@@ -53,9 +53,9 @@
 <!-- App initialization component -->
 <AppInit />
 
-<!-- Apple-style global layout -->
+<!-- 글로벌 레이아웃 -->
 <div class="app-layout" class:dark={theme === 'dark'}>
-  <!-- Apple-style navigation header -->
+  <!-- 네비게이션 헤더 -->
   <header class="app-header">
     <nav class="nav-container">
       <div class="nav-brand">
@@ -68,6 +68,7 @@
       <div class="nav-menu">
         <a href="/" class="nav-link">홈</a>
         <a href="/gallery" class="nav-link">갤러리</a>
+        <a href="/templates" class="nav-link">템플릿</a>
         <a href="/create" class="nav-link">카드 제작</a>
         <a href="/community" class="nav-link">커뮤니티</a>
       </div>
@@ -95,14 +96,14 @@
     <slot />
   </main>
   
-  <!-- Apple-style footer -->
+  <!-- 푸터 -->
   <footer class="app-footer">
     <div class="footer-container">
       <div class="footer-content">
         <div class="footer-section">
           <h3 class="footer-title">KBO 홀로그래픽 카드</h3>
           <p class="footer-description">
-            Apple 수준의 프리미엄 디자인으로 제작된<br>
+            프리미엄 디자인으로 제작된<br>
             KBO 야구 홀로그래픽 카드 커뮤니티 플랫폼
           </p>
         </div>
@@ -141,7 +142,7 @@
       
       <div class="footer-bottom">
         <p class="footer-copyright">
-          © 2024 KBO 홀로그래픽 카드 커뮤니티. Apple 수준 프리미엄 플랫폼.
+          © 2024 KBO 홀로그래픽 카드 커뮤니티. 야구의 감동을 카드로.
         </p>
         <div class="footer-social">
           <a href="https://twitter.com" class="social-link" aria-label="Twitter" target="_blank" rel="noopener noreferrer">🐦</a>
@@ -154,7 +155,7 @@
 </div>
 
 <style>
-  /* Apple-style layout styles */
+  /* 레이아웃 스타일 */
   .app-layout {
     min-height: 100vh;
     display: flex;
@@ -164,7 +165,7 @@
     transition: all 300ms var(--apple-easing-smooth);
   }
   
-  /* Apple-style header */
+  /* 헤더 스타일 */
   .app-header {
     position: sticky;
     top: 0;
@@ -258,7 +259,7 @@
     padding: 32px 24px;
   }
   
-  /* Apple-style footer */
+  /* 푸터 스타일 */
   .app-footer {
     background: var(--apple-surface-secondary);
     border-top: 1px solid var(--apple-surface-border);

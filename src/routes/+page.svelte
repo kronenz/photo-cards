@@ -38,11 +38,11 @@
 </script>
 
 <svelte:head>
-  <title>KBO 홀로그래픽 카드 커뮤니티 - Apple 수준 프리미엄 플랫폼</title>
-  <meta name="description" content="Apple 수준의 프리미엄 디자인으로 제작된 KBO 야구 홀로그래픽 카드 제작 및 커뮤니티 플랫폼" />
+  <title>KBO 홀로그래픽 카드 커뮤니티 - 야구의 감동을 카드로</title>
+  <meta name="description" content="KBO 야구의 영광스러운 순간을 홀로그래픽 카드로 제작하고 공유하는 프리미엄 커뮤니티 플랫폼" />
 </svelte:head>
 
-<!-- Apple-style hero section -->
+<!-- 히어로 섹션 -->
 <section class="hero-section">
   <div class="hero-content">
     <div class="hero-text">
@@ -53,7 +53,7 @@
       </h1>
       
       <p class="hero-description">
-        Apple 수준의 프리미엄 디자인과 60fps 보장 홀로그래픽 효과로<br>
+        프리미엄 디자인과 60fps 부드러운 홀로그래픽 효과로<br>
         감동적인 야구 스토리를 담은 나만의 카드를 제작하고 공유하세요.
       </p>
       
@@ -118,9 +118,9 @@
 <!-- 기능 소개 섹션 -->
 <section class="features-section">
   <div class="section-header">
-    <h2 class="section-title">Apple 수준 프리미엄 기능</h2>
+    <h2 class="section-title">프리미엄 홀로그래픽 기능</h2>
     <p class="section-description">
-      혁신적인 기술과 감동적인 스토리텔링의 완벽한 조화
+      혁신적인 기술과 감동적인 야구 스토리텔링의 완벽한 조화
     </p>
   </div>
   
@@ -130,7 +130,7 @@
       <h3 class="feature-title">60fps 홀로그래픽 효과</h3>
       <p class="feature-description">
         실물 카드 수준의 부드러운 홀로그래픽 애니메이션과<br>
-        GPU 가속을 활용한 프리미엄 시각 효과
+        GPU 가속을 활용한 생생한 시각 효과
       </p>
     </div>
     
