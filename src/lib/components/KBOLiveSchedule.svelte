@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { communityService } from '$lib/services/communityService';
-  import { getTeamById } from '$lib/data/kboTeams';
+  import { getTeamById } from '$lib/data/baseballTeams';
 
   // Props
   export let selectedTeamId: string | undefined = undefined;

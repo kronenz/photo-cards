@@ -1,20 +1,20 @@
 <script lang="ts">
 	import { onMount, createEventDispatcher } from 'svelte';
 	import { browser } from '$app/environment';
-	import { getTeamById } from '$lib/data/kboTeams';
-	import type { KBOTeam } from '$lib/data/kboTeams';
+	import { getTeamById } from '$lib/data/baseballTeams';
+	import type { BaseballTeam } from '$lib/data/baseballTeams';
 
 	// Props
 	export let frontImage: string;
 	export let title: string = '';
-	export let rarity: string = 'rare holo'; // KBO card rarity types
-	export let subtypes: string = ''; // KBO card subtypes (position, etc.)
-	export let supertype: string = 'player'; // KBO card supertypes (player, stadium, moment)
+	export let rarity: string = 'rare holo'; // Baseball card rarity types
+	export let subtypes: string = ''; // Baseball card subtypes (position, etc.)
+	export let supertype: string = 'player'; // Baseball card supertypes (player, stadium, moment)
 	export let gallery: boolean = false; // Special gallery cards
 	export let enableFlip: boolean = true;
 	export let animationSpeed: number = 600;
-	export let teamId: string | undefined = undefined; // KBO team ID for team-specific effects
-	export let cardType: 'player' | 'stadium' | 'moment' | 'achievement' = 'player'; // KBO card types
+	export let teamId: string | undefined = undefined; // Baseball team ID for team-specific effects
+	export let cardType: 'player' | 'stadium' | 'moment' | 'achievement' = 'player'; // Baseball card types
 
 	// State
 	let cardContainer: HTMLElement;
@@ -105,7 +105,7 @@
 		dispatch('click', { teamId, cardType, title });
 	}
 
-	// KBO team-specific holographic effects
+	// Baseball team-specific holographic effects
 	function getHolographicEffect(rarity: string, teamId?: string, cardType?: string) {
 		if (teamId && team) {
 			return {
@@ -662,7 +662,7 @@
 		mix-blend-mode: exclusion;
 	}
 
-	/* KBO TEAM SPECIFIC EFFECTS */
+	/* BASEBALL TEAM SPECIFIC EFFECTS */
 	.card[data-team] .card__rotator {
 		--glow: var(--team-primary, #69d1e9);
 	}

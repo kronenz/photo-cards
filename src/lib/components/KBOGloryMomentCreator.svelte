@@ -233,11 +233,11 @@
       <!-- 템플릿 선택 -->
       <div class="template-selection">
         <h2 class="section-title">
-          <span class="title-icon">{CATEGORY_METADATA[selectedCategory!]?.icon}</span>
-          {CATEGORY_METADATA[selectedCategory!]?.name} 템플릿 선택
+          <span class="title-icon">{CATEGORY_METADATA[selectedCategory]?.icon}</span>
+          {CATEGORY_METADATA[selectedCategory]?.name} 템플릿 선택
         </h2>
         <p class="section-description">
-          {CATEGORY_METADATA[selectedCategory!]?.description}
+          {CATEGORY_METADATA[selectedCategory]?.description}
         </p>
 
         {#if recommendedTemplates.length > 0}
@@ -544,7 +544,7 @@
             <div class="summary-item">
               <span class="summary-label">카테고리</span>
               <span class="summary-value">
-                {CATEGORY_METADATA[selectedCategory!]?.icon} {CATEGORY_METADATA[selectedCategory!]?.name}
+                {CATEGORY_METADATA[selectedCategory]?.icon} {CATEGORY_METADATA[selectedCategory]?.name}
               </span>
             </div>
             <div class="summary-item">

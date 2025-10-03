@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { getTeamById } from '$lib/data/kboTeams';
+  import { getTeamById } from '$lib/data/baseballTeams';
   import { communityService } from '$lib/services/communityService';
   import type { CommunityPost } from '$lib/types/community';
   import { PostType } from '$lib/types/community';

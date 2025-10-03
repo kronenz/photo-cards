@@ -1,32 +1,193 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
+  import MainPageLayout from '$lib/components/MainPageLayout.svelte';
+  import CollectionDashboard from '$lib/components/CollectionDashboard.svelte';
+  import HolographicCardV2 from '$lib/components/HolographicCardV2.svelte';
+  import type { Card, CollectionProgress, UserStats, CardRarity } from '$lib/types/collections';
+  import { CardType } from '$lib/types/collections';
   
-  let mounted = false;
+
   let currentTeam = 'lg';
   
-  // KBO 구단 데이터
-  const kboTeams = [
-    { id: 'lg', name: 'LG 트윈스', color: '#c41e3a', accent: '#ff69b4' },
-    { id: 'doosan', name: '두산 베어스', color: '#131230', accent: '#4169e1' },
-    { id: 'kt', name: 'KT 위즈', color: '#000000', accent: '#ff0000' },
-    { id: 'samsung', name: '삼성 라이온즈', color: '#074ca1', accent: '#87ceeb' },
-    { id: 'lotte', name: '롯데 자이언츠', color: '#041e42', accent: '#c41e3a' },
-    { id: 'kia', name: 'KIA 타이거즈', color: '#ea002c', accent: '#000000' },
-    { id: 'nc', name: 'NC 다이노스', color: '#315288', accent: '#c4a484' },
-    { id: 'hanwha', name: '한화 이글스', color: '#ff6600', accent: '#000000' },
-    { id: 'ssg', name: 'SSG 랜더스', color: '#ce0e2d', accent: '#ffd700' },
-    { id: 'kiwoom', name: '키움 히어로즈', color: '#570514', accent: '#ffd700' }
+  // Baseball 구단 데이터
+  const baseballTeams = [
+    { id: 'lg', name: 'LG 트윈스', color: '#c41e3a', accent: '#ff69b4', stadium: '잠실야구장', founded: 1982, achievements: { championships: 2 } },
+    { id: 'doosan', name: '두산 베어스', color: '#131230', accent: '#4169e1', stadium: '잠실야구장', founded: 1982, achievements: { championships: 6 } },
+    { id: 'kt', name: 'KT 위즈', color: '#000000', accent: '#ff0000', stadium: '수원 KT 위즈파크', founded: 2015, achievements: { championships: 0 } },
+    { id: 'samsung', name: '삼성 라이온즈', color: '#074ca1', accent: '#87ceeb', stadium: '대구 삼성 라이온즈 파크', founded: 1982, achievements: { championships: 8 } },
+    { id: 'lotte', name: '롯데 자이언츠', color: '#041e42', accent: '#c41e3a', stadium: '사직야구장', founded: 1982, achievements: { championships: 2 } },
+    { id: 'kia', name: 'KIA 타이거즈', color: '#ea002c', accent: '#000000', stadium: '광주-기아 챔피언스 필드', founded: 1982, achievements: { championships: 11 } },
+    { id: 'nc', name: 'NC 다이노스', color: '#315288', accent: '#c4a484', stadium: 'NC파크', founded: 2013, achievements: { championships: 0 } },
+    { id: 'hanwha', name: '한화 이글스', color: '#ff6600', accent: '#000000', stadium: '한화생명 이글스파크', founded: 1986, achievements: { championships: 1 } },
+    { id: 'ssg', name: 'SSG 랜더스', color: '#ce0e2d', accent: '#ffd700', stadium: 'SSG 랜더스필드', founded: 2000, achievements: { championships: 0 } },
+    { id: 'kiwoom', name: '키움 히어로즈', color: '#570514', accent: '#ffd700', stadium: '고척스카이돔', founded: 2008, achievements: { championships: 0 } }
+  ];
+  
+  // Mock data for the new layout
+  const mockUser: any = null; // Will be replaced with actual user data
+  
+  // Mock user stats with proper typing
+  const mockUserStats: UserStats = {
+    totalCards: 127,
+    rareCards: 23,
+    completedCollections: 3,
+    fanLevel: 'supporter',
+    favoriteTeam: 'lg',
+    cardsByRarity: {
+      common: 45,
+      uncommon: 32,
+      rare: 18,
+      epic: 4,
+      legendary: 1,
+      mythic: 0
+    } as Record<CardRarity, number>,
+    recentAcquisitions: [],
+    collectionProgress: []
+  };
+  
+  // Mock recent cards
+  const mockRecentCards: Card[] = [
+    {
+      id: '1',
+      title: '이정후 홈런 순간',
+      image: '/api/placeholder/300/400',
+      rarity: 'legendary' as CardRarity,
+      type: CardType.MOMENT,
+      holographicEffect: {
+        type: 'rainbow',
+        intensity: 0.8,
+        animationSpeed: 1.2
+      },
+      stats: { likes: 245, views: 1200, downloads: 89, comments: 34, rating: 4.8, ratingCount: 67 },
+      metadata: {
+        player: '이정후',
+        team: 'KIA 타이거즈',
+        season: '2024',
+        tags: ['홈런', '역전', '끝내기'],
+        creator: 'user123'
+      },
+      collections: ['kia-2024'],
+      owner: 'user123',
+      isPublic: true,
+      createdAt: new Date('2024-01-15'),
+      updatedAt: new Date('2024-01-15')
+    },
+    {
+      id: '2',
+      title: '김하성 수비 하이라이트',
+      image: '/api/placeholder/300/400',
+      rarity: 'epic' as CardRarity,
+      type: CardType.PLAYER,
+      holographicEffect: {
+        type: 'cosmic',
+        intensity: 0.7,
+        animationSpeed: 1.0
+      },
+      stats: { likes: 189, views: 890, downloads: 45, comments: 23, rating: 4.6, ratingCount: 42 },
+      metadata: {
+        player: '김하성',
+        team: 'SSG 랜더스',
+        season: '2024',
+        tags: ['수비', '내야수', '골든글러브'],
+        creator: 'user456'
+      },
+      collections: ['ssg-2024'],
+      owner: 'user456',
+      isPublic: true,
+      createdAt: new Date('2024-01-10'),
+      updatedAt: new Date('2024-01-10')
+    },
+    {
+      id: '3',
+      title: '잠실야구장 야경',
+      image: '/api/placeholder/300/400',
+      rarity: 'rare' as CardRarity,
+      type: CardType.STADIUM,
+      holographicEffect: {
+        type: 'aurora',
+        intensity: 0.6,
+        animationSpeed: 0.8
+      },
+      stats: { likes: 156, views: 678, downloads: 34, comments: 18, rating: 4.4, ratingCount: 29 },
+      metadata: {
+        team: 'LG 트윈스',
+        season: '2024',
+        tags: ['잠실', '야경', '홈구장'],
+        creator: 'user789'
+      },
+      collections: ['stadiums-2024'],
+      owner: 'user789',
+      isPublic: true,
+      createdAt: new Date('2024-01-05'),
+      updatedAt: new Date('2024-01-05')
+    }
+  ];
+  
+  // Mock collection progress
+  const mockCollectionProgress: CollectionProgress[] = [
+    {
+      id: 'kia-2024',
+      name: 'KIA 타이거즈 2024 시즌',
+      totalCards: 50,
+      ownedCards: 47,
+      completionPercentage: 94,
+      theme: 'team',
+      rarity: 'rare' as CardRarity,
+      isCompleted: false,
+      recentlyAdded: mockRecentCards.slice(0, 2)
+    },
+    {
+      id: 'lg-legends',
+      name: 'LG 트윈스 레전드',
+      totalCards: 25,
+      ownedCards: 25,
+      completionPercentage: 100,
+      theme: 'team',
+      rarity: 'legendary' as CardRarity,
+      isCompleted: true,
+      recentlyAdded: []
+    },
+    {
+      id: 'baseball-2024-season',
+      name: '2024 Baseball 시즌 하이라이트',
+      totalCards: 100,
+      ownedCards: 73,
+      completionPercentage: 73,
+      theme: 'season',
+      rarity: 'epic' as CardRarity,
+      isCompleted: false,
+      recentlyAdded: mockRecentCards.slice(1, 3)
+    },
+    {
+      id: 'stadiums-collection',
+      name: 'Baseball 10개 구장',
+      totalCards: 10,
+      ownedCards: 6,
+      completionPercentage: 60,
+      theme: 'special',
+      rarity: 'uncommon' as CardRarity,
+      isCompleted: false,
+      recentlyAdded: [mockRecentCards[2]]
+    },
+    {
+      id: 'rookie-cards',
+      name: '2024 신인왕 후보',
+      totalCards: 15,
+      ownedCards: 8,
+      completionPercentage: 53,
+      theme: 'player',
+      rarity: 'rare' as CardRarity,
+      isCompleted: false,
+      recentlyAdded: []
+    }
   ];
   
   onMount(() => {
-    mounted = true;
-    
     // 자동 구단 순환 (데모용)
     const interval = setInterval(() => {
-      const currentIndex = kboTeams.findIndex(team => team.id === currentTeam);
-      const nextIndex = (currentIndex + 1) % kboTeams.length;
-      currentTeam = kboTeams[nextIndex].id;
+      const currentIndex = baseballTeams.findIndex(team => team.id === currentTeam);
+      const nextIndex = (currentIndex + 1) % baseballTeams.length;
+      currentTeam = baseballTeams[nextIndex].id;
     }, 3000);
     
     return () => clearInterval(interval);
@@ -35,380 +196,264 @@
   function selectTeam(teamId: string) {
     currentTeam = teamId;
   }
+  
+  function handleCardClick(card: Card) {
+    console.log('Card clicked:', card);
+    // Navigate to card detail page or open modal
+  }
+  
+  function handleCollectionClick(collection: CollectionProgress) {
+    console.log('Collection clicked:', collection);
+    // Navigate to collection detail page
+  }
 </script>
 
 <svelte:head>
-  <title>KBO 홀로그래픽 카드 커뮤니티 - 야구의 감동을 카드로</title>
-  <meta name="description" content="KBO 야구의 영광스러운 순간을 홀로그래픽 카드로 제작하고 공유하는 프리미엄 커뮤니티 플랫폼" />
+  <title>Baseball 홀로그래픽 카드 커뮤니티 - 야구의 감동을 카드로</title>
+  <meta name="description" content="Baseball 야구의 영광스러운 순간을 홀로그래픽 카드로 제작하고 공유하는 프리미엄 커뮤니티 플랫폼" />
 </svelte:head>
 
-<!-- 히어로 섹션 -->
-<section class="hero-section">
-  <div class="hero-content">
-    <div class="hero-text">
-      <h1 class="hero-title">
-        <span class="title-line">KBO 야구의 영광스러운 순간을</span>
-        <span class="title-line holographic-text">홀로그래픽 카드로</span>
-        <span class="title-line">영원히 보존하세요</span>
-      </h1>
-      
-      <p class="hero-description">
-        프리미엄 디자인과 60fps 부드러운 홀로그래픽 효과로<br>
-        감동적인 야구 스토리를 담은 나만의 카드를 제작하고 공유하세요.
-      </p>
-      
-      <div class="hero-actions">
-        <a href="/create" class="btn-apple btn-primary">
-          카드 제작 시작하기
-        </a>
-        <a href="/gallery" class="btn-apple btn-secondary">
-          갤러리 둘러보기
-        </a>
-      </div>
+<MainPageLayout>
+  <!-- Hero Section Content - Using MainPageLayout's default hero -->
+
+  <!-- Dashboard Section Content -->
+  <div slot="dashboard" class="dashboard-content-wrapper">
+    <div class="apple-container">
+      <CollectionDashboard
+        userStats={mockUserStats}
+        recentCards={mockRecentCards}
+        collectionProgress={mockCollectionProgress}
+        onCardClick={handleCardClick}
+        onCollectionClick={handleCollectionClick}
+      />
     </div>
-    
-    <div class="hero-visual">
-      <div class="card-showcase">
-        <div class="holographic-card demo-card" class:active={mounted}>
-          <div class="card-content holographic-{currentTeam}">
-            <div class="card-header">
-              <span class="team-name">{kboTeams.find(t => t.id === currentTeam)?.name}</span>
-              <span class="card-type">홀로그래픽</span>
+  </div>
+
+  <!-- Community Section Content -->
+  <div slot="community" class="community-content-wrapper">
+    <div class="apple-container">
+      <div class="section-header text-center apple-m-2xl">
+        <h2 class="apple-text-title1">커뮤니티 피드</h2>
+        <p class="apple-text-body apple-text-secondary">
+          다른 사용자들의 멋진 카드와 컬렉션을 둘러보세요
+        </p>
+      </div>
+      
+      <!-- Featured Cards Grid -->
+      <div class="featured-cards-section apple-m-2xl">
+        <h3 class="apple-text-title3 text-center apple-m-lg">Featured 카드</h3>
+        <div class="featured-cards-grid">
+          {#each mockRecentCards as card, index (card.id)}
+            <div class="featured-card-wrapper">
+              <HolographicCardV2
+                frontImage={card.image}
+                title={card.title}
+                rarity={card.rarity === 'legendary' ? 'rare rainbow' : card.rarity === 'epic' ? 'rare holo v' : 'rare holo'}
+                teamId={card.metadata.team === 'KIA 타이거즈' ? 'kia-tigers' : card.metadata.team === 'SSG 랜더스' ? 'ssg-landers' : 'lg-twins'}
+                cardType={card.type === CardType.PLAYER ? 'player' : 
+                         card.type === CardType.STADIUM ? 'stadium' : 
+                         card.type === CardType.MOMENT ? 'moment' : 
+                         card.type === CardType.SPECIAL ? 'achievement' : 'player'}
+                animationSpeed={600 + (index * 100)}
+                on:hover={(e) => console.log('Featured card hover:', e.detail)}
+                on:click={(e) => handleCardClick(card)}
+              />
             </div>
-            
-            <div class="card-image">
-              <div class="player-silhouette">⚾</div>
-            </div>
-            
-            <div class="card-footer">
-              <span class="player-name">영광의 순간</span>
-              <span class="card-rarity">★★★★★</span>
-            </div>
+          {/each}
+        </div>
+      </div>
+      
+      <div class="community-categories apple-grid md:grid-cols-2 lg:grid-cols-4 apple-spacing-lg">
+        <div class="apple-card apple-card-elevated category-card">
+          <div class="category-icon">🔥</div>
+          <h3 class="apple-text-headline">Hot 카드</h3>
+          <p class="apple-text-callout apple-text-secondary">지금 인기 있는 카드들</p>
+          <div class="category-stats">
+            <span class="stat-badge">+127 오늘</span>
+          </div>
+        </div>
+        
+        <div class="apple-card apple-card-elevated category-card">
+          <div class="category-icon">✨</div>
+          <h3 class="apple-text-headline">New 카드</h3>
+          <p class="apple-text-callout apple-text-secondary">최신 업로드된 카드들</p>
+          <div class="category-stats">
+            <span class="stat-badge">+45 오늘</span>
+          </div>
+        </div>
+        
+        <div class="apple-card apple-card-elevated category-card">
+          <div class="category-icon">📈</div>
+          <h3 class="apple-text-headline">Rising 카드</h3>
+          <p class="apple-text-callout apple-text-secondary">급상승 중인 카드들</p>
+          <div class="category-stats">
+            <span class="stat-badge">+89% 이번 주</span>
+          </div>
+        </div>
+        
+        <div class="apple-card apple-card-elevated category-card">
+          <div class="category-icon">🏆</div>
+          <h3 class="apple-text-headline">Top 컬렉션</h3>
+          <p class="apple-text-callout apple-text-secondary">완성도 높은 컬렉션들</p>
+          <div class="category-stats">
+            <span class="stat-badge">234 완성</span>
           </div>
         </div>
       </div>
     </div>
   </div>
-</section>
 
-<!-- KBO 구단 선택 섹션 -->
-<section class="teams-section">
-  <div class="section-header">
-    <h2 class="section-title">KBO 10개 구단</h2>
-    <p class="section-description">
-      좋아하는 구단을 선택하고 전용 홀로그래픽 효과를 경험해보세요
-    </p>
-  </div>
-  
-  <div class="teams-grid">
-    {#each kboTeams as team}
-      <button 
-        class="team-card"
-        class:active={currentTeam === team.id}
-        style="--team-color: {team.color}; --team-accent: {team.accent}"
-        on:click={() => selectTeam(team.id)}
-      >
-        <div class="team-logo">⚾</div>
-        <span class="team-name">{team.name}</span>
-      </button>
-    {/each}
-  </div>
-</section>
-
-<!-- 기능 소개 섹션 -->
-<section class="features-section">
-  <div class="section-header">
-    <h2 class="section-title">프리미엄 홀로그래픽 기능</h2>
-    <p class="section-description">
-      혁신적인 기술과 감동적인 야구 스토리텔링의 완벽한 조화
-    </p>
-  </div>
-  
-  <div class="features-grid">
-    <div class="feature-card">
-      <div class="feature-icon">✨</div>
-      <h3 class="feature-title">60fps 홀로그래픽 효과</h3>
-      <p class="feature-description">
-        실물 카드 수준의 부드러운 홀로그래픽 애니메이션과<br>
-        GPU 가속을 활용한 생생한 시각 효과
-      </p>
+  <!-- KBO Section Content -->
+  <div slot="kbo" class="kbo-content-wrapper">
+    <div class="apple-container">
+      <div class="section-header text-center apple-m-2xl">
+        <h2 class="apple-text-title1">Baseball 10개 구단</h2>
+        <p class="apple-text-body apple-text-secondary">
+          좋아하는 구단을 선택하고 전용 홀로그래픽 효과를 경험해보세요
+        </p>
+      </div>
+      
+      <div class="teams-showcase">
+        <!-- Team Selection Grid -->
+        <div class="teams-grid apple-grid grid-cols-2 md:grid-cols-5 apple-spacing-lg">
+          {#each baseballTeams as team}
+            <button 
+              class="team-card apple-card"
+              class:active={currentTeam === team.id}
+              style="--team-color: {team.color}; --team-accent: {team.accent}"
+              on:click={() => selectTeam(team.id)}
+            >
+              <div class="team-logo">⚾</div>
+              <span class="team-name apple-text-callout">{team.name}</span>
+            </button>
+          {/each}
+        </div>
+        
+        <!-- Team-specific Card Demo -->
+        <div class="team-demo-section apple-m-2xl">
+          <div class="team-demo-content">
+            <div class="team-demo-info">
+              {#each baseballTeams as team}
+                {#if team.id === currentTeam}
+                  <h3 class="apple-text-title2" style="color: {team.color}">
+                    {team.name} 전용 홀로그래픽 효과
+                  </h3>
+                  <p class="apple-text-body apple-text-secondary">
+                    {team.name}의 고유한 색상과 디자인이 적용된 특별한 홀로그래픽 카드를 경험해보세요.
+                  </p>
+                  <div class="team-details">
+                    <div class="detail-item">
+                      <span class="detail-label">홈구장:</span>
+                      <span class="detail-value">{team.stadium}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">창단:</span>
+                      <span class="detail-value">{team.founded}년</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">우승:</span>
+                      <span class="detail-value">{team.achievements.championships}회</span>
+                    </div>
+                  </div>
+                {/if}
+              {/each}
+            </div>
+            
+            <div class="team-demo-card">
+              <HolographicCardV2
+                frontImage="/api/placeholder/300/400"
+                title="팀 전용 카드"
+                rarity="rare holo"
+                teamId={currentTeam}
+                cardType="player"
+                animationSpeed={500}
+                on:hover={(e) => console.log('Team card hover:', e.detail)}
+                on:click={(e) => console.log('Team card click:', e.detail)}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="features-section apple-m-4xl">
+        <div class="section-header text-center apple-m-2xl">
+          <h2 class="apple-text-title1">프리미엄 홀로그래픽 기능</h2>
+          <p class="apple-text-body apple-text-secondary">
+            혁신적인 기술과 감동적인 야구 스토리텔링의 완벽한 조화
+          </p>
+        </div>
+        
+        <div class="features-grid apple-grid md:grid-cols-2 apple-spacing-xl">
+          <div class="apple-card apple-card-elevated">
+            <div class="feature-icon">✨</div>
+            <h3 class="apple-text-title3">60fps 홀로그래픽 효과</h3>
+            <p class="apple-text-callout apple-text-secondary">
+              실물 카드 수준의 부드러운 홀로그래픽 애니메이션과<br>
+              GPU 가속을 활용한 생생한 시각 효과
+            </p>
+          </div>
+          
+          <div class="apple-card apple-card-elevated">
+            <div class="feature-icon">🎬</div>
+            <h3 class="apple-text-title3">멀티미디어 스토리텔링</h3>
+            <p class="apple-text-callout apple-text-secondary">
+              사진, 동영상, 통계 데이터를 활용한<br>
+              감동적인 야구 스토리 카드 제작
+            </p>
+          </div>
+          
+          <div class="apple-card apple-card-elevated">
+            <div class="feature-icon">🏆</div>
+            <h3 class="apple-text-title3">Baseball 팬 문화 반영</h3>
+            <p class="apple-text-callout apple-text-secondary">
+              구단별 응원 문화와 야구 덕후 등급 시스템으로<br>
+              진정한 Baseball 팬 커뮤니티 경험
+            </p>
+          </div>
+          
+          <div class="apple-card apple-card-elevated">
+            <div class="feature-icon">💎</div>
+            <h3 class="apple-text-title3">희소성 & 거래 시스템</h3>
+            <p class="apple-text-callout apple-text-secondary">
+              실제 야구카드 문화를 반영한 등급 시스템과<br>
+              안전한 카드 거래 마켓플레이스
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="cta-section text-center apple-m-4xl">
+        <h2 class="apple-text-title1">지금 시작하세요</h2>
+        <p class="apple-text-body apple-text-secondary apple-m-lg">
+          Baseball 야구의 감동적인 순간들을 홀로그래픽 카드로 만들어보세요
+        </p>
+        
+        <div class="cta-actions flex justify-center apple-spacing-lg">
+          <a href="/auth/signup" class="apple-btn apple-btn-primary apple-btn-large">
+            무료로 시작하기
+          </a>
+          <a href="/realtime-preview-demo" class="apple-btn apple-btn-secondary apple-btn-large">
+            실시간 미리보기 데모
+          </a>
+        </div>
+      </div>
     </div>
-    
-    <div class="feature-card">
-      <div class="feature-icon">🎬</div>
-      <h3 class="feature-title">멀티미디어 스토리텔링</h3>
-      <p class="feature-description">
-        사진, 동영상, 통계 데이터를 활용한<br>
-        감동적인 야구 스토리 카드 제작
-      </p>
-    </div>
-    
-    <div class="feature-card">
-      <div class="feature-icon">🏆</div>
-      <h3 class="feature-title">KBO 팬 문화 반영</h3>
-      <p class="feature-description">
-        구단별 응원 문화와 야구 덕후 등급 시스템으로<br>
-        진정한 KBO 팬 커뮤니티 경험
-      </p>
-    </div>
-    
-    <div class="feature-card">
-      <div class="feature-icon">💎</div>
-      <h3 class="feature-title">희소성 & 거래 시스템</h3>
-      <p class="feature-description">
-        실제 야구카드 문화를 반영한 등급 시스템과<br>
-        안전한 카드 거래 마켓플레이스
-      </p>
-    </div>
   </div>
-</section>
-
-<!-- CTA 섹션 -->
-<section class="cta-section">
-  <div class="cta-content">
-    <h2 class="cta-title">지금 시작하세요</h2>
-    <p class="cta-description">
-      KBO 야구의 감동적인 순간들을 홀로그래픽 카드로 만들어보세요
-    </p>
-    
-    <div class="cta-actions">
-      <a href="/auth/signup" class="btn-apple btn-primary large">
-        무료로 시작하기
-      </a>
-      <a href="/realtime-preview-demo" class="btn-apple btn-secondary large">
-        실시간 미리보기 데모
-      </a>
-    </div>
-  </div>
-</section>
+</MainPageLayout>
 
 <style>
-  /* Hero Section */
-  .hero-section {
-    padding: 80px 0 120px;
-    background: linear-gradient(135deg, 
-      var(--apple-bg-primary) 0%, 
-      var(--apple-bg-secondary) 50%, 
-      var(--apple-bg-primary) 100%);
-    overflow: hidden;
-  }
-  
-  .hero-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
-  }
-  
-  .hero-text {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-  }
-  
-  .hero-title {
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    font-weight: 700;
-    line-height: 1.1;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .title-line {
-    display: block;
-    animation: fade-in-up 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
-    opacity: 0;
-  }
-  
-  .title-line:nth-child(1) { animation-delay: 0.1s; }
-  .title-line:nth-child(2) { animation-delay: 0.3s; }
-  .title-line:nth-child(3) { animation-delay: 0.5s; }
-  
-  .holographic-text {
-    background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c);
-    background-size: 200% 200%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: holographic-shimmer 3s ease-in-out infinite,
-               fade-in-up 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
-  }
-  
-  .hero-description {
-    font-size: 20px;
-    line-height: 1.6;
-    color: var(--apple-text-secondary);
-    margin: 0;
-    animation: fade-in-up 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) 0.7s forwards;
-    opacity: 0;
-  }
-  
-  .hero-actions {
-    display: flex;
-    gap: 20px;
-    animation: fade-in-up 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) 0.9s forwards;
-    opacity: 0;
-  }
-  
-  /* Hero Visual */
-  .hero-visual {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    perspective: 1000px;
-  }
-  
-  .card-showcase {
-    position: relative;
-  }
-  
-  .demo-card {
-    width: 300px;
-    height: 420px;
-    transform: rotateY(-15deg) rotateX(5deg);
-    transition: all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
-    animation: float 6s ease-in-out infinite;
-  }
-  
-  .demo-card.active {
-    transform: rotateY(0deg) rotateX(0deg) scale(1.05);
-  }
-  
-  .card-content {
-    width: 100%;
-    height: 100%;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border-radius: 20px;
-    background: var(--apple-surface-primary);
-    border: 1px solid var(--apple-surface-border);
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .card-content::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, 
-      rgba(99, 102, 241, 0.1) 0%,
-      rgba(139, 92, 246, 0.1) 25%,
-      rgba(236, 72, 153, 0.1) 50%,
-      rgba(245, 87, 108, 0.1) 75%,
-      transparent 100%);
-    opacity: 0.8;
-    animation: holographic-shimmer 4s ease-in-out infinite;
-  }
-  
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 1;
-  }
-  
-  .team-name {
-    font-weight: 600;
-    font-size: 16px;
-    color: var(--apple-text-primary);
-  }
-  
-  .card-type {
-    font-size: 12px;
-    color: var(--apple-text-tertiary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  
-  .card-image {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-  }
-  
-  .player-silhouette {
-    font-size: 80px;
-    opacity: 0.8;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
-  }
-  
-  .card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 1;
-  }
-  
-  .player-name {
-    font-weight: 600;
-    font-size: 18px;
-    color: var(--apple-text-primary);
-  }
-  
-  .card-rarity {
-    color: #ffd700;
-    font-size: 16px;
-  }
-  
-  /* Teams Section */
-  .teams-section {
-    padding: 80px 0;
-    background: var(--apple-bg-secondary);
-  }
-  
-  .section-header {
-    text-align: center;
-    margin-bottom: 60px;
-  }
-  
-  .section-title {
-    font-size: 48px;
-    font-weight: 700;
-    margin: 0 0 16px;
-    color: var(--apple-text-primary);
-  }
-  
-  .section-description {
-    font-size: 20px;
-    color: var(--apple-text-secondary);
-    margin: 0;
-    line-height: 1.6;
-  }
-  
-  .teams-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 20px;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 0 24px;
-  }
-  
+  /* Team Card Styles */
   .team-card {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
-    padding: 24px 16px;
-    background: var(--apple-surface-primary);
-    border: 2px solid var(--apple-surface-border);
-    border-radius: 16px;
+    gap: var(--apple-spacing-md);
+    padding: var(--apple-spacing-lg) var(--apple-spacing-md);
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    transition: all var(--apple-transition-smooth);
     position: relative;
     overflow: hidden;
+    border: 2px solid var(--apple-surface-border);
   }
   
   .team-card::before {
@@ -420,7 +465,7 @@
     bottom: 0;
     background: linear-gradient(135deg, var(--team-color), var(--team-accent));
     opacity: 0;
-    transition: opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    transition: opacity var(--apple-transition-smooth);
   }
   
   .team-card:hover::before,
@@ -432,7 +477,7 @@
   .team-card.active {
     transform: translateY(-4px) scale(1.05);
     border-color: var(--team-color);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--apple-shadow-lg);
   }
   
   .team-logo {
@@ -442,204 +487,192 @@
   
   .team-card .team-name {
     font-weight: 600;
-    font-size: 14px;
     text-align: center;
     z-index: 1;
     color: var(--apple-text-primary);
   }
   
-  /* Features Section */
-  .features-section {
-    padding: 80px 0;
-    background: var(--apple-bg-primary);
+  /* Team Showcase */
+  .teams-showcase {
+    margin: var(--apple-spacing-2xl) 0;
   }
   
-  .features-grid {
+  .team-demo-section {
+    background: var(--apple-surface-primary);
+    border-radius: var(--apple-radius-2xl);
+    padding: var(--apple-spacing-2xl);
+    border: 1px solid var(--apple-surface-border);
+  }
+  
+  .team-demo-content {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 40px;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 0 24px;
+    grid-template-columns: 1fr 300px;
+    gap: var(--apple-spacing-2xl);
+    align-items: center;
   }
   
-  .feature-card {
+  .team-demo-info h3 {
+    margin-bottom: var(--apple-spacing-md);
+    font-weight: 700;
+  }
+  
+  .team-demo-info p {
+    margin-bottom: var(--apple-spacing-lg);
+    line-height: 1.6;
+  }
+  
+  .team-details {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    padding: 40px;
-    background: var(--apple-surface-primary);
-    border: 1px solid var(--apple-surface-border);
-    border-radius: 20px;
-    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    gap: var(--apple-spacing-sm);
   }
   
-  .feature-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--apple-shadow-xl);
+  .detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--apple-spacing-sm) 0;
+    border-bottom: 1px solid var(--apple-surface-border);
   }
   
+  .detail-item:last-child {
+    border-bottom: none;
+  }
+  
+  .detail-label {
+    font-size: var(--apple-font-size-callout);
+    color: var(--apple-text-secondary);
+    font-weight: 500;
+  }
+  
+  .detail-value {
+    font-size: var(--apple-font-size-callout);
+    color: var(--apple-text-primary);
+    font-weight: 600;
+  }
+  
+  .team-demo-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+  }
+  
+  /* Feature Card Styles */
   .feature-icon {
     font-size: 48px;
     line-height: 1;
+    margin-bottom: var(--apple-spacing-md);
   }
   
-  .feature-title {
-    font-size: 24px;
-    font-weight: 600;
-    margin: 0;
-    color: var(--apple-text-primary);
-  }
-  
-  .feature-description {
-    font-size: 16px;
-    line-height: 1.6;
-    color: var(--apple-text-secondary);
-    margin: 0;
-  }
-  
-  /* CTA Section */
+  /* CTA Section Styles */
   .cta-section {
-    padding: 100px 0;
+    padding: var(--apple-spacing-4xl) 0;
     background: linear-gradient(135deg, 
       var(--apple-accent-blue) 0%, 
       var(--apple-accent-purple) 100%);
-    text-align: center;
+    border-radius: var(--apple-radius-2xl);
+    margin: var(--apple-spacing-2xl) 0;
   }
   
-  .cta-content {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 0 24px;
-  }
-  
-  .cta-title {
-    font-size: 48px;
-    font-weight: 700;
+  .cta-section h2 {
     color: white;
-    margin: 0 0 20px;
+    margin-bottom: var(--apple-spacing-lg);
   }
   
-  .cta-description {
-    font-size: 20px;
+  .cta-section p {
     color: rgba(255, 255, 255, 0.9);
-    margin: 0 0 40px;
-    line-height: 1.6;
   }
   
-  .cta-actions {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
+  /* Featured Cards Section */
+  .featured-cards-section {
+    margin: var(--apple-spacing-2xl) 0;
   }
   
-  /* Button Styles */
-  .btn-apple {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 14px 28px;
-    font-size: 17px;
-    font-weight: 600;
-    text-decoration: none;
-    border-radius: 12px;
-    transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+  .featured-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--apple-spacing-xl);
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  
+  .featured-card-wrapper {
+    transition: transform var(--apple-transition-smooth);
+  }
+  
+  .featured-card-wrapper:hover {
+    transform: translateY(-8px);
+  }
+  
+  /* Community Categories */
+  .community-categories {
+    margin-top: var(--apple-spacing-2xl);
+  }
+  
+  .category-card {
+    text-align: center;
+    padding: var(--apple-spacing-xl);
+    transition: all var(--apple-transition-smooth);
     cursor: pointer;
-    border: none;
-    font-family: inherit;
+    position: relative;
+    overflow: hidden;
   }
   
-  .btn-apple:active {
-    transform: scale(0.95);
+  .category-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--apple-accent-blue), var(--apple-accent-purple));
+    transform: scaleX(0);
+    transition: transform var(--apple-transition-smooth);
   }
   
-  .btn-primary {
-    background: var(--apple-accent-blue);
-    color: white;
-  }
-  
-  .btn-primary:hover {
-    background: color-mix(in srgb, var(--apple-accent-blue) 90%, black);
-    transform: translateY(-2px);
+  .category-card:hover {
+    transform: translateY(-4px);
     box-shadow: var(--apple-shadow-lg);
   }
   
-  .btn-secondary {
-    background: var(--apple-surface-secondary);
+  .category-card:hover::before {
+    transform: scaleX(1);
+  }
+  
+  .category-icon {
+    font-size: 48px;
+    margin-bottom: var(--apple-spacing-md);
+    display: block;
+  }
+  
+  .category-card h3 {
+    margin-bottom: var(--apple-spacing-sm);
     color: var(--apple-text-primary);
-    border: 1px solid var(--apple-surface-border);
   }
   
-  .btn-secondary:hover {
-    background: var(--apple-surface-tertiary);
-    transform: translateY(-2px);
+  .category-card p {
+    margin-bottom: var(--apple-spacing-md);
   }
   
-  .btn-apple.large {
-    padding: 18px 36px;
-    font-size: 18px;
+  .category-stats {
+    margin-top: var(--apple-spacing-md);
   }
   
-  /* Animations */
-  @keyframes fade-in-up {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .stat-badge {
+    display: inline-block;
+    background: var(--apple-accent-blue);
+    color: white;
+    padding: var(--apple-spacing-xs) var(--apple-spacing-sm);
+    border-radius: var(--apple-radius-full);
+    font-size: var(--apple-font-size-caption1);
+    font-weight: var(--apple-font-weight-semibold);
   }
-  
-  @keyframes float {
-    0%, 100% {
-      transform: rotateY(-15deg) rotateX(5deg) translateY(0px);
-    }
-    50% {
-      transform: rotateY(-15deg) rotateX(5deg) translateY(-10px);
-    }
-  }
-  
-  @keyframes holographic-shimmer {
-    0%, 100% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-  }
-  
+
   /* Responsive Design */
   @media (max-width: 768px) {
-    .hero-content {
-      grid-template-columns: 1fr;
-      gap: 60px;
-      text-align: center;
-    }
-    
-    .hero-title {
-      font-size: clamp(2rem, 8vw, 3rem);
-    }
-    
-    .hero-actions {
-      flex-direction: column;
-      align-items: center;
-    }
-    
-    .demo-card {
-      width: 250px;
-      height: 350px;
-    }
-    
-    .teams-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-    }
-    
     .features-grid {
-      grid-template-columns: 1fr;
-      gap: 32px;
+      grid-template-columns: 1fr !important;
     }
     
     .cta-actions {
@@ -647,31 +680,40 @@
       align-items: center;
     }
     
-    .section-title {
-      font-size: 36px;
+    .featured-cards-grid {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--apple-spacing-lg);
     }
     
-    .cta-title {
-      font-size: 36px;
+    .community-categories {
+      grid-template-columns: repeat(2, 1fr) !important;
     }
   }
   
   @media (max-width: 480px) {
-    .hero-section {
-      padding: 60px 0 80px;
+    .featured-cards-grid {
+      grid-template-columns: 1fr;
     }
     
-    .teams-section,
-    .features-section {
-      padding: 60px 0;
+    .community-categories {
+      grid-template-columns: 1fr !important;
     }
     
-    .cta-section {
-      padding: 80px 0;
+    .team-demo-content {
+      grid-template-columns: 1fr !important;
+      text-align: center;
     }
     
-    .feature-card {
-      padding: 32px 24px;
+    .team-demo-section {
+      padding: var(--apple-spacing-lg);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .team-demo-content {
+      grid-template-columns: 1fr;
+      gap: var(--apple-spacing-xl);
+      text-align: center;
     }
   }
 </style>

@@ -13,7 +13,7 @@ import type {
 	AuthError
 } from '$lib/types/auth';
 import { USER_GRADES } from '$lib/types/auth';
-import { KBO_TEAMS } from '$lib/data/kboTeams';
+import { BASEBALL_TEAMS } from '$lib/data/baseballTeams';
 
 class AuthService {
 	// Reactive stores
@@ -275,7 +275,7 @@ class AuthService {
 	 */
 	private mapRecordToProfile(record: any): UserProfile {
 		const favoriteTeam = record.favoriteTeam ? 
-			KBO_TEAMS.find(team => team.id === record.favoriteTeam) : undefined;
+			BASEBALL_TEAMS.find(team => team.id === record.favoriteTeam) : undefined;
 
 		return {
 			id: record.id,

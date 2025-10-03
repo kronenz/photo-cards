@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, createEventDispatcher } from 'svelte';
   import { communityService } from '$lib/services/communityService';
-  import { KBO_TEAMS, getTeamById } from '$lib/data/kboTeams';
+  import { BASEBALL_TEAMS, getTeamById } from '$lib/data/baseballTeams';
   import type { CommunityPost, FeedFilter, TeamCommunity } from '$lib/types/community';
   import { PostType, UserGrade } from '$lib/types/community';
   import CommunityPostCard from './CommunityPostCard.svelte';

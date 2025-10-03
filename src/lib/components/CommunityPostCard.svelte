@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { getTeamById } from '$lib/data/kboTeams';
+  import { getTeamById } from '$lib/data/baseballTeams';
   import type { CommunityPost } from '$lib/types/community';
   import { PostType, UserGrade } from '$lib/types/community';
   import HolographicCardV2 from './HolographicCardV2.svelte';

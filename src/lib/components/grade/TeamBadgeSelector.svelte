@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { kboTeams } from '$lib/data/kboTeams';
+	import { KBO_TEAMS } from '$lib/data/kboTeams';
 	import type { KBOTeam } from '$lib/types/auth';
 
 	export let selectedTeam: KBOTeam | undefined = undefined;
@@ -56,7 +56,7 @@
 
 	<!-- Team Grid -->
 	<div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-		{#each kboTeams as team}
+		{#each KBO_TEAMS as team}
 			<button
 				type="button"
 				on:click={() => handleTeamSelect(team)}

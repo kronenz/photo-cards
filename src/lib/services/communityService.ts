@@ -10,7 +10,7 @@ import type {
   Comment
 } from '$lib/types/community';
 import { PostType, UserGrade, EventType } from '$lib/types/community';
-import { KBO_TEAMS } from '$lib/data/kboTeams';
+import { BASEBALL_TEAMS } from '$lib/data/baseballTeams';
 
 class CommunityService {
   private baseUrl = '/api/community';
@@ -312,7 +312,7 @@ class CommunityService {
   }
 
   private getMockTeamCommunity(teamId: string): TeamCommunity {
-    const team = KBO_TEAMS.find(t => t.id === teamId);
+    const team = BASEBALL_TEAMS.find(t => t.id === teamId);
     return {
       teamId,
       memberCount: Math.floor(Math.random() * 10000) + 5000,

@@ -1,3 +1,6 @@
+/* Import Apple Design System */
+@import './lib/styles/apple-design-system.css';
+
 /* Global animations for the holographic card editor */
 
 @keyframes fadeIn {

@@ -1,7 +1,8 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { KBO_TEAMS } from '$lib/data/kboTeams';
-  import type { KBOTeam } from '$lib/data/kboTeams';
+  import { BASEBALL_TEAMS } from '$lib/data/baseballTeams';
+  import type { BaseballTeam } from '$lib/data/baseballTeams';
+	import type { KBOTeam } from '$lib/data/kboTeams';
 
   // Props
   export let selectedTeamId: string | undefined = undefined;
@@ -18,7 +19,7 @@
   let selectedTeam: KBOTeam | undefined;
 
   // Reactive statements
-  $: selectedTeam = selectedTeamId ? KBO_TEAMS.find(team => team.id === selectedTeamId) : undefined;
+  $: selectedTeam = selectedTeamId ? BASEBALL_TEAMS.find(team => team.id === selectedTeamId) : undefined;
 
   // Functions
   function selectTeam(teamId: string | undefined) {
@@ -104,7 +105,7 @@
         </button>
       {/if}
 
-      {#each KBO_TEAMS as team (team.id)}
+      {#each BASEBALL_TEAMS as team (team.id)}
         <button 
           class="team-option" 
           class:selected={selectedTeamId === team.id}
