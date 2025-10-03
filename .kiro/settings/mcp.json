@@ -4,8 +4,7 @@
       "command": "npx",
       "args": [
         "chrome-devtools-mcp@latest",
-        "--executablePath=C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-        "--isolated"
+        "--executablePath=C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
       ],
       "env": {
         "PUPPETEER_EXECUTABLE_PATH": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
