@@ -15,6 +15,15 @@
 		type TouchPosition,
 		type TouchGesture
 	} from '$lib/utils/touchIntegration';
+	import { 
+		detectDeviceCapabilities,
+		getMobileOptimizationSettings,
+		optimizeTouchEvents,
+		PerformanceMonitor,
+		throttle,
+		type DeviceCapabilities,
+		type PerformanceMetrics
+	} from '$lib/utils/mobileOptimization';
 
 	// Props
 	export let frontImage: string;
@@ -31,6 +40,11 @@
 
 	// Touch integration handler
 	let touchHandler: TouchIntegrationHandler;
+	
+	// Mobile optimization
+	let deviceCapabilities: DeviceCapabilities;
+	let optimizationSettings: ReturnType<typeof getMobileOptimizationSettings>;
+	let performanceMonitor: PerformanceMonitor;
 
 	// DOM references
 	let cardContainer: HTMLElement;
@@ -44,9 +58,22 @@
 	onMount(() => {
 		if (!browser) return;
 
-		// Initialize state manager
+		// Detect device capabilities for optimization
+		deviceCapabilities = detectDeviceCapabilities();
+		optimizationSettings = getMobileOptimizationSettings(deviceCapabilities);
+
+		// Initialize performance monitor
+		performanceMonitor = new PerformanceMonitor();
+		performanceMonitor.onMetrics((metrics: PerformanceMetrics) => {
+			// Log performance issues in development
+			if (metrics.fps < 50) {
+				console.warn('Performance warning: FPS below 50:', metrics);
+			}
+		});
+
+		// Initialize state manager with mobile optimizations
 		stateManager = createCardStateManager({
-			animationSpeed,
+			animationSpeed: optimizationSettings.animationDuration || animationSpeed,
 			enableFlip,
 			holographicStyle,
 			preventDoubleClick: true
@@ -55,11 +82,11 @@
 		// Initialize card state
 		cardState = stateManager.getState();
 
-		// Initialize touch integration handler
+		// Initialize touch integration handler with mobile optimizations
 		touchHandler = createTouchIntegrationHandler({
-			tapTimeThreshold: 300,
-			moveThreshold: 10,
-			holdThreshold: 150,
+			tapTimeThreshold: optimizationSettings.tapTimeout,
+			moveThreshold: optimizationSettings.touchThreshold,
+			holdThreshold: optimizationSettings.holdTimeout,
 			preventMouseDelay: 100
 		});
 
@@ -77,6 +104,11 @@
 		styleElement.className = 'enhanced-card-hover';
 		document.head.appendChild(styleElement);
 
+		// Apply mobile optimizations to card container
+		if (cardContainer) {
+			optimizeTouchEvents(cardContainer, deviceCapabilities);
+		}
+
 		// Setup event listeners
 		setupEventListeners();
 
@@ -92,6 +124,7 @@
 			removeEventListeners();
 			stateManager?.destroy();
 			touchHandler?.destroy();
+			performanceMonitor?.destroy();
 		};
 	});
 
@@ -124,17 +157,13 @@
 		cardContainer.removeEventListener('touchcancel', handleTouchCancelIntegrated);
 	}
 
-	// Enhanced mouse event handlers with debouncing
+	// Enhanced mouse event handlers with mobile optimization
 	let mouseMoveTimeout: number;
+	let throttledMouseMove: ((e: MouseEvent) => void) | null = null;
 	
 	function handleMouseMove(e: MouseEvent) {
 		// Prevent mouse events if touch is being processed
 		if (!styleElement || !stateManager || touchHandler?.shouldPreventMouseEvent()) return;
-
-		// Clear previous timeout for debouncing
-		if (mouseMoveTimeout) {
-			clearTimeout(mouseMoveTimeout);
-		}
 
 		const mousePos = { x: e.offsetX, y: e.offsetY };
 		
@@ -143,11 +172,28 @@
 		cardState = stateManager.getState();
 
 		if (!cardState.isAnimating) {
-			// Debounced effect update for performance
-			mouseMoveTimeout = setTimeout(() => {
-				const card = e.currentTarget as HTMLElement;
-				updateEnhancedHolographicEffect(mousePos, card);
-			}, 8); // ~120fps for smooth animation
+			// Use throttled updates on low-end devices, immediate on high-end
+			if (optimizationSettings?.throttleEvents) {
+				if (!throttledMouseMove) {
+					throttledMouseMove = throttle((e: MouseEvent) => {
+						const card = e.currentTarget as HTMLElement;
+						const pos = { x: e.offsetX, y: e.offsetY };
+						updateEnhancedHolographicEffect(pos, card);
+					}, optimizationSettings.eventThrottleMs);
+				}
+				throttledMouseMove(e);
+			} else {
+				// Clear previous timeout for debouncing
+				if (mouseMoveTimeout) {
+					clearTimeout(mouseMoveTimeout);
+				}
+				
+				// Debounced effect update for performance
+				mouseMoveTimeout = setTimeout(() => {
+					const card = e.currentTarget as HTMLElement;
+					updateEnhancedHolographicEffect(mousePos, card);
+				}, 8); // ~120fps for smooth animation
+			}
 		}
 	}
 
@@ -200,12 +246,15 @@
 	function handleTouchStartCallback(position: TouchPosition) {
 		if (!stateManager) return;
 
+		// Record touch start for performance monitoring
+		performanceMonitor?.recordTouchStart();
+
 		// Start holographic effect immediately on touch
 		stateManager.handleTouchStart(position);
 		cardState = stateManager.getState();
 
-		// Apply holographic effect for touch
-		if (!cardState.isAnimating && cardContainer) {
+		// Apply holographic effect for touch (only if enabled for this device)
+		if (!cardState.isAnimating && cardContainer && optimizationSettings?.enableHolographicEffects) {
 			updateEnhancedHolographicEffect(position, cardContainer);
 		}
 
@@ -219,7 +268,8 @@
 		stateManager.handleTouchMove(position);
 		cardState = stateManager.getState();
 
-		if (!cardState.isAnimating && cardContainer) {
+		// Apply holographic effect only if enabled and not animating
+		if (!cardState.isAnimating && cardContainer && optimizationSettings?.enableHolographicEffects) {
 			updateEnhancedHolographicEffect(position, cardContainer);
 		}
 
@@ -324,6 +374,11 @@
 	function updateEnhancedHolographicEffect(mousePos: { x: number; y: number }, card: HTMLElement) {
 		if (!stateManager || !card) return;
 
+		// Skip holographic effects on low-end devices if disabled
+		if (optimizationSettings && !optimizationSettings.enableHolographicEffects) {
+			return;
+		}
+
 		// DOM 요소가 완전히 로드되었는지 확인
 		if (!card.offsetWidth || !card.offsetHeight) {
 			console.warn('Card dimensions not available yet, skipping holographic effect');
@@ -348,8 +403,10 @@
 		}
 
 		// Enhanced CSS with optimized blend modes for image visibility
-		const gradientOpacity = effect.gradientOpacity || 0.6;
-		const sparkleOpacity = effect.sparkleOpacity || 0.8;
+		// Apply mobile optimization intensity scaling
+		const intensityMultiplier = optimizationSettings?.holographicIntensity || 1.0;
+		const gradientOpacity = (effect.gradientOpacity || 0.6) * intensityMultiplier;
+		const sparkleOpacity = (effect.sparkleOpacity || 0.8) * intensityMultiplier;
 		const distanceFromCenter = effect.distanceFromCenter || 0;
 		
 		// Dynamic intensity based on distance from center
