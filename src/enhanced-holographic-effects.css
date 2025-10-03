@@ -1,0 +1,973 @@
+/* ===== ENHANCED HOLOGRAPHIC CARD EFFECTS ===== */
+/* 개선된 홀로그래픽 효과 - 이미지 가시성 유지 */
+
+/* ===== 3D 카드 뒤집기 컨테이너 구조 ===== */
+
+/* 3D perspective 컨테이너 */
+.card-container {
+  perspective: 1000px;
+  perspective-origin: center center;
+  width: 71.5vw;
+  height: 100vw;
+
+  @media screen and (min-width: 600px) {
+    width: clamp(12.9vw, 61vh, 18vw);
+    height: clamp(18vw, 85vh, 25.2vw);
+  }
+
+  position: relative;
+  margin: 20px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 3D 뒤집기 내부 컨테이너 */
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+  will-change: transform;
+}
+
+/* 뒤집힌 상태 */
+.card-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+/* 애니메이션 중 상태 */
+.card-inner.animating {
+  pointer-events: none;
+}
+
+/* 카드 앞면과 뒷면 공통 스타일 */
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 5% / 3.5%;
+  overflow: hidden;
+}
+
+/* 카드 뒷면 - Y축으로 180도 회전된 상태로 배치 */
+.card-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(135deg,
+      #1a1a2e 0%,
+      #16213e 25%,
+      #0f3460 50%,
+      #16213e 75%,
+      #1a1a2e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 5;
+  isolation: isolate;
+
+  /* 뒷면용 홀로그래픽 효과 기본 설정 */
+  box-shadow:
+    -3px -3px 8px -3px var(--back-color1, rgb(0, 150, 255)),
+    3px 3px 8px -3px var(--back-color2, rgb(255, 0, 150)),
+    0 0 15px 2px rgba(255, 255, 255, 0.1),
+    0 25px 25px -10px rgba(0, 0, 0, 0.4);
+
+  transition: box-shadow 0.3s ease;
+}
+
+/* 뒷면 홀로그래픽 효과 레이어 */
+.card-back:before,
+.card-back:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background-repeat: no-repeat;
+  transition: all .33s ease;
+  border-radius: 5% / 3.5%;
+}
+
+/* 뒷면 첫 번째 홀로그래픽 레이어 */
+.card-back:before {
+  background-position: 50% 50%;
+  background-size: 250% 250%;
+  background-image: linear-gradient(125deg,
+      transparent 0%,
+      var(--back-color1, rgb(0, 150, 255)) 30%,
+      transparent 45%,
+      transparent 55%,
+      var(--back-color2, rgb(255, 0, 150)) 70%,
+      transparent 100%);
+
+  mix-blend-mode: overlay;
+  opacity: 0.3;
+  filter: brightness(0.9) contrast(1.1);
+  z-index: 1;
+}
+
+/* 뒷면 두 번째 홀로그래픽 레이어 */
+.card-back:after {
+  background-image:
+    url("https://assets.codepen.io/13471/sparkles.gif"),
+    radial-gradient(circle at 30% 30%, rgba(0, 150, 255, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at 70% 70%, rgba(255, 0, 150, 0.2) 0%, transparent 50%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(0, 255, 255, 0.15) 25%, rgba(255, 0, 255, 0.15) 50%, rgba(255, 255, 0, 0.1) 75%, rgba(255, 255, 255, 0.1) 100%);
+  background-position: 50% 50%;
+  background-size: 120%, 200% 200%, 200% 200%, 100%;
+  background-blend-mode: overlay;
+
+  mix-blend-mode: soft-light;
+  opacity: 0.4;
+  filter: brightness(1.1) contrast(1.05);
+  z-index: 2;
+}
+
+/* ===== 카드 타입별 뒷면 디자인 ===== */
+
+/* 포켓몬 카드 뒷면 */
+.card-back.pokemon {
+  --back-color1: #3b82f6;
+  --back-color2: #f59e0b;
+  background:
+    radial-gradient(circle at 50% 50%, #1e40af 0%, #1e3a8a 100%),
+    linear-gradient(135deg, #1e40af 0%, #3730a3 50%, #1e40af 100%);
+}
+
+.card-back.pokemon:before {
+  background-image: linear-gradient(125deg,
+      transparent 0%,
+      #3b82f6 30%,
+      transparent 45%,
+      transparent 55%,
+      #f59e0b 70%,
+      transparent 100%);
+}
+
+/* KBO 구단별 뒷면 디자인 */
+.card-back.lg {
+  --back-color1: #c41e3a;
+  --back-color2: #ff69b4;
+  background:
+    radial-gradient(circle at 50% 50%, #8b0000 0%, #4a0000 100%),
+    linear-gradient(135deg, #c41e3a 0%, #8b0000 50%, #c41e3a 100%);
+}
+
+.card-back.doosan {
+  --back-color1: #131230;
+  --back-color2: #4169e1;
+  background:
+    radial-gradient(circle at 50% 50%, #000080 0%, #000040 100%),
+    linear-gradient(135deg, #131230 0%, #000080 50%, #131230 100%);
+}
+
+.card-back.kt {
+  --back-color1: #000000;
+  --back-color2: #ff0000;
+  background:
+    radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000000 100%),
+    linear-gradient(135deg, #000000 0%, #333333 50%, #000000 100%);
+}
+
+.card-back.samsung {
+  --back-color1: #074ca1;
+  --back-color2: #87ceeb;
+  background:
+    radial-gradient(circle at 50% 50%, #003d82 0%, #002a5c 100%),
+    linear-gradient(135deg, #074ca1 0%, #003d82 50%, #074ca1 100%);
+}
+
+/* 커스텀 카드 기본 뒷면 */
+.card-back.custom {
+  --back-color1: rgb(0, 231, 255);
+  --back-color2: rgb(255, 0, 231);
+  background:
+    radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0f0f1a 100%),
+    linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #16213e 75%, #1a1a2e 100%);
+}
+
+/* ===== 뒷면 호버 효과 ===== */
+
+.card-container:hover .card-back {
+  box-shadow:
+    -15px -15px 20px -15px var(--back-color1, rgb(0, 150, 255)),
+    15px 15px 20px -15px var(--back-color2, rgb(255, 0, 150)),
+    0 0 25px 5px rgba(255, 255, 255, 0.2),
+    0 25px 25px -10px rgba(0, 0, 0, 0.4);
+}
+
+.card-container:hover .card-back:before {
+  background-size: 200% 200%;
+  opacity: 0.5;
+  filter: brightness(1.0) contrast(1.2);
+}
+
+.card-container:hover .card-back:after {
+  opacity: 0.6;
+  filter: brightness(1.2) contrast(1.1);
+  background-size: 140%, 180% 180%, 180% 180%, 100%;
+}
+
+/* ===== 3D 뒤집기 애니메이션 상태 관리 ===== */
+
+/* 애니메이션 중 홀로그래픽 효과 일시 정지 */
+.card-inner.animating .enhanced-card:before,
+.card-inner.animating .enhanced-card:after,
+.card-inner.animating .card-back:before,
+.card-inner.animating .card-back:after {
+  animation-play-state: paused;
+  transition: none;
+}
+
+/* 뒤집힌 상태에서 앞면 홀로그래픽 효과 비활성화 */
+.card-inner.flipped .enhanced-card:before,
+.card-inner.flipped .enhanced-card:after {
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+/* 뒤집힌 상태에서 뒷면 홀로그래픽 효과 활성화 */
+.card-inner.flipped .card-back:before,
+.card-inner.flipped .card-back:after {
+  transition: all 0.3s ease 0.3s;
+  /* 뒤집기 완료 후 효과 활성화 */
+}
+
+/* ===== 성능 최적화 ===== */
+
+/* 3D 변환 최적화 */
+.card-container,
+.card-inner,
+.card-face,
+.enhanced-card,
+.card-back {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* GPU 가속 활성화 */
+.card-inner {
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+}
+
+/* 뒤집기 애니메이션 중 하위 요소 최적화 */
+.card-inner.animating * {
+  will-change: auto;
+  pointer-events: none;
+}
+
+/* ===== 접근성 및 사용성 개선 ===== */
+
+/* 클릭 가능 상태 표시 */
+.card-container {
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.card-container:hover {
+  transform: translateY(-2px);
+}
+
+.card-container:active {
+  transform: translateY(0px);
+}
+
+/* 애니메이션 중 클릭 방지 */
+.card-inner.animating {
+  pointer-events: none;
+  cursor: wait;
+}
+
+/* 키보드 접근성 */
+.card-container:focus {
+  outline: 2px solid var(--color1, rgb(0, 231, 255));
+  outline-offset: 4px;
+}
+
+.card-container:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* 모션 감소 설정 준수 */
+@media (prefers-reduced-motion: reduce) {
+  .card-inner {
+    transition-duration: 0.2s;
+  }
+
+  .card-container:hover {
+    transform: none;
+  }
+
+  .card-back:before,
+  .card-back:after,
+  .enhanced-card:before,
+  .enhanced-card:after {
+    animation: none;
+    transition-duration: 0.1s;
+  }
+}
+
+/* 기본 홀로그래픽 카드 구조 개선 */
+.enhanced-card {
+  /* 카드 앞면으로 설정 */
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  touch-action: none;
+  isolation: isolate;
+
+  border-radius: 5% / 3.5%;
+  box-shadow:
+    -5px -5px 5px -5px var(--color1, rgb(0, 231, 255)),
+    5px 5px 5px -5px var(--color2, rgb(255, 0, 231)),
+    -7px -7px 10px -5px transparent,
+    7px 7px 10px -5px transparent,
+    0 0 5px 0px rgba(255, 255, 255, 0),
+    0 55px 35px -20px rgba(0, 0, 0, 0.5);
+
+  transition: box-shadow 0.2s ease;
+  will-change: transform, filter;
+
+  background-color: #040712;
+  background-image: var(--front);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  transform-origin: center;
+
+  /* 3D 뒤집기와 호환되도록 backface-visibility 설정 */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.enhanced-card:hover {
+  box-shadow:
+    -20px -20px 30px -25px var(--color1, rgb(0, 231, 255)),
+    20px 20px 30px -25px var(--color2, rgb(255, 0, 231)),
+    -7px -7px 10px -5px var(--color1, rgb(0, 231, 255)),
+    7px 7px 10px -5px var(--color2, rgb(255, 0, 231)),
+    0 0 13px 4px rgba(255, 255, 255, 0.3),
+    0 55px 35px -20px rgba(0, 0, 0, 0.5);
+}
+
+/* ===== 개선된 홀로그래픽 효과 레이어 ===== */
+/* 이미지 가시성을 유지하는 새로운 블렌드 모드 적용 */
+
+.enhanced-card:before,
+.enhanced-card:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background-repeat: no-repeat;
+  transition: all .33s ease;
+}
+
+/* 첫 번째 레이어 - overlay 블렌드 모드로 개선 */
+.enhanced-card:before {
+  background-position: 50% 50%;
+  background-size: 300% 300%;
+  background-image: linear-gradient(115deg,
+      transparent 0%,
+      var(--color1, rgb(0, 231, 255)) 25%,
+      transparent 47%,
+      transparent 53%,
+      var(--color2, rgb(255, 0, 231)) 75%,
+      transparent 100%);
+
+  /* 개선된 블렌드 모드와 투명도 */
+  mix-blend-mode: overlay;
+  opacity: 0.4;
+  /* color-dodge의 0.5에서 0.4로 조정 */
+  filter: brightness(0.8) contrast(1.1);
+  /* 이미지 가시성 개선 */
+  z-index: 1;
+}
+
+/* 두 번째 레이어 - soft-light 블렌드 모드로 개선 */
+.enhanced-card:after {
+  background-image:
+    url("https://assets.codepen.io/13471/sparkles.gif"),
+    url("https://assets.codepen.io/13471/holo.png"),
+    linear-gradient(125deg, rgba(255, 0, 132, 0.5) 15%, rgba(252, 164, 0, 0.4) 30%, rgba(255, 255, 0, 0.3) 40%, rgba(0, 255, 138, 0.2) 60%, rgba(0, 207, 255, 0.4) 70%, rgba(204, 76, 250, 0.5) 85%);
+  background-position: 50% 50%;
+  background-size: 160%;
+  background-blend-mode: overlay;
+
+  /* 개선된 블렌드 모드와 투명도 */
+  mix-blend-mode: soft-light;
+  opacity: 0.6;
+  /* color-dodge의 0.75에서 0.6으로 조정 */
+  filter: brightness(1.1) contrast(1.05);
+  /* 부드러운 효과 유지 */
+  z-index: 2;
+}
+
+/* 호버 상태에서의 개선된 효과 */
+.enhanced-card.active:after,
+.enhanced-card:hover:after {
+  filter: brightness(1.2) contrast(1.1);
+  opacity: 0.8;
+  /* 호버 시 약간 더 강한 효과 */
+}
+
+.enhanced-card.active,
+.enhanced-card:hover {
+  animation: none;
+  transition: box-shadow 0.1s ease-out;
+}
+
+.enhanced-card.active:before,
+.enhanced-card:hover:before {
+  animation: none;
+  background-image: linear-gradient(110deg,
+      transparent 25%,
+      var(--color1, rgb(0, 231, 255)) 48%,
+      var(--color2, rgb(255, 0, 231)) 52%,
+      transparent 75%);
+  background-position: 50% 50%;
+  background-size: 250% 250%;
+
+  /* 호버 시 개선된 설정 */
+  mix-blend-mode: overlay;
+  opacity: 0.7;
+  /* color-dodge의 0.88에서 0.7로 조정 */
+  filter: brightness(0.85) contrast(1.2);
+  /* 이미지 보존하면서 효과 유지 */
+  transition: none;
+}
+
+/* 애니메이션 중 효과 조정 방지 */
+.enhanced-card.active:before,
+.enhanced-card:hover:before,
+.enhanced-card.active:after,
+.enhanced-card:hover:after {
+  animation: none;
+  transition: none;
+}
+
+/* ===== 자동 애니메이션 개선 ===== */
+.enhanced-card.animated {
+  transition: none;
+  animation: enhancedHoloCard 12s ease 0s 1;
+}
+
+.enhanced-card.animated:before {
+  transition: none;
+  animation: enhancedHoloGradient 12s ease 0s 1;
+}
+
+.enhanced-card.animated:after {
+  transition: none;
+  animation: enhancedHoloSparkle 12s ease 0s 1;
+}
+
+/* ===== 개선된 키프레임 애니메이션 ===== */
+
+@keyframes enhancedHoloSparkle {
+
+  0%,
+  100% {
+    opacity: 0.6;
+    background-position: 50% 50%;
+    filter: brightness(1.1) contrast(1.05);
+  }
+
+  5%,
+  8% {
+    opacity: 0.8;
+    background-position: 40% 40%;
+    filter: brightness(1.0) contrast(1.1);
+  }
+
+  13%,
+  16% {
+    opacity: 0.5;
+    background-position: 50% 50%;
+    filter: brightness(1.15) contrast(1.0);
+  }
+
+  35%,
+  38% {
+    opacity: 0.8;
+    background-position: 60% 60%;
+    filter: brightness(1.05) contrast(1.05);
+  }
+
+  55% {
+    opacity: 0.4;
+    background-position: 45% 45%;
+    filter: brightness(1.1) contrast(1.1);
+  }
+}
+
+@keyframes enhancedHoloGradient {
+
+  0%,
+  100% {
+    opacity: 0.4;
+    background-position: 50% 50%;
+    filter: brightness(0.8) contrast(1.1);
+  }
+
+  5%,
+  9% {
+    background-position: 100% 100%;
+    opacity: 0.7;
+    filter: brightness(0.85) contrast(1.15);
+  }
+
+  13%,
+  17% {
+    background-position: 0% 0%;
+    opacity: 0.6;
+    filter: brightness(0.8) contrast(1.1);
+  }
+
+  35%,
+  39% {
+    background-position: 100% 100%;
+    opacity: 0.7;
+    filter: brightness(0.8) contrast(1.1);
+  }
+
+  55% {
+    background-position: 0% 0%;
+    opacity: 0.7;
+    filter: brightness(0.85) contrast(1.15);
+  }
+}
+
+@keyframes enhancedHoloCard {
+
+  0%,
+  100% {
+    transform: rotateZ(0deg) rotateX(0deg) rotateY(0deg);
+  }
+
+  5%,
+  8% {
+    transform: rotateZ(0deg) rotateX(6deg) rotateY(-20deg);
+  }
+
+  13%,
+  16% {
+    transform: rotateZ(0deg) rotateX(-9deg) rotateY(32deg);
+  }
+
+  35%,
+  38% {
+    transform: rotateZ(3deg) rotateX(12deg) rotateY(20deg);
+  }
+
+  55% {
+    transform: rotateZ(-3deg) rotateX(-12deg) rotateY(-27deg);
+  }
+}
+
+/* ===== 특별 효과 개선 ===== */
+
+/* Eevee 특별 효과 개선 */
+.enhanced-card.eevee {
+  --color1: #ec9bb6;
+  --color2: #ccac6f;
+  --color3: #69e4a5;
+  --color4: #8ec5d6;
+  --color5: #b98cce;
+  --front: var(--eeveefront);
+}
+
+.enhanced-card.eevee:hover {
+  box-shadow:
+    0 0 30px -5px white,
+    0 0 10px -2px white,
+    0 55px 35px -20px rgba(0, 0, 0, 0.5);
+}
+
+.enhanced-card.eevee:hover:before,
+.enhanced-card.eevee.active:before {
+  background-image: linear-gradient(115deg,
+      transparent 20%,
+      var(--color1) 36%,
+      var(--color2) 43%,
+      var(--color3) 50%,
+      var(--color4) 57%,
+      var(--color5) 64%,
+      transparent 80%);
+  /* 개선된 블렌드 모드 적용 */
+  mix-blend-mode: overlay;
+  opacity: 0.7;
+  filter: brightness(0.85) contrast(1.2);
+}
+
+/* ===== 포켓몬 카드 스타일 개선 ===== */
+.enhanced-card.charizard {
+  --color1: #fac;
+  --color2: #ddccaa;
+  --front: var(--charizardfront);
+}
+
+.enhanced-card.pika {
+  --color1: #54a29e;
+  --color2: #a79d66;
+  --front: var(--pikafront);
+}
+
+.enhanced-card.mewtwo {
+  --color1: #efb2fb;
+  --color2: #acc6f8;
+  --front: var(--mewtwofront);
+}
+
+/* ===== KBO 구단별 홀로그래픽 효과 개선 ===== */
+
+.enhanced-card.lg {
+  --color1: #c41e3a;
+  --color2: #ff69b4;
+}
+
+.enhanced-card.doosan {
+  --color1: #131230;
+  --color2: #4169e1;
+}
+
+.enhanced-card.kt {
+  --color1: #000000;
+  --color2: #ff0000;
+}
+
+.enhanced-card.samsung {
+  --color1: #074ca1;
+  --color2: #87ceeb;
+}
+
+.enhanced-card.lotte {
+  --color1: #041e42;
+  --color2: #c41e3a;
+}
+
+.enhanced-card.kia {
+  --color1: #ea002c;
+  --color2: #000000;
+}
+
+.enhanced-card.nc {
+  --color1: #315288;
+  --color2: #c4a484;
+}
+
+.enhanced-card.hanwha {
+  --color1: #ff6600;
+  --color2: #000000;
+}
+
+.enhanced-card.ssg {
+  --color1: #ce0e2d;
+  --color2: #ffd700;
+}
+
+.enhanced-card.kiwoom {
+  --color1: #570514;
+  --color2: #ffd700;
+}
+
+/* ===== 브라우저 호환성 및 폴백 ===== */
+
+/* 3D 변환 미지원 시 2D 폴백 */
+@supports not (transform-style: preserve-3d) {
+  .card-inner {
+    transform-style: flat;
+  }
+
+  .card-inner.flipped {
+    transform: scaleX(-1);
+    /* 2D 뒤집기 폴백 */
+  }
+
+  .card-back {
+    transform: scaleX(-1) rotateY(0deg);
+    display: none;
+  }
+
+  .card-inner.flipped .card-back {
+    display: flex;
+  }
+
+  .card-inner.flipped .enhanced-card {
+    display: none;
+  }
+}
+
+/* perspective 미지원 시 폴백 */
+@supports not (perspective: 1000px) {
+  .card-container {
+    perspective: none;
+  }
+
+  .card-inner {
+    transition: opacity 0.3s ease;
+  }
+
+  .card-inner.flipped {
+    transform: none;
+  }
+}
+
+/* backface-visibility 미지원 시 폴백 */
+@supports not (backface-visibility: hidden) {
+  .card-face {
+    -webkit-backface-visibility: visible;
+    backface-visibility: visible;
+  }
+
+  .card-inner.flipped .enhanced-card {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .card-inner:not(.flipped) .card-back {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+/* overlay 미지원 시 multiply 폴백 */
+@supports not (mix-blend-mode: overlay) {
+
+  .enhanced-card:before,
+  .card-back:before {
+    mix-blend-mode: multiply;
+    opacity: 0.3;
+    filter: brightness(1.2) contrast(1.3);
+  }
+}
+
+/* soft-light 미지원 시 screen 폴백 */
+@supports not (mix-blend-mode: soft-light) {
+
+  .enhanced-card:after,
+  .card-back:after {
+    mix-blend-mode: screen;
+    opacity: 0.5;
+    filter: brightness(0.9) contrast(1.1);
+  }
+}
+
+/* 블렌드 모드 완전 미지원 시 최종 폴백 */
+@supports not (mix-blend-mode: screen) {
+
+  .enhanced-card:before,
+  .enhanced-card:after,
+  .card-back:before,
+  .card-back:after {
+    mix-blend-mode: normal;
+    opacity: 0.3;
+    filter: saturate(150%) contrast(120%) brightness(110%) hue-rotate(var(--hue-shift, 0deg));
+  }
+}
+
+/* ===== 성능 최적화 (기존 + 3D 추가) ===== */
+
+/* GPU 가속 및 will-change 최적화 */
+.card-container,
+.card-inner,
+.card-face,
+.enhanced-card,
+.card-back {
+  /* GPU 레이어 강제 생성 */
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  
+  /* 하드웨어 가속 활성화 */
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000;
+}
+
+/* 애니메이션 중 최적화 */
+.card-inner.animating {
+  will-change: transform;
+}
+
+.card-inner:not(.animating) {
+  will-change: auto;
+}
+
+/* 홀로그래픽 효과 레이어 최적화 */
+.enhanced-card:before,
+.enhanced-card:after,
+.card-back:before,
+.card-back:after {
+  will-change: transform, opacity, filter;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* 호버 상태에서의 최적화 */
+.card-container:hover .enhanced-card:before,
+.card-container:hover .enhanced-card:after,
+.card-container:hover .card-back:before,
+.card-container:hover .card-back:after {
+  will-change: transform, opacity, filter, background-position;
+}
+
+/* 호버 종료 후 will-change 정리 */
+.card-container:not(:hover) .enhanced-card:before,
+.card-container:not(:hover) .enhanced-card:after,
+.card-container:not(:hover) .card-back:before,
+.card-container:not(:hover) .card-back:after {
+  will-change: auto;
+}
+
+/* 저사양 기기용 효과 감소 */
+@media (max-width: 768px),
+(prefers-reduced-motion: reduce) {
+
+  .enhanced-card:before,
+  .enhanced-card:after,
+  .card-back:before,
+  .card-back:after {
+    animation-duration: 6s !important;
+    filter: brightness(0.9) contrast(1.05);
+  }
+
+  .enhanced-card:after,
+  .card-back:after {
+    background-image:
+      url("https://assets.codepen.io/13471/holo.png"),
+      linear-gradient(125deg, rgba(255, 0, 132, 0.3) 15%, rgba(252, 164, 0, 0.3) 30%, rgba(255, 255, 0, 0.2) 40%, rgba(0, 255, 138, 0.15) 60%, rgba(0, 207, 255, 0.3) 70%, rgba(204, 76, 250, 0.4) 85%);
+  }
+
+  /* 3D 효과 간소화 */
+  .card-container {
+    perspective: 800px;
+  }
+
+  .card-inner {
+    transition-duration: 0.4s;
+  }
+}
+
+/* 성능 저하 감지 시 적응형 최적화 */
+.performance-reduced .enhanced-card:before,
+.performance-reduced .enhanced-card:after,
+.performance-reduced .card-back:before,
+.performance-reduced .card-back:after {
+  animation-duration: 8s !important;
+  filter: brightness(0.95) contrast(1.02) !important;
+  background-size: 200% 200% !important;
+}
+
+.performance-reduced .enhanced-card:after,
+.performance-reduced .card-back:after {
+  background-image: 
+    linear-gradient(125deg, 
+      rgba(255, 0, 132, 0.2) 15%, 
+      rgba(252, 164, 0, 0.2) 30%, 
+      rgba(255, 255, 0, 0.15) 40%, 
+      rgba(0, 255, 138, 0.1) 60%, 
+      rgba(0, 207, 255, 0.2) 70%, 
+      rgba(204, 76, 250, 0.25) 85%
+    ) !important;
+}
+
+/* 극도로 낮은 성능에서의 최소 효과 */
+.performance-minimal .enhanced-card:before,
+.performance-minimal .enhanced-card:after,
+.performance-minimal .card-back:before,
+.performance-minimal .card-back:after {
+  animation: none !important;
+  background-image: none !important;
+  background: linear-gradient(45deg, 
+    rgba(0, 231, 255, 0.2), 
+    rgba(255, 0, 231, 0.2)
+  ) !important;
+  filter: none !important;
+  mix-blend-mode: normal !important;
+  opacity: 0.2 !important;
+}
+
+/* 고대비 모드 지원 */
+@media (prefers-contrast: high) {
+
+  .enhanced-card:before,
+  .enhanced-card:after,
+  .card-back:before,
+  .card-back:after {
+    filter: contrast(150%) brightness(120%);
+    mix-blend-mode: screen;
+    opacity: 0.4;
+  }
+
+  .card-container:focus {
+    outline-color: #ffffff;
+    outline-width: 3px;
+  }
+}
+
+/* 60fps 보장을 위한 최적화 */
+.card-container,
+.card-inner,
+.enhanced-card,
+.card-back,
+.enhanced-card:before,
+.enhanced-card:after,
+.card-back:before,
+.card-back:after {
+  transform: translateZ(0);
+  will-change: transform, filter, opacity;
+}
+
+/* 3D 변환 최적화 */
+.card-inner {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+/* 애니메이션 중 최적화 */
+.card-inner.animating {
+  will-change: transform;
+}
+
+.card-inner:not(.animating) {
+  will-change: auto;
+}
+
+/* 애니메이션 지연 설정 */
+.cards .enhanced-card:nth-child(2) {
+  animation-delay: 0.25s;
+}
+
+.cards .enhanced-card:nth-child(2):before,
+.cards .enhanced-card:nth-child(2):after {
+  animation-delay: 0.25s;
+}
+
+.cards .enhanced-card:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+.cards .enhanced-card:nth-child(3):before,
+.cards .enhanced-card:nth-child(3):after {
+  animation-delay: 0.5s;
+}
+
+.cards .enhanced-card:nth-child(4) {
+  animation-delay: 0.75s;
+}
+
+.cards .enhanced-card:nth-child(4):before,
+.cards .enhanced-card:nth-child(4):after {
+  animation-delay: 0.75s;
+}

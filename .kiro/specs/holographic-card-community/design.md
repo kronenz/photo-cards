@@ -2,7 +2,39 @@
 
 ## Overview
 
-홀로그래픽 효과 야구 카드 갤러리 커뮤니케이션 서비스는 사용자가 자신만의 디지털 홀로그래픽 카드를 제작하고 공유할 수 있는 종합적인 플랫폼입니다. 이 시스템은 고급 CSS 효과, 실시간 편집 도구, 소셜 네트워킹 기능, 그리고 수익화 모델을 통합하여 포토카드 문화의 디지털 생태계를 구축합니다.
+홀로그래픽 효과 야구 카드 갤러리 커뮤니케이션 서비스는 **Civitai.com의 AI 아트 커뮤니티 모델**을 KBO 홀로그래픽 카드 문화에 적용한 혁신적인 플랫폼입니다. 사용자들이 자신만의 디지털 홀로그래픽 카드를 제작하고, 템플릿을 공유하며, 커뮤니티와 상호작용할 수 있는 종합적인 창작자 생태계를 구축합니다. **Apple 수준의 시각적 디자인 품질**과 **Civitai 스타일의 커뮤니티 기능**을 결합하여, 야구팬들에게 감동적인 디지털 경험을 제공합니다.
+
+### Civitai-Inspired Core Features
+
+#### 1. 템플릿 & 모델 공유 시스템 (저작권 안전)
+- **개인 창작 템플릿**: 사용자 직접 제작 홀로그래픽 카드 템플릿만 공유
+- **버전 관리**: 개인 창작물의 업데이트와 개선사항 추적
+- **안전 라이선스**: Creative Commons, 개인 창작물 한정 라이선스
+- **창작 계보 추적**: 팬아트 기반 파생 작품들의 합법적 계보 관리
+
+#### 2. 커뮤니티 중심 평가 시스템
+- **다차원 평점**: 창의성, 기술력, 완성도, 독창성 개별 평가
+- **건설적 리뷰**: 저작권 준수 범위 내 개선 제안
+- **크리에이터 평판**: 합법적 창작 활동 기반 신뢰도 시스템
+- **안전 콘텐츠 큐레이션**: 저작권 검증된 우수 작품만 선별
+
+#### 3. 소셜 네트워킹 & 발견 시스템
+- **팔로우 시스템**: 합법적 창작자 팔로우 및 피드 구독
+- **AI 추천 엔진**: 저작권 안전 콘텐츠 기반 맞춤 추천
+- **트렌딩 시스템**: 검증된 콘텐츠만 Featured, Hot, New 분류
+- **안전 태그 탐색**: 저작권 위험 없는 태그와 필터링
+
+#### 4. 법적 안전 창작자 생태계
+- **안전 수익화**: 개인 창작물, 플랫폼 도구, 교육 서비스만 수익화
+- **크리에이터 등급**: 저작권 준수 기반 Bronze → Diamond 등급
+- **합법 멘토링**: 저작권 교육 포함 신규 사용자 지원
+- **법적 보호 혜택**: 저작권 준수 크리에이터 대상 법적 지원
+
+#### 5. 저작권 보호 핵심 시스템
+- **AI 저작권 감지**: KBO/구단 로고, 공식 콘텐츠 자동 차단
+- **DMCA 준수**: 24시간 신속 신고 처리 시스템
+- **사용자 교육**: 지속적인 저작권 인식 개선 프로그램
+- **법적 컴플라이언스**: 전문 법무 자문 및 정기 감사
 
 ## Architecture
 
@@ -108,6 +140,239 @@ graph TB
 - **Logging**: systemd journal + logrotate
 - **Process Management**: systemd services
 - **Backup**: Automated scripts with retention policy
+
+### Physical Card Production & Partnership Architecture
+
+#### 실물 카드 제작 시스템 아키텍처
+```mermaid
+graph TB
+    subgraph "사용자 주문 단계"
+        A[디지털 카드 선택]
+        B[실물 옵션 선택]
+        C[수량 및 배송 설정]
+        D[결제 처리]
+    end
+    
+    subgraph "주문 처리 시스템"
+        E[통합 주문 관리]
+        F[파트너사 라우팅]
+        G[파일 변환 처리]
+        H[품질 검증]
+    end
+    
+    subgraph "파트너사 연동"
+        I[온라인 인쇄 서비스]
+        J[구장 포토카드샵]
+        K[프리미엄 인쇄소]
+        L[배송 업체]
+    end
+    
+    subgraph "품질 관리"
+        M[자동 품질 검사]
+        N[파트너사 QC]
+        O[고객 피드백]
+        P[지속적 개선]
+    end
+    
+    subgraph "구장 연계 서비스"
+        Q[경기 실시간 연동]
+        R[구장 내 키오스크]
+        S[픽업 서비스]
+        T[특별 이벤트]
+    end
+    
+    A --> B --> C --> D
+    D --> E --> F --> G --> H
+    F --> I
+    F --> J
+    F --> K
+    H --> L
+    I --> M
+    J --> N
+    K --> O
+    M --> P
+    
+    Q --> R --> S --> T
+    E --> Q
+```
+
+#### 파트너십 통합 기술 스택
+```typescript
+interface PartnershipTechStack {
+  // 인쇄 서비스 API 통합
+  printingAPIs: {
+    printful: {
+      endpoint: "https://api.printful.com/",
+      features: ["제품 카탈로그", "주문 생성", "배송 추적"],
+      authentication: "Bearer Token",
+      rateLimit: "120 requests/minute"
+    },
+    snaps: {
+      endpoint: "https://api.snaps.com/",
+      features: ["한국 특화 서비스", "당일 배송", "모바일 최적화"],
+      authentication: "API Key",
+      rateLimit: "100 requests/minute"
+    },
+    vistaprint: {
+      endpoint: "https://api.vistaprint.com/",
+      features: ["대량 인쇄", "비즈니스 카드", "글로벌 배송"],
+      authentication: "OAuth 2.0",
+      rateLimit: "200 requests/minute"
+    }
+  },
+  
+  // 구장 파트너 시스템
+  stadiumPartners: {
+    jamsilCardShop: {
+      location: "잠실야구장 내",
+      services: ["즉석 인쇄", "픽업 서비스", "사인회 연계"],
+      integration: "Custom API",
+      operatingHours: "경기일 기준 운영"
+    },
+    gocheokCardShop: {
+      location: "고척스카이돔 내",
+      services: ["키움 특화", "팬존 키오스크"],
+      integration: "Custom API",
+      operatingHours: "경기일 + 평일 운영"
+    }
+  },
+  
+  // 품질 관리 시스템
+  qualityManagement: {
+    fileProcessing: {
+      colorConversion: "RGB → CMYK 자동 변환",
+      resolutionUpscale: "AI 기반 해상도 향상",
+      bleedAreaGeneration: "재단선 자동 생성",
+      printabilityCheck: "인쇄 적합성 검증"
+    },
+    
+    qualityAssurance: {
+      partnerAudit: "파트너사 정기 품질 감사",
+      sampleTesting: "무작위 샘플 품질 테스트",
+      customerFeedback: "고객 만족도 추적",
+      defectTracking: "불량률 모니터링"
+    }
+  }
+}
+```
+
+### Legal Compliance & Copyright Protection Architecture
+
+#### 저작권 보호 시스템 아키텍처
+```mermaid
+graph TB
+    subgraph "사용자 업로드 단계"
+        A[사용자 콘텐츠 업로드]
+        B[AI 저작권 감지 엔진]
+        C[실시간 콘텐츠 검증]
+        D[위험 콘텐츠 차단]
+        E[사용자 교육 알림]
+    end
+    
+    subgraph "콘텐츠 관리 단계"
+        F[안전 콘텐츠 저장]
+        G[커뮤니티 신고 시스템]
+        H[DMCA 처리 엔진]
+        I[24시간 신속 조치]
+    end
+    
+    subgraph "수익화 보호 단계"
+        J[개인 창작물 검증]
+        K[안전 거래 시스템]
+        L[플랫폼 도구 수익]
+        M[법적 보호 장치]
+    end
+    
+    subgraph "법적 컴플라이언스"
+        N[전문 법무 자문]
+        O[정기 저작권 감사]
+        P[정책 업데이트]
+        Q[KBO 협력 준비]
+    end
+    
+    A --> B
+    B --> C
+    C --> D
+    C --> E
+    C --> F
+    F --> G
+    G --> H
+    H --> I
+    F --> J
+    J --> K
+    K --> L
+    L --> M
+    M --> N
+    N --> O
+    O --> P
+    P --> Q
+```
+
+#### 저작권 보호 기술 스택
+```typescript
+interface CopyrightProtectionStack {
+  // AI 기반 콘텐츠 감지
+  aiDetection: {
+    logoRecognition: "KBO/구단 로고 자동 감지",
+    imageMatching: "공식 사진 유사도 검사",
+    watermarkDetection: "워터마크 및 저작권 표시 인식",
+    audioFingerprinting: "저작권 음악 자동 감지"
+  },
+  
+  // 실시간 콘텐츠 필터링
+  contentFiltering: {
+    uploadBlocking: "위험 콘텐츠 업로드 차단",
+    userWarning: "저작권 위험 실시간 경고",
+    educationalPrompt: "안전한 대안 제안",
+    guidanceSystem: "단계별 저작권 가이드"
+  },
+  
+  // DMCA 준수 시스템
+  dmcaCompliance: {
+    reportingAPI: "24시간 신고 접수 API",
+    autoTakedown: "자동 콘텐츠 삭제 시스템",
+    userNotification: "즉시 사용자 통지",
+    appealProcess: "이의 제기 처리 워크플로우"
+  },
+  
+  // 안전한 수익화 시스템
+  safeMonetization: {
+    creatorVerification: "개인 창작물 검증 시스템",
+    platformRevenue: "플랫폼 도구 수익 관리",
+    legalProtection: "거래 법적 보호 장치",
+    transparentAccounting: "투명한 수익 정산"
+  }
+}
+```
+
+#### 법적 안전 데이터 모델
+```typescript
+interface LegalSafeDataModel {
+  // 사용자 콘텐츠 (저작권 안전)
+  userContent: {
+    personalPhotos: "개인 직관 사진",
+    fanArt: "사용자 직접 창작 일러스트",
+    personalStories: "개인 야구 추억 스토리",
+    originalTemplates: "개인 제작 카드 템플릿"
+  },
+  
+  // 공개 데이터 (합법적 이용)
+  publicData: {
+    playerStats: "공개된 선수 통계",
+    gameResults: "언론 보도 경기 결과",
+    historicalRecords: "공개 역사 기록",
+    newsArticles: "언론 기사 (출처 명시)"
+  },
+  
+  // 금지 콘텐츠 (저작권 위험)
+  prohibitedContent: {
+    officialLogos: "KBO/구단 공식 로고",
+    broadcastFootage: "방송 영상 캡처",
+    officialPhotos: "구단/선수 공식 사진",
+    copyrightedMusic: "저작권 보호 음악"
+  }
+}
+```
 
 ### Self-Hosted Service Architecture
 
@@ -500,7 +765,167 @@ class ImageService {
 
 ### Core Components
 
-#### 1. Card Editor Component
+#### 0. Copyright Protection Component (최우선)
+```typescript
+interface CopyrightProtection {
+  // 업로드 시 저작권 검증
+  validateUpload(file: File): Promise<ValidationResult>
+  
+  // AI 기반 콘텐츠 감지
+  detectCopyrightedContent(content: any): Promise<DetectionResult>
+  
+  // 사용자 교육 및 가이드
+  showCopyrightGuidance(riskLevel: RiskLevel): void
+  
+  // DMCA 신고 처리
+  processDMCAReport(report: DMCAReport): Promise<void>
+  
+  // 안전한 콘텐츠 추천
+  suggestSafeAlternatives(blockedContent: any): SafeContent[]
+}
+
+interface ValidationResult {
+  isAllowed: boolean
+  riskLevel: 'safe' | 'caution' | 'high' | 'blocked'
+  detectedIssues: CopyrightIssue[]
+  recommendations: string[]
+  educationalContent: EducationMaterial[]
+}
+
+interface DetectionResult {
+  hasKBOLogo: boolean
+  hasTeamLogo: boolean
+  hasOfficialPhoto: boolean
+  hasBroadcastContent: boolean
+  hasWatermark: boolean
+  confidenceScore: number
+}
+
+interface SafeContent {
+  type: 'template' | 'image' | 'sound' | 'text'
+  description: string
+  source: 'user_created' | 'public_domain' | 'creative_commons'
+  license: string
+}
+```
+
+#### 1. Physical Card Production Component
+```typescript
+interface PhysicalCardProduction {
+  // 주문 생성 및 관리
+  createOrder(cardId: string, options: PrintOptions): Promise<Order>
+  
+  // 파트너사 선택 및 라우팅
+  selectOptimalPartner(requirements: PrintRequirements): Promise<Partner>
+  
+  // 파일 변환 및 최적화
+  prepareForPrint(digitalCard: Card): Promise<PrintFile>
+  
+  // 주문 상태 추적
+  trackOrder(orderId: string): Promise<OrderStatus>
+  
+  // 품질 검증
+  validatePrintQuality(printFile: PrintFile): Promise<QualityReport>
+}
+
+interface PrintOptions {
+  size: 'standard' | 'jumbo' | 'custom'
+  material: 'standard' | 'premium' | 'holographic' | 'metal'
+  finish: 'matte' | 'glossy' | 'uv_coating' | 'laminated'
+  quantity: number
+  shipping: 'standard' | 'express' | 'stadium_pickup'
+  customizations?: CustomizationOptions
+}
+
+interface PrintRequirements {
+  urgency: 'standard' | 'rush' | 'same_day'
+  quality: 'basic' | 'premium' | 'collector'
+  location: 'domestic' | 'international'
+  specialFeatures: string[]
+}
+
+interface Partner {
+  id: string
+  name: string
+  type: 'online_service' | 'stadium_vendor' | 'premium_printer'
+  capabilities: string[]
+  pricing: PricingStructure
+  leadTime: number
+  qualityRating: number
+}
+
+interface Order {
+  id: string
+  userId: string
+  cardId: string
+  partnerId: string
+  options: PrintOptions
+  status: OrderStatus
+  totalPrice: number
+  estimatedDelivery: Date
+  trackingInfo?: TrackingInfo
+}
+
+interface OrderStatus {
+  stage: 'pending' | 'processing' | 'printing' | 'quality_check' | 'shipping' | 'delivered'
+  progress: number
+  estimatedCompletion: Date
+  updates: StatusUpdate[]
+}
+```
+
+#### 2. Stadium Integration Component
+```typescript
+interface StadiumIntegration {
+  // 구장 연계 서비스
+  getStadiumServices(stadiumId: string): Promise<StadiumService[]>
+  
+  // 경기 실시간 연동
+  connectToLiveGame(gameId: string): Promise<LiveGameData>
+  
+  // 즉석 카드 제작
+  createInstantCard(gameHighlight: GameHighlight): Promise<Card>
+  
+  // 구장 내 픽업 서비스
+  schedulePickup(orderId: string, pickupLocation: string): Promise<PickupSchedule>
+  
+  // 특별 이벤트 연계
+  getSpecialEvents(stadiumId: string, date: Date): Promise<SpecialEvent[]>
+}
+
+interface StadiumService {
+  id: string
+  stadiumId: string
+  type: 'instant_print' | 'pickup_service' | 'kiosk' | 'special_event'
+  name: string
+  description: string
+  availability: ServiceAvailability
+  pricing: PricingInfo
+}
+
+interface LiveGameData {
+  gameId: string
+  homeTeam: string
+  awayTeam: string
+  score: GameScore
+  highlights: GameHighlight[]
+  currentInning: number
+  gameStatus: 'pre_game' | 'in_progress' | 'post_game'
+}
+
+interface GameHighlight {
+  id: string
+  type: 'home_run' | 'great_play' | 'strikeout' | 'steal' | 'walk_off'
+  player: string
+  team: string
+  inning: number
+  description: string
+  videoUrl?: string
+  timestamp: Date
+}
+```
+
+#### 3. Card Editor Component
 ```typescript
 interface CardEditor {
   // 이미지 업로드 및 처리
@@ -600,6 +1025,257 @@ enum UserGrade {
 
 ## Data Models
 
+### Copyright Compliance Models
+
+#### Copyright Verification Model
+```typescript
+interface CopyrightVerification {
+  id: string
+  contentId: string
+  userId: string
+  verificationStatus: 'pending' | 'approved' | 'rejected' | 'flagged'
+  aiDetectionResults: AIDetectionResult[]
+  humanReviewRequired: boolean
+  riskAssessment: RiskAssessment
+  createdAt: Date
+  reviewedAt?: Date
+  reviewedBy?: string
+}
+
+interface AIDetectionResult {
+  detectionType: 'logo' | 'image' | 'audio' | 'text' | 'watermark'
+  detected: boolean
+  confidenceScore: number
+  matchedContent?: string
+  riskLevel: 'low' | 'medium' | 'high' | 'critical'
+}
+
+interface RiskAssessment {
+  overallRisk: 'safe' | 'caution' | 'high' | 'critical'
+  specificRisks: string[]
+  recommendations: string[]
+  legalNotes: string[]
+}
+```
+
+#### DMCA Report Model
+```typescript
+interface DMCAReport {
+  id: string
+  reporterId: string
+  contentId: string
+  contentType: 'card' | 'template' | 'comment' | 'profile'
+  claimType: 'copyright' | 'trademark' | 'personality_rights'
+  description: string
+  evidence: Evidence[]
+  status: 'submitted' | 'reviewing' | 'action_taken' | 'dismissed'
+  actionTaken?: string
+  responseDeadline: Date
+  createdAt: Date
+  resolvedAt?: Date
+}
+
+interface Evidence {
+  type: 'url' | 'file' | 'description'
+  content: string
+  description: string
+}
+```
+
+#### Legal Safe Content Model
+```typescript
+interface LegalSafeContent {
+  id: string
+  contentType: 'image' | 'audio' | 'template' | 'text'
+  source: 'user_original' | 'public_domain' | 'creative_commons' | 'licensed'
+  license: string
+  attribution?: string
+  commercialUse: boolean
+  verificationStatus: 'verified' | 'pending' | 'rejected'
+  createdBy: string
+  verifiedBy?: string
+  verifiedAt?: Date
+}
+```
+
+### Physical Card Production Models
+
+#### Print Order Model
+```typescript
+interface PrintOrder {
+  id: string
+  userId: string
+  cardId: string
+  partnerId: string
+  orderDetails: {
+    options: PrintOptions
+    quantity: number
+    customizations: CustomizationOptions
+    specialInstructions?: string
+  }
+  pricing: {
+    basePrice: number
+    materialUpgrade: number
+    quantityDiscount: number
+    shippingCost: number
+    totalPrice: number
+  }
+  status: OrderStatus
+  timeline: {
+    orderPlaced: Date
+    processingStarted?: Date
+    printingStarted?: Date
+    qualityChecked?: Date
+    shipped?: Date
+    delivered?: Date
+  }
+  shipping: {
+    method: 'standard' | 'express' | 'stadium_pickup'
+    address?: ShippingAddress
+    pickupLocation?: PickupLocation
+    trackingNumber?: string
+    carrier?: string
+  }
+  qualityReport?: QualityReport
+  customerFeedback?: CustomerFeedback
+}
+
+interface PrintFile {
+  id: string
+  orderId: string
+  originalCardId: string
+  processedFiles: {
+    frontSide: FileInfo
+    backSide?: FileInfo
+    bleedVersion: FileInfo
+    proofVersion: FileInfo
+  }
+  specifications: {
+    dimensions: { width: number; height: number }
+    resolution: number
+    colorProfile: 'CMYK' | 'RGB'
+    fileFormat: 'PDF' | 'PNG' | 'TIFF'
+  }
+  processingLog: ProcessingStep[]
+  qualityChecks: QualityCheck[]
+}
+
+interface Partner {
+  id: string
+  name: string
+  type: 'online_service' | 'stadium_vendor' | 'premium_printer'
+  contactInfo: {
+    email: string
+    phone: string
+    address: Address
+    website?: string
+  }
+  capabilities: {
+    supportedSizes: string[]
+    supportedMaterials: string[]
+    supportedFinishes: string[]
+    maxQuantity: number
+    minQuantity: number
+  }
+  performance: {
+    qualityRating: number
+    deliveryRating: number
+    customerServiceRating: number
+    averageLeadTime: number
+    defectRate: number
+  }
+  pricing: PricingStructure
+  integration: {
+    apiEndpoint: string
+    authMethod: string
+    webhookUrl?: string
+    lastSync: Date
+  }
+  status: 'active' | 'inactive' | 'maintenance'
+}
+```
+
+#### Stadium Integration Models
+```typescript
+interface Stadium {
+  id: string
+  name: string
+  location: {
+    city: string
+    address: string
+    coordinates: { lat: number; lng: number }
+  }
+  homeTeams: string[]
+  facilities: {
+    cardShops: CardShop[]
+    kiosks: Kiosk[]
+    pickupPoints: PickupPoint[]
+  }
+  operatingSchedule: {
+    gameDay: TimeSlot[]
+    nonGameDay: TimeSlot[]
+    specialEvents: SpecialEventSchedule[]
+  }
+  partnerships: {
+    partnerId: string
+    services: string[]
+    exclusiveRights: boolean
+    contractExpiry: Date
+  }[]
+}
+
+interface CardShop {
+  id: string
+  stadiumId: string
+  name: string
+  location: string
+  services: {
+    instantPrint: boolean
+    pickupService: boolean
+    customDesign: boolean
+    signatureService: boolean
+  }
+  equipment: {
+    printers: PrinterInfo[]
+    kiosks: KioskInfo[]
+    paymentSystems: string[]
+  }
+  staff: {
+    capacity: number
+    languages: string[]
+    specialSkills: string[]
+  }
+  inventory: {
+    materials: MaterialStock[]
+    supplies: SupplyStock[]
+  }
+}
+
+interface GameEvent {
+  id: string
+  gameId: string
+  stadiumId: string
+  homeTeam: string
+  awayTeam: string
+  gameDate: Date
+  gameTime: Date
+  season: string
+  gameType: 'regular' | 'playoff' | 'championship'
+  specialEvents: {
+    openingDay: boolean
+    fanAppreciation: boolean
+    playerRetirement: boolean
+    recordBreaking: boolean
+  }
+  cardPromotions: {
+    limitedEdition: boolean
+    commemorative: boolean
+    playerSpecial: boolean
+    teamMilestone: boolean
+  }
+}
+```
+
 ### Card Model
 ```typescript
 interface Card {
@@ -616,6 +1292,16 @@ interface Card {
   views: number
   createdAt: Date
   updatedAt: Date
+  
+  // 저작권 보호 필드 추가
+  copyrightVerification: CopyrightVerification
+  contentSource: 'user_original' | 'fan_art' | 'public_domain' | 'licensed'
+  licenseType: string
+  attribution?: string
+  commercialUseAllowed: boolean
+  copyrightNotes?: string
+  dmcaReports: DMCAReport[]
+  legalStatus: 'safe' | 'under_review' | 'restricted' | 'removed'
 }
 
 interface CardElement {
@@ -690,7 +1376,16 @@ enum ErrorType {
   RESOURCE_NOT_FOUND = "RESOURCE_NOT_FOUND",
   RATE_LIMIT_EXCEEDED = "RATE_LIMIT_EXCEEDED",
   FILE_UPLOAD_ERROR = "FILE_UPLOAD_ERROR",
-  PAYMENT_ERROR = "PAYMENT_ERROR"
+  PAYMENT_ERROR = "PAYMENT_ERROR",
+  
+  // 저작권 보호 관련 에러
+  COPYRIGHT_VIOLATION = "COPYRIGHT_VIOLATION",
+  TRADEMARK_VIOLATION = "TRADEMARK_VIOLATION",
+  PERSONALITY_RIGHTS_VIOLATION = "PERSONALITY_RIGHTS_VIOLATION",
+  DMCA_TAKEDOWN = "DMCA_TAKEDOWN",
+  CONTENT_BLOCKED = "CONTENT_BLOCKED",
+  LICENSE_VIOLATION = "LICENSE_VIOLATION",
+  UNSAFE_CONTENT = "UNSAFE_CONTENT"
 }
 
 interface AppError {
@@ -723,12 +1418,18 @@ interface AppError {
 - 데이터베이스 연동 테스트
 - 파일 업로드/다운로드 테스트
 - 실시간 기능 테스트
+- **저작권 보호 시스템 테스트**
+- **DMCA 처리 워크플로우 테스트**
+- **AI 콘텐츠 감지 정확도 테스트**
 
 #### E2E Tests (10%)
 - 사용자 시나리오 테스트
 - 카드 제작 플로우 테스트
 - 커뮤니티 상호작용 테스트
 - 결제 프로세스 테스트
+- **저작권 준수 사용자 여정 테스트**
+- **콘텐츠 차단 및 교육 플로우 테스트**
+- **안전한 수익화 프로세스 테스트**
 
 ### Testing Tools
 - **Unit Testing**: Vitest, Testing Library
@@ -2472,3 +3173,569 @@ interface PerformanceStrategy {
 ```
 
 이 디자인 시스템은 Civitai의 세련되고 전문적인 미학을 홀로그래픽 카드 커뮤니티에 맞게 적용한 것입니다. 다크 테마 기반의 현대적인 UI와 홀로그래픽 효과가 조화롭게 어우러져 사용자들에게 프리미엄 경험을 제공할 것입니다.
+
+## Legal Compliance & Risk Management
+
+### 저작권 보호 전략
+
+#### 1. 플랫폼 중립성 원칙
+```typescript
+interface PlatformNeutrality {
+  role: "기술 도구 제공자"
+  responsibility: "사용자 콘텐츠에 대한 직접적 책임 없음"
+  obligations: [
+    "저작권 침해 신고 시 신속 조치",
+    "사용자 교육 및 가이드라인 제공",
+    "자동 보호 시스템 운영",
+    "법적 요구사항 준수"
+  ]
+}
+```
+
+#### 2. 사용자 책임 모델
+```typescript
+interface UserResponsibility {
+  uploadObligation: "업로드 콘텐츠 저작권 확인 의무"
+  contentOwnership: "개인 창작물 또는 합법적 이용 권한 보유"
+  commercialUse: "상업적 이용 시 별도 라이선스 확인"
+  consequences: "저작권 침해 시 개인 책임"
+}
+```
+
+#### 3. 안전한 수익 모델
+```typescript
+interface SafeRevenueModel {
+  platformRevenue: {
+    subscriptionFees: "편집 도구 구독료",
+    cloudStorage: "클라우드 저장 공간",
+    printingServices: "개인 카드 인쇄 서비스",
+    apiLicensing: "홀로그래픽 엔진 API"
+  },
+  
+  userRevenue: {
+    originalArt: "개인 창작 팬아트",
+    templates: "자작 템플릿",
+    tutorials: "제작 가이드",
+    commissions: "맞춤 제작 의뢰"
+  },
+  
+  prohibitedRevenue: {
+    officialContent: "KBO/구단 공식 콘텐츠",
+    playerLikeness: "선수 초상권 상업 이용",
+    broadcastContent: "방송 콘텐츠 재판매"
+  }
+}
+```
+
+### 법적 보호 장치
+
+#### 1. 이용약관 및 면책조항
+```markdown
+## 핵심 법적 조항
+
+### 플랫폼 면책
+- 중간 서비스 제공자로서 콘텐츠에 대한 직접 책임 없음
+- 저작권 침해 신고 시 24시간 내 조치
+- 사용자 교육 및 가이드라인 지속 제공
+
+### 사용자 의무
+- 업로드 콘텐츠 저작권 상태 확인 의무
+- 개인 창작물 또는 합법적 이용 권한 보유
+- 타인 저작권 침해 시 개인 책임
+
+### 금지 행위
+- KBO/구단 공식 콘텐츠 무단 사용
+- 선수 초상권 상업적 이용
+- 방송 콘텐츠 캡처 및 재배포
+```
+
+#### 2. DMCA 준수 프로세스
+```typescript
+interface DMCAProcess {
+  reporting: {
+    method: "24시간 온라인 신고 시스템",
+    requiredInfo: ["침해 콘텐츠 URL", "저작권 증명", "연락처"],
+    processing: "접수 후 24시간 내 검토"
+  },
+  
+  response: {
+    contentRemoval: "침해 확인 시 즉시 삭제",
+    userNotification: "해당 사용자 즉시 통지",
+    appealProcess: "이의 제기 절차 제공",
+    documentation: "모든 과정 문서화"
+  }
+}
+```
+
+### KBO/구단 협력 전략
+
+#### 1. 단계적 접근법
+```typescript
+interface PartnershipRoadmap {
+  phase1: {
+    period: "0-12개월",
+    focus: "안전한 플랫폼 구축 및 사용자 확보",
+    activities: [
+      "저작권 보호 시스템 완성",
+      "건전한 팬 커뮤니티 조성",
+      "법적 안정성 확보"
+    ]
+  },
+  
+  phase2: {
+    period: "12-18개월",
+    focus: "KBO/구단과의 관계 구축",
+    activities: [
+      "플랫폼 가치 입증",
+      "협력 제안서 준비",
+      "초기 접촉 및 논의"
+    ]
+  },
+  
+  phase3: {
+    period: "18-24개월",
+    focus: "공식 파트너십 체결",
+    activities: [
+      "라이선스 협상",
+      "수익 분배 모델 합의",
+      "공식 승인 획득"
+    ]
+  }
+}
+```
+
+#### 2. 상생 가치 제안
+```typescript
+interface ValueProposition {
+  forKBO: {
+    fanEngagement: "팬 참여도 증대 및 브랜드 충성도 향상",
+    marketing: "사용자 생성 콘텐츠를 통한 자연스러운 홍보",
+    dataInsights: "팬 선호도 및 트렌드 분석 데이터",
+    revenueShare: "플랫폼 수익의 일정 비율 분배"
+  },
+  
+  forTeams: {
+    brandPromotion: "구단 브랜드 인지도 향상",
+    fanConnection: "팬과의 새로운 소통 채널",
+    merchandising: "공식 상품 홍보 기회",
+    eventPromotion: "경기 및 이벤트 홍보"
+  }
+}
+```
+
+### 기술적 보호 조치
+
+#### 1. AI 기반 콘텐츠 필터링
+```typescript
+interface AIContentFilter {
+  logoDetection: {
+    accuracy: "95% 이상",
+    coverage: "KBO 로고, 10개 구단 로고",
+    response: "실시간 차단 및 사용자 교육"
+  },
+  
+  imageMatching: {
+    database: "공식 사진 데이터베이스",
+    algorithm: "유사도 매칭 알고리즘",
+    threshold: "80% 이상 유사 시 차단"
+  },
+  
+  audioFingerprinting: {
+    coverage: "응원가, 방송 음악",
+    detection: "오디오 핑거프린팅 기술",
+    action: "자동 음소거 또는 차단"
+  }
+}
+```
+
+#### 2. 사용자 교육 시스템
+```typescript
+interface UserEducation {
+  onboarding: {
+    copyrightBasics: "저작권 기본 개념 교육",
+    safeContent: "안전한 콘텐츠 가이드",
+    examples: "좋은 예시와 나쁜 예시",
+    quiz: "이해도 확인 퀴즈"
+  },
+  
+  ongoing: {
+    tips: "주기적인 저작권 팁",
+    updates: "법적 변경사항 안내",
+    bestPractices: "모범 사례 공유",
+    warnings: "위험 행동 경고"
+  }
+}
+```
+
+### 모니터링 및 감사
+
+#### 1. 정기 법적 검토
+```typescript
+interface LegalReview {
+  frequency: "분기별",
+  scope: [
+    "플랫폼 콘텐츠 저작권 상태",
+    "사용자 약관 적절성",
+    "DMCA 처리 현황",
+    "법적 환경 변화 대응"
+  ],
+  participants: [
+    "내부 법무팀",
+    "외부 저작권 전문 변호사",
+    "플랫폼 운영팀"
+  ]
+}
+```
+
+#### 2. 성과 지표 관리
+```typescript
+interface ComplianceMetrics {
+  copyrightCompliance: {
+    violationRate: "전체 콘텐츠 대비 침해 비율",
+    detectionAccuracy: "AI 감지 시스템 정확도",
+    responseTime: "DMCA 신고 처리 시간",
+    userEducationEffectiveness: "교육 프로그램 효과"
+  },
+  
+  businessImpact: {
+    userRetention: "저작권 교육 후 사용자 유지율",
+    contentQuality: "합법적 콘텐츠 품질 향상",
+    communityHealth: "건전한 커뮤니티 문화 지표",
+    partnershipReadiness: "공식 협력 준비도"
+  }
+}
+```
+
+## 결론
+
+이 설계는 **법적 안전성을 최우선**으로 하면서도 **활발한 창작 커뮤니티**를 구축할 수 있는 균형잡힌 접근법을 제시합니다. 
+
+핵심은 **"우리는 도구만 제공하고, 사용자가 책임지는"** 명확한 역할 분담과, **강력한 기술적 보호 장치**, 그리고 **지속적인 사용자 교육**을 통해 저작권 리스크를 최소화하는 것입니다.
+
+이를 통해 안전하게 플랫폼을 성장시키고, 향후 KBO 및 구단과의 공식적인 협력 관계를 구축할 수 있는 기반을 마련할 수 있습니다.## Physic
+al Card Production Business Model
+
+### 수익 구조 및 파트너십 모델
+
+#### 1. 플랫폼 수익 모델
+```typescript
+interface PhysicalCardRevenue {
+  // 주문 수수료 (주요 수익원)
+  orderCommission: {
+    standardCards: "주문 금액의 15-20%",
+    premiumCards: "주문 금액의 20-25%",
+    bulkOrders: "대량 주문 시 10-15%",
+    rushOrders: "긴급 주문 시 25-30%"
+  },
+  
+  // 부가 서비스 수익
+  additionalServices: {
+    expeditedShipping: "빠른 배송 서비스 수수료",
+    premiumPackaging: "프리미엄 포장 서비스",
+    qualityGuarantee: "품질 보증 서비스 프리미엄",
+    designConsultation: "디자인 컨설팅 서비스"
+  },
+  
+  // 구장 연계 서비스
+  stadiumServices: {
+    instantPrint: "즉석 인쇄 서비스 마진",
+    gameHighlights: "경기 하이라이트 카드 프리미엄",
+    limitedEdition: "한정판 카드 특별 수수료",
+    eventTieIn: "특별 이벤트 연계 서비스"
+  }
+}
+```
+
+#### 2. 파트너사 혜택 모델
+```typescript
+interface PartnerBenefits {
+  // 온라인 인쇄 서비스 파트너
+  onlinePrintingPartners: {
+    guaranteedVolume: "월 최소 주문량 보장",
+    marketingSupport: "디지털 플랫폼 마케팅 지원",
+    customerData: "익명화된 고객 선호도 데이터",
+    technologySupport: "API 연동 기술 지원"
+  },
+  
+  // 구장 포토카드샵 파트너
+  stadiumPartners: {
+    exclusiveRights: "구장 내 독점 서비스 권한",
+    eventAccess: "특별 이벤트 우선 참여권",
+    fanbaseAccess: "디지털 플랫폼 팬베이스 접근",
+    seasonalBoost: "시즌 연계 매출 증대 기회"
+  },
+  
+  // 프리미엄 인쇄소 파트너
+  premiumPartners: {
+    highValueOrders: "고가 주문 우선 배정",
+    qualityPremium: "품질 우수성 마케팅 지원",
+    customizationOrders: "특수 주문 독점 처리",
+    collectorsMarket: "컬렉터 시장 접근권"
+  }
+}
+```
+
+### 품질 관리 및 고객 만족
+
+#### 1. 품질 보증 시스템
+```typescript
+interface QualityAssurance {
+  // 자동 품질 검사
+  automatedQC: {
+    fileValidation: {
+      colorProfileCheck: "CMYK 색상 프로파일 검증",
+      resolutionVerification: "300DPI 이상 해상도 확인",
+      bleedAreaValidation: "재단선 및 여백 검증",
+      printabilityScore: "인쇄 적합성 점수 (0-100)"
+    },
+    
+    contentAnalysis: {
+      copyrightCompliance: "저작권 준수 여부 확인",
+      qualityPrediction: "AI 기반 최종 품질 예측",
+      materialCompatibility: "선택 재질과의 호환성",
+      costOptimization: "비용 최적화 제안"
+    }
+  },
+  
+  // 파트너사 품질 관리
+  partnerQualityManagement: {
+    performanceMetrics: {
+      defectRate: "불량률 추적 (목표: 2% 이하)",
+      deliveryAccuracy: "배송 정확도 (목표: 98% 이상)",
+      customerSatisfaction: "고객 만족도 (목표: 4.5/5 이상)",
+      responseTime: "고객 문의 응답 시간"
+    },
+    
+    continuousImprovement: {
+      monthlyReview: "월간 성과 검토 회의",
+      qualityAudit: "분기별 품질 감사",
+      trainingProgram: "파트너사 직원 교육",
+      technologyUpgrade: "기술 업그레이드 지원"
+    }
+  }
+}
+```
+
+#### 2. 고객 경험 최적화
+```typescript
+interface CustomerExperience {
+  // 주문 프로세스 최적화
+  orderOptimization: {
+    oneClickReorder: "이전 주문 원클릭 재주문",
+    smartRecommendations: "AI 기반 옵션 추천",
+    realTimePreview: "실물 카드 실시간 미리보기",
+    priceComparison: "파트너사별 가격 비교"
+  },
+  
+  // 커뮤니케이션
+  communication: {
+    orderUpdates: "주문 상태 실시간 알림",
+    deliveryTracking: "배송 추적 정보",
+    qualityReports: "품질 검사 결과 공유",
+    feedbackCollection: "만족도 조사 및 개선"
+  },
+  
+  // 애프터 서비스
+  afterService: {
+    qualityGuarantee: "품질 불만족 시 재제작",
+    damageProtection: "배송 중 손상 보상",
+    returnPolicy: "7일 내 교환/환불",
+    loyaltyProgram: "재주문 고객 할인 혜택"
+  }
+}
+```
+
+### 기술적 구현 세부사항
+
+#### 1. 마이크로서비스 아키텍처
+```typescript
+interface PrintingMicroservices {
+  // 주문 관리 서비스
+  orderService: {
+    responsibilities: [
+      "주문 생성 및 관리",
+      "상태 추적",
+      "고객 알림",
+      "주문 히스토리"
+    ],
+    database: "PostgreSQL",
+    cache: "Redis",
+    messageQueue: "RabbitMQ"
+  },
+  
+  // 파트너 연동 서비스
+  partnerIntegrationService: {
+    responsibilities: [
+      "파트너 API 연동",
+      "주문 라우팅",
+      "상태 동기화",
+      "에러 처리"
+    ],
+    patterns: ["Circuit Breaker", "Retry", "Timeout"],
+    monitoring: "실시간 API 상태 모니터링"
+  },
+  
+  // 파일 처리 서비스
+  fileProcessingService: {
+    responsibilities: [
+      "파일 변환",
+      "품질 검증",
+      "최적화",
+      "저장 관리"
+    ],
+    technologies: ["Sharp.js", "ImageMagick", "FFmpeg"],
+    storage: "AWS S3 / MinIO"
+  },
+  
+  // 결제 서비스
+  paymentService: {
+    responsibilities: [
+      "결제 처리",
+      "환불 관리",
+      "정산",
+      "세금 계산"
+    ],
+    gateways: ["Stripe", "PayPal", "KakaoPay", "NaverPay"],
+    compliance: "PCI DSS 준수"
+  }
+}
+```
+
+#### 2. 실시간 추적 시스템
+```typescript
+interface RealTimeTracking {
+  // 주문 상태 추적
+  orderTracking: {
+    stages: [
+      "주문 접수",
+      "파일 처리",
+      "인쇄 대기",
+      "인쇄 중",
+      "품질 검사",
+      "포장",
+      "배송 중",
+      "배송 완료"
+    ],
+    updateFrequency: "실시간",
+    notificationChannels: ["푸시", "SMS", "이메일"]
+  },
+  
+  // 배송 추적
+  shippingTracking: {
+    carriers: ["CJ대한통운", "로젠택배", "한진택배"],
+    apiIntegration: "배송사 API 실시간 연동",
+    locationTracking: "GPS 기반 실시간 위치",
+    deliveryPrediction: "AI 기반 배송 시간 예측"
+  },
+  
+  // 품질 모니터링
+  qualityMonitoring: {
+    metrics: [
+      "인쇄 품질 점수",
+      "색상 정확도",
+      "재질 적합성",
+      "고객 만족도"
+    ],
+    alerting: "품질 기준 미달 시 즉시 알림",
+    reporting: "일일/주간/월간 품질 리포트"
+  }
+}
+```
+
+### 확장성 및 미래 계획
+
+#### 1. 서비스 확장 로드맵
+```typescript
+interface ExpansionRoadmap {
+  // Phase 1: 기본 서비스 (0-6개월)
+  phase1: {
+    goals: [
+      "주요 온라인 인쇄 서비스 연동",
+      "기본 주문 시스템 구축",
+      "품질 관리 시스템 구축"
+    ],
+    targets: {
+      monthlyOrders: 1000,
+      partnerCount: 3,
+      customerSatisfaction: 4.0
+    }
+  },
+  
+  // Phase 2: 구장 연계 (6-12개월)
+  phase2: {
+    goals: [
+      "주요 구장 파트너십 체결",
+      "즉석 인쇄 서비스 런칭",
+      "경기 연계 특별 서비스"
+    ],
+    targets: {
+      monthlyOrders: 5000,
+      stadiumPartners: 5,
+      gameHighlightCards: 500
+    }
+  },
+  
+  // Phase 3: 프리미엄 서비스 (12-18개월)
+  phase3: {
+    goals: [
+      "프리미엄 재질 및 특수 가공",
+      "AI 기반 개인화 서비스",
+      "글로벌 서비스 확장"
+    ],
+    targets: {
+      monthlyOrders: 15000,
+      premiumOrderRatio: 30,
+      internationalOrders: 10
+    }
+  }
+}
+```
+
+#### 2. 혁신 기술 도입
+```typescript
+interface InnovationTechnology {
+  // AR/VR 미리보기
+  arPreview: {
+    description: "AR로 실물 카드 미리보기",
+    technology: "WebXR, ARCore, ARKit",
+    implementation: "모바일 앱 내 AR 카메라"
+  },
+  
+  // AI 기반 개인화
+  aiPersonalization: {
+    description: "개인 취향 기반 자동 최적화",
+    features: [
+      "선호 재질 학습",
+      "색상 보정 자동화",
+      "레이아웃 최적화",
+      "가격 최적화"
+    ]
+  },
+  
+  // 블록체인 인증
+  blockchainAuth: {
+    description: "카드 진품 인증 시스템",
+    benefits: [
+      "위조 방지",
+      "소유권 증명",
+      "거래 이력 추적",
+      "컬렉터 가치 보장"
+    ]
+  },
+  
+  // IoT 연동
+  iotIntegration: {
+    description: "스마트 디스플레이 연동",
+    features: [
+      "디지털 액자 연동",
+      "스마트 홈 통합",
+      "음성 주문 지원",
+      "자동 재주문"
+    ]
+  }
+}
+```
+
+이 종합적인 실물 카드 제작 및 파트너십 시스템을 통해 디지털 홀로그래픽 카드가 실제 소장 가능한 물리적 기념품으로 완성되는 완전한 생태계를 구축할 수 있습니다. 
+
+**디지털 창작 → 커뮤니티 공유 → 실물 제작 → 소장/선물** 의 완전한 순환 구조를 만들어, 사용자들에게 더욱 의미 있고 가치 있는 경험을 제공할 수 있습니다!

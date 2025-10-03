@@ -91,7 +91,7 @@
     0 55px 35px -20px rgba(0, 0, 0, 0.5);
 }
 
-/* 홀로그래픽 효과 레이어 (how2code.md 완벽 구현) */
+/* ===== 개선된 홀로그래픽 효과 레이어 (이미지 가시성 유지) ===== */
 .holographic-card:before,
 .holographic-card:after {
   content: "";
@@ -101,8 +101,6 @@
   bottom: 0;
   top: 0;
   background-repeat: no-repeat;
-  opacity: .5;
-  mix-blend-mode: color-dodge;
   transition: all .33s ease;
 }
 
@@ -118,13 +116,15 @@
     var(--color2) 75%,
     transparent 100%
   );
-  opacity: .5;
-  filter: brightness(.5) contrast(1);
+  
+  /* 개선된 블렌드 모드 - overlay로 변경하여 이미지 가시성 유지 */
+  mix-blend-mode: overlay;
+  opacity: .4; /* 0.5에서 0.4로 조정 */
+  filter: brightness(.8) contrast(1.1); /* 이미지 보존 개선 */
   z-index: 1;
 }
 
 .holographic-card:after {
-  opacity: 1;
   background-image: 
     url("https://assets.codepen.io/13471/sparkles.gif"), 
     url("https://assets.codepen.io/13471/holo.png"), 
@@ -133,16 +133,18 @@
   background-size: 160%;
   background-blend-mode: overlay;
   z-index: 2;
-  filter: brightness(1) contrast(1);
+  filter: brightness(1.1) contrast(1.05); /* 부드러운 효과 */
   transition: all .33s ease;
-  mix-blend-mode: color-dodge;
-  opacity: .75;
+  
+  /* 개선된 블렌드 모드 - soft-light로 변경하여 자연스러운 효과 */
+  mix-blend-mode: soft-light;
+  opacity: .6; /* 0.75에서 0.6으로 조정 */
 }
 
 .holographic-card.active:after,
 .holographic-card:hover:after {
-  filter: brightness(1) contrast(1);
-  opacity: 1;
+  filter: brightness(1.2) contrast(1.1); /* 개선된 호버 효과 */
+  opacity: .8; /* 1에서 0.8로 조정하여 이미지 보존 */
 }
 
 .holographic-card.active,
@@ -163,8 +165,11 @@
   );
   background-position: 50% 50%;
   background-size: 250% 250%;
-  opacity: .88;
-  filter: brightness(.66) contrast(1.33);
+  
+  /* 호버 시 개선된 설정 - overlay 블렌드 모드 유지 */
+  mix-blend-mode: overlay;
+  opacity: .7; /* 0.88에서 0.7로 조정 */
+  filter: brightness(.85) contrast(1.2); /* 이미지 보존하면서 효과 유지 */
   transition: none;
 }
 
@@ -194,58 +199,60 @@
 
 /* ===== 키프레임 애니메이션 (how2code.md 완벽 구현) ===== */
 
+/* ===== 개선된 키프레임 애니메이션 (이미지 가시성 유지) ===== */
 @keyframes holoSparkle {
   0%, 100% {
-    opacity: .75; 
+    opacity: .6; /* 0.75에서 0.6으로 조정 */
     background-position: 50% 50%; 
-    filter: brightness(1.2) contrast(1.25);
+    filter: brightness(1.1) contrast(1.05); /* 부드러운 효과 */
   }
   5%, 8% {
-    opacity: 1; 
+    opacity: .8; /* 1에서 0.8로 조정 */
     background-position: 40% 40%; 
-    filter: brightness(.8) contrast(1.2);
+    filter: brightness(1.0) contrast(1.1);
   }
   13%, 16% {
     opacity: .5; 
     background-position: 50% 50%; 
-    filter: brightness(1.2) contrast(.8);
+    filter: brightness(1.15) contrast(1.0);
   }
   35%, 38% {
-    opacity: 1; 
+    opacity: .8; /* 1에서 0.8로 조정 */
     background-position: 60% 60%; 
-    filter: brightness(1) contrast(1);
+    filter: brightness(1.05) contrast(1.05);
   }
   55% {
-    opacity: .33; 
+    opacity: .4; /* 0.33에서 0.4로 조정 */
     background-position: 45% 45%; 
-    filter: brightness(1.2) contrast(1.25);
+    filter: brightness(1.1) contrast(1.1);
   }
 }
 
 @keyframes holoGradient {
   0%, 100% {
-    opacity: 0.5;
+    opacity: 0.4; /* 0.5에서 0.4로 조정 */
     background-position: 50% 50%;
-    filter: brightness(.5) contrast(1);
+    filter: brightness(.8) contrast(1.1); /* 이미지 보존 개선 */
   }
   5%, 9% {
     background-position: 100% 100%;
-    opacity: 1;
-    filter: brightness(.75) contrast(1.25);
+    opacity: 0.7; /* 1에서 0.7로 조정 */
+    filter: brightness(.85) contrast(1.15);
   }
   13%, 17% {
     background-position: 0% 0%;
-    opacity: .88;
+    opacity: .6; /* 0.88에서 0.6으로 조정 */
+    filter: brightness(.8) contrast(1.1);
   }
   35%, 39% {
     background-position: 100% 100%;
-    opacity: 1;
-    filter: brightness(.5) contrast(1);
+    opacity: 0.7; /* 1에서 0.7로 조정 */
+    filter: brightness(.8) contrast(1.1);
   }
   55% {
     background-position: 0% 0%;
-    opacity: 1;
-    filter: brightness(.75) contrast(1.25);
+    opacity: 0.7; /* 1에서 0.7로 조정 */
+    filter: brightness(.85) contrast(1.15);
   }
 }
 
@@ -928,16 +935,23 @@
     transform: translateZ(0) rotate(0deg);
   }
 }
-/*
- ===== EDGE/FIREFOX 호환성 폴백 (how2effect.md 가이드) ===== */
+/* ===== 개선된 브라우저 호환성 폴백 ===== */
 
-/* 기본 홀로그래픽 레이어 설정 */
+/* 기본 홀로그래픽 레이어 설정 - 개선된 블렌드 모드 */
 .card__foil,
 .card__shine,
 .card__glare,
 .card__sparkles {
-  mix-blend-mode: color-dodge;
-  filter: saturate(140%) contrast(120%) brightness(110%);
+  mix-blend-mode: overlay; /* color-dodge에서 overlay로 변경 */
+  filter: saturate(130%) contrast(115%) brightness(105%); /* 이미지 가시성 개선 */
+}
+
+/* soft-light 지원 시 더 부드러운 효과 */
+@supports (mix-blend-mode: soft-light) {
+  .card__sparkles {
+    mix-blend-mode: soft-light;
+    filter: saturate(120%) contrast(110%) brightness(110%);
+  }
 }
 
 /* Edge에서 plus-lighter 지원 시 폴백 */
@@ -947,6 +961,25 @@
   .card__glare.edge-fallback {
     mix-blend-mode: plus-lighter;
     filter: saturate(160%) contrast(130%) brightness(120%);
+  }
+}
+
+/* 개선된 홀로그래픽 카드용 폴백 */
+/* overlay 미지원 시 multiply 폴백 */
+@supports not (mix-blend-mode: overlay) {
+  .holographic-card:before {
+    mix-blend-mode: multiply;
+    opacity: 0.3;
+    filter: saturate(150%) contrast(130%) brightness(120%);
+  }
+}
+
+/* soft-light 미지원 시 screen 폴백 */
+@supports not (mix-blend-mode: soft-light) {
+  .holographic-card:after {
+    mix-blend-mode: screen;
+    opacity: 0.5;
+    filter: saturate(130%) contrast(115%) brightness(105%);
   }
 }
 

@@ -26,6 +26,13 @@
       quality: 0.9,
       resolution: 2
     },
+    'instagram-story': {
+      width: 1080,
+      height: 1920,
+      format: 'jpg',
+      quality: 0.9,
+      resolution: 2
+    },
     'social-twitter': {
       width: 1200,
       height: 675,
@@ -54,6 +61,13 @@
       quality: 1.0,
       resolution: 8
     },
+    'print-a4': {
+      width: 2480,
+      height: 3508,
+      format: 'png',
+      quality: 1.0,
+      resolution: 3
+    },
     'web-hd': {
       width: 1920,
       height: 1080,
@@ -66,6 +80,13 @@
       height: 1334,
       format: 'webp',
       quality: 0.7,
+      resolution: 1
+    },
+    'web-thumbnail': {
+      width: 400,
+      height: 400,
+      format: 'webp',
+      quality: 0.8,
       resolution: 1
     }
   };

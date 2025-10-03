@@ -1,0 +1,460 @@
+/**
+ * Performance Optimization CSS for Enhanced Card Interactions
+ * Task 10 Implementation - 성능 최적화 및 브라우저 호환성 구현
+ * 
+ * Implements:
+ * - will-change optimizations for GPU acceleration
+ * - transform3d for layer creation
+ * - Browser-specific fallbacks
+ * - Low-end device optimizations
+ */
+
+/* ===== GPU 가속 및 성능 최적화 ===== */
+
+/* 기본 GPU 레이어 생성 및 will-change 최적화 */
+.card-container,
+.card-inner,
+.card-face,
+.enhanced-card,
+.card-back {
+  /* GPU 레이어 강제 생성 */
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  
+  /* 하드웨어 가속 활성화 */
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000;
+}
+
+/* 애니메이션 중 최적화 */
+.card-inner.animating {
+  will-change: transform;
+}
+
+.card-inner:not(.animating) {
+  will-change: auto;
+}
+
+/* 홀로그래픽 효과 레이어 최적화 */
+.enhanced-card:before,
+.enhanced-card:after,
+.card-back:before,
+.card-back:after {
+  will-change: transform, opacity, filter;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* 호버 상태에서의 최적화 */
+.card-container:hover .enhanced-card:before,
+.card-container:hover .enhanced-card:after,
+.card-container:hover .card-back:before,
+.card-container:hover .card-back:after {
+  will-change: transform, opacity, filter, background-position;
+}
+
+/* 호버 종료 후 will-change 정리 */
+.card-container:not(:hover) .enhanced-card:before,
+.card-container:not(:hover) .enhanced-card:after,
+.card-container:not(:hover) .card-back:before,
+.card-container:not(:hover) .card-back:after {
+  will-change: auto;
+}
+
+/* ===== 브라우저별 최적화 ===== */
+
+/* WebKit (Safari) 최적화 */
+@supports (-webkit-appearance: none) {
+  .card-container {
+    -webkit-transform-style: preserve-3d;
+    -webkit-perspective: 1000px;
+  }
+  
+  .card-inner {
+    -webkit-transform-style: preserve-3d;
+    -webkit-transition: -webkit-transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+  
+  .card-face {
+    -webkit-backface-visibility: hidden;
+  }
+}
+
+/* Firefox (Gecko) 최적화 */
+@supports (-moz-appearance: none) {
+  .card-container,
+  .card-inner,
+  .enhanced-card,
+  .card-back {
+    /* Firefox는 명시적 레이어 생성이 더 효과적 */
+    transform: translateZ(0);
+  }
+  
+  .card-inner {
+    /* Firefox에서 3D 변환 성능 개선 */
+    transform-style: preserve-3d;
+  }
+}
+
+/* Chromium 기반 브라우저 최적화 */
+@supports (background: -webkit-named-image(i)) {
+  .card-container {
+    /* Chromium에서 perspective 최적화 */
+    -webkit-perspective: 1000px;
+    perspective: 1000px;
+  }
+  
+  .enhanced-card:before,
+  .enhanced-card:after,
+  .card-back:before,
+  .card-back:after {
+    /* Chromium에서 블렌드 모드 성능 개선 */
+    -webkit-transform: translateZ(0);
+  }
+}
+
+/* ===== 저사양 기기 최적화 ===== */
+
+/* 모바일 및 저사양 기기용 성능 최적화 */
+@media (max-width: 768px),
+       (max-device-width: 768px),
+       (pointer: coarse) {
+  
+  /* 애니메이션 복잡도 감소 */
+  .enhanced-card:before,
+  .enhanced-card:after,
+  .card-back:before,
+  .card-back:after {
+    animation-duration: 6s !important;
+    filter: brightness(0.9) contrast(1.05) !important;
+  }
+  
+  /* 스파클 효과 제거 (성능 향상) */
+  .enhanced-card:after,
+  .card-back:after {
+    background-image: 
+      url("https://assets.codepen.io/13471/holo.png"),
+      linear-gradient(125deg, 
+        rgba(255, 0, 132, 0.3) 15%, 
+        rgba(252, 164, 0, 0.3) 30%, 
+        rgba(255, 255, 0, 0.2) 40%, 
+        rgba(0, 255, 138, 0.15) 60%, 
+        rgba(0, 207, 255, 0.3) 70%, 
+        rgba(204, 76, 250, 0.4) 85%
+      ) !important;
+  }
+  
+  /* 3D 효과 간소화 */
+  .card-container {
+    perspective: 800px;
+  }
+  
+  .card-inner {
+    transition-duration: 0.4s;
+  }
+}
+
+/* 저메모리 기기 감지 및 최적화 */
+@media (max-device-memory: 2GB) {
+  .enhanced-card:before,
+  .enhanced-card:after,
+  .card-back:before,
+  .card-back:after {
+    /* 복잡한 그라데이션 제거 */
+    background-image: none !important;
+    background: linear-gradient(45deg, 
+      rgba(0, 231, 255, 0.3), 
+      rgba(255, 0, 231, 0.3)
+    ) !important;
+    animation: none !important;
+  }
+}
+
+/* CPU 코어 수가 적은 기기 최적화 */
+@media (max-device-cores: 2) {
+  .card-inner {
+    transition-duration: 0.3s;
+  }
+  
+  .enhanced-card:before,
+  .enhanced-card:after,
+  .card-back:before,
+  .card-back:after {
+    transition-duration: 0.2s;
+  }
+}
+
+/* ===== 접근성 및 사용자 설정 준수 ===== */
+
+/* 모션 감소 설정 준수 */
+@media (prefers-reduced-motion: reduce) {
+  .card-inner {
+    transition-duration: 0.2s;
+  }
+  
+  .card-container:hover {
+    transform: none;
+  }
+  
+  .enhanced-card:before,
+  .enhanced-card:after,
+  .card-back:before,
+  .card-back:after {
+    animation: none !important;
+    transition-duration: 0.1s;
+  }
+  
+  /* will-change 최적화도 비활성화 */
+  .card-container,
+  .card-inner,
+  .enhanced-card,
+  .card-back,
+  .enhanced-card:before,
+  .enhanced-card:after,
+  .card-back:before,
+  .card-back:after {
+    will-change: auto;
+  }
+}
+
+/* 고대비 모드 지원 */
+@media (prefers-contrast: high) {
+  .enhanced-card:before,
+  .enhanced-card:after,
+  .card-back:before,
+  .card-back:after {
+    filter: contrast(150%) brightness(120%) !important;
+    mix-blend-mode: screen !important;
+    opacity: 0.4 !important;
+  }
+  
+  .card-container:focus {
+    outline-color: #ffffff;
+    outline-width: 3px;
+  }
+}
+
+/* ===== 브라우저 호환성 폴백 ===== */
+
+/* 3D 변환 미지원 시 2D 폴백 */
+@supports not (transform-style: preserve-3d) {
+  .card-inner {
+    transform-style: flat;
+  }
+  
+  .card-inner.flipped {
+    transform: scaleX(-1);
+  }
+  
+  .card-back {
+    transform: scaleX(-1) rotateY(0deg);
+    display: none;
+  }
+  
+  .card-inner.flipped .card-back {
+    display: flex;
+  }
+  
+  .card-inner.flipped .enhanced-card {
+    display: none;
+  }
+}
+
+/* perspective 미지원 시 폴백 */
+@supports not (perspective: 1000px) {
+  .card-container {
+    perspective: none;
+  }
+  
+  .card-inner {
+    transition: opacity 0.3s ease;
+  }
+  
+  .card-inner.flipped {
+    transform: none;
+  }
+}
+
+/* backface-visibility 미지원 시 폴백 */
+@supports not (backface-visibility: hidden) {
+  .card-face {
+    -webkit-backface-visibility: visible;
+    backface-visibility: visible;
+  }
+  
+  .card-inner.flipped .enhanced-card {
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  .card-inner:not(.flipped) .card-back {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+/* will-change 미지원 시 폴백 */
+@supports not (will-change: transform) {
+  .card-container,
+  .card-inner,
+  .enhanced-card,
+  .card-back,
+  .enhanced-card:before,
+  .enhanced-card:after,
+  .card-back:before,
+  .card-back:after {
+    /* 대신 transform3d로 GPU 레이어 생성 */
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* overlay 블렌드 모드 미지원 시 multiply 폴백 */
+@supports not (mix-blend-mode: overlay) {
+  .enhanced-card:before,
+  .card-back:before {
+    mix-blend-mode: multiply;
+    opacity: 0.3;
+    filter: brightness(1.2) contrast(1.3);
+  }
+}
+
+/* soft-light 블렌드 모드 미지원 시 screen 폴백 */
+@supports not (mix-blend-mode: soft-light) {
+  .enhanced-card:after,
+  .card-back:after {
+    mix-blend-mode: screen;
+    opacity: 0.5;
+    filter: brightness(0.9) contrast(1.1);
+  }
+}
+
+/* 블렌드 모드 완전 미지원 시 최종 폴백 */
+@supports not (mix-blend-mode: screen) {
+  .enhanced-card:before,
+  .enhanced-card:after,
+  .card-back:before,
+  .card-back:after {
+    mix-blend-mode: normal;
+    opacity: 0.3;
+    filter: saturate(150%) contrast(120%) brightness(110%) hue-rotate(var(--hue-shift, 0deg));
+  }
+}
+
+/* ===== 메모리 사용량 최적화 ===== */
+
+/* 애니메이션 지연 설정으로 동시 실행 방지 */
+.cards .enhanced-card:nth-child(2),
+.cards .card-container:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.cards .enhanced-card:nth-child(2):before,
+.cards .enhanced-card:nth-child(2):after {
+  animation-delay: 0.1s;
+}
+
+.cards .enhanced-card:nth-child(3),
+.cards .card-container:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.cards .enhanced-card:nth-child(3):before,
+.cards .enhanced-card:nth-child(3):after {
+  animation-delay: 0.2s;
+}
+
+.cards .enhanced-card:nth-child(4),
+.cards .card-container:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+.cards .enhanced-card:nth-child(4):before,
+.cards .enhanced-card:nth-child(4):after {
+  animation-delay: 0.3s;
+}
+
+/* 5개 이상의 카드에서는 애니메이션 비활성화 */
+.cards .enhanced-card:nth-child(n+5),
+.cards .card-container:nth-child(n+5) {
+  animation: none;
+}
+
+.cards .enhanced-card:nth-child(n+5):before,
+.cards .enhanced-card:nth-child(n+5):after {
+  animation: none;
+}
+
+/* ===== 성능 모니터링 및 적응형 최적화 ===== */
+
+/* 성능 저하 감지 시 적용되는 클래스 */
+.performance-reduced .enhanced-card:before,
+.performance-reduced .enhanced-card:after,
+.performance-reduced .card-back:before,
+.performance-reduced .card-back:after {
+  animation-duration: 8s !important;
+  filter: brightness(0.95) contrast(1.02) !important;
+  background-size: 200% 200% !important;
+}
+
+.performance-reduced .enhanced-card:after,
+.performance-reduced .card-back:after {
+  background-image: 
+    linear-gradient(125deg, 
+      rgba(255, 0, 132, 0.2) 15%, 
+      rgba(252, 164, 0, 0.2) 30%, 
+      rgba(255, 255, 0, 0.15) 40%, 
+      rgba(0, 255, 138, 0.1) 60%, 
+      rgba(0, 207, 255, 0.2) 70%, 
+      rgba(204, 76, 250, 0.25) 85%
+    ) !important;
+}
+
+/* 극도로 낮은 성능에서의 최소 효과 */
+.performance-minimal .enhanced-card:before,
+.performance-minimal .enhanced-card:after,
+.performance-minimal .card-back:before,
+.performance-minimal .card-back:after {
+  animation: none !important;
+  background-image: none !important;
+  background: linear-gradient(45deg, 
+    rgba(0, 231, 255, 0.2), 
+    rgba(255, 0, 231, 0.2)
+  ) !important;
+  filter: none !important;
+  mix-blend-mode: normal !important;
+  opacity: 0.2 !important;
+}
+
+/* ===== 디버깅 및 개발 도구 ===== */
+
+/* 개발 모드에서 성능 정보 표시 */
+.debug-performance .card-container::after {
+  content: attr(data-fps) " FPS";
+  position: absolute;
+  top: -20px;
+  left: 0;
+  font-size: 12px;
+  color: #00ff00;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 2px 6px;
+  border-radius: 3px;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+/* GPU 레이어 시각화 (개발 모드) */
+.debug-layers .card-container,
+.debug-layers .card-inner,
+.debug-layers .enhanced-card,
+.debug-layers .card-back {
+  outline: 1px solid rgba(255, 0, 0, 0.5);
+}
+
+.debug-layers .enhanced-card:before,
+.debug-layers .enhanced-card:after,
+.debug-layers .card-back:before,
+.debug-layers .card-back:after {
+  outline: 1px solid rgba(0, 255, 0, 0.5);
+}

@@ -4,18 +4,11 @@
       "command": "npx",
       "args": [
         "chrome-devtools-mcp@latest",
-        "--executablePath",
-        "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-        "--isolated",
-        "--viewport",
-        "1280x720"
+        "--executablePath=C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+        "--isolated"
       ],
       "env": {
-        "CHROME_PATH": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-        "CHROME_EXECUTABLE_PATH": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-        "PUPPETEER_EXECUTABLE_PATH": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-        "GOOGLE_CHROME_BIN": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-        "DEBUG": "*"
+        "PUPPETEER_EXECUTABLE_PATH": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
       },
       "disabled": false,
       "autoApprove": [
@@ -28,7 +21,11 @@
         "click",
         "fill",
         "evaluate_script",
-        "list_console_messages"
+        "list_console_messages",
+        "resize_page",
+        "wait_for",
+        "hover",
+        "handle_dialog"
       ]
     }
   }

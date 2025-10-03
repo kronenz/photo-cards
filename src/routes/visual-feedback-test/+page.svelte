@@ -233,8 +233,8 @@
 
 	.cards-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-		gap: 40px;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: 24px;
 		margin-bottom: 40px;
 		justify-items: center;
 	}
@@ -297,8 +297,8 @@
 
 	.checklist-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-		gap: 20px;
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+		gap: 16px;
 	}
 
 	.checklist-section {
@@ -337,7 +337,7 @@
 
 		.cards-grid {
 			grid-template-columns: 1fr;
-			gap: 30px;
+			gap: 20px;
 		}
 
 		.checklist-grid {

@@ -321,8 +321,16 @@
   /* 갤러리 */
   .file-gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  /* 큰 화면에서 적절한 카드 크기 유지 */
+  @media (min-width: 1400px) {
+    .file-gallery {
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
   }
   
   .gallery-item {

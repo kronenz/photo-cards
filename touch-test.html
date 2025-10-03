@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Touch Event Integration Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #333844;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .test-card {
+            width: 200px;
+            height: 280px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 12px;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            touch-action: none;
+            user-select: none;
+        }
+        
+        .test-card:active {
+            transform: scale(0.95);
+        }
+        
+        .log {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #667eea;
+            padding-left: 10px;
+        }
+        
+        .clear-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Touch Event Integration Test</h1>
+        <p>Test the touch event integration by interacting with the card below:</p>
+        
+        <div class="test-card" id="testCard">
+            <div>Touch/Click Me</div>
+        </div>
+        
+        <button class="clear-btn" onclick="clearLog()">Clear Log</button>
+        <div class="log" id="eventLog"></div>
+    </div>
+
+    <script>
+        const testCard = document.getElementById('testCard');
+        const eventLog = document.getElementById('eventLog');
+        
+        let touchStartTime = 0;
+        let touchStartPos = { x: 0, y: 0 };
+        let isProcessingTouch = false;
+        let preventMouseEvents = false;
+        let touchHoldTimeout;
+        
+        function logEvent(eventType, details) {
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<strong>${eventType}:</strong> ${JSON.stringify(details)}`;
+            eventLog.appendChild(entry);
+            eventLog.scrollTop = eventLog.scrollHeight;
+        }
+        
+        function clearLog() {
+            eventLog.innerHTML = '';
+        }
+        
+        // Touch Events
+        testCard.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            isProcessingTouch = true;
+            preventMouseEvents = true;
+            
+            const touch = e.touches[0];
+            touchStartTime = Date.now();
+            touchStartPos = { x: touch.clientX, y: touch.clientY };
+            
+            logEvent('TouchStart', { 
+                position: touchStartPos,
+                touches: e.touches.length 
+            });
+            
+            // Touch hold detection
+            touchHoldTimeout = setTimeout(() => {
+                if (isProcessingTouch) {
+                    logEvent('TouchHold', { duration: Date.now() - touchStartTime });
+                }
+            }, 150);
+        }, { passive: false });
+        
+        testCard.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!isProcessingTouch) return;
+            
+            const touch = e.touches[0];
+            const currentPos = { x: touch.clientX, y: touch.clientY };
+            const distance = Math.sqrt(
+                Math.pow(currentPos.x - touchStartPos.x, 2) + 
+                Math.pow(currentPos.y - touchStartPos.y, 2)
+            );
+            
+            logEvent('TouchMove', { 
+                position: currentPos,
+                distance: Math.round(distance)
+            });
+            
+            // Clear tap possibility if moved too much
+            if (distance > 10 && touchHoldTimeout) {
+                clearTimeout(touchHoldTimeout);
+            }
+        }, { passive: false });
+        
+        testCard.addEventListener('touchend', (e) => {
+            if (!isProcessingTouch) return;
+            
+            const touchDuration = Date.now() - touchStartTime;
+            const finalDistance = e.changedTouches.length > 0 ? 
+                Math.sqrt(
+                    Math.pow(e.changedTouches[0].clientX - touchStartPos.x, 2) + 
+                    Math.pow(e.changedTouches[0].clientY - touchStartPos.y, 2)
+                ) : 0;
+            
+            const isTap = touchDuration < 300 && finalDistance < 10;
+            
+            logEvent('TouchEnd', { 
+                duration: touchDuration,
+                distance: Math.round(finalDistance),
+                isTap: isTap
+            });
+            
+            if (touchHoldTimeout) {
+                clearTimeout(touchHoldTimeout);
+            }
+            
+            // Reset flags with delay
+            setTimeout(() => {
+                isProcessingTouch = false;
+                preventMouseEvents = false;
+            }, 100);
+        });
+        
+        // Mouse Events (with duplication prevention)
+        testCard.addEventListener('mouseenter', (e) => {
+            if (preventMouseEvents || isProcessingTouch) return;
+            logEvent('MouseEnter', { clientX: e.clientX, clientY: e.clientY });
+        });
+        
+        testCard.addEventListener('mousemove', (e) => {
+            if (preventMouseEvents || isProcessingTouch) return;
+            logEvent('MouseMove', { clientX: e.clientX, clientY: e.clientY });
+        });
+        
+        testCard.addEventListener('mouseleave', (e) => {
+            if (preventMouseEvents || isProcessingTouch) return;
+            logEvent('MouseLeave', { clientX: e.clientX, clientY: e.clientY });
+        });
+        
+        testCard.addEventListener('click', (e) => {
+            if (preventMouseEvents || isProcessingTouch) return;
+            logEvent('Click', { clientX: e.clientX, clientY: e.clientY });
+        });
+        
+        // Log device info
+        logEvent('DeviceInfo', {
+            touchSupport: 'ontouchstart' in window,
+            userAgent: navigator.userAgent.substring(0, 50) + '...'
+        });
+    </script>
+</body>
+</html>
