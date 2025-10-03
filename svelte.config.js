@@ -7,9 +7,7 @@ const config = {
 	
 	kit: {
 		// Vercel adapter for production deployment
-		adapter: adapter({
-			runtime: 'nodejs18.x'
-		}),
+		adapter: adapter(),
 
 		// 파일 구조를 정의하는 객체입니다.
 		files: {
