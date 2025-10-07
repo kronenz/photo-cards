@@ -34,8 +34,10 @@
     "@sveltejs/adapter-vercel": "^5.10.3",
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
     "@tailwindcss/postcss": "^4.1.14",
+    "@tanstack/svelte-virtual": "^3.13.12",
     "pocketbase": "^0.21.4",
-    "sharp": "^0.33.0"
+    "sharp": "^0.33.0",
+    "svelte-gestures": "^5.2.2"
   },
   "devDependencies": {
     "@sveltejs/adapter-vercel": "^5.4.4",

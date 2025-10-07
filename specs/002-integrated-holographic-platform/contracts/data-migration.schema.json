@@ -1,0 +1,303 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/data-migration.json",
+  "title": "Data Migration Schema",
+  "description": "Schema for migrating Phase 1, 2, 4 data to Integrated Holographic Platform",
+  "version": "1.0.0",
+
+  "definitions": {
+    "LegacyEnhancedCard": {
+      "type": "object",
+      "description": "Phase 1: Enhanced Card Interaction data structure",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "image": { "type": "string", "format": "uri" },
+        "backImage": { "type": "string", "format": "uri" },
+        "holographicEffect": {
+          "type": "string",
+          "enum": ["overlay", "soft-light", "hard-light"]
+        }
+      },
+      "required": ["id", "title", "image", "backImage", "holographicEffect"]
+    },
+
+    "LegacyPhotocardData": {
+      "type": "object",
+      "description": "Phase 2: Photocard Main Renewal data structure",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "rarity": {
+          "type": "string",
+          "enum": ["common", "rare", "epic", "legendary"]
+        },
+        "collections": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "acquiredAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "title", "rarity"]
+    },
+
+    "LegacyCommunityCard": {
+      "type": "object",
+      "description": "Phase 4: Community card data structure",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "image": { "type": "string", "format": "uri" },
+        "creator": { "type": "string" },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "isPublic": { "type": "boolean" },
+        "template": { "type": "string" },
+        "likes": { "type": "number" },
+        "downloads": { "type": "number" }
+      },
+      "required": ["id", "title", "image", "creator", "isPublic"]
+    },
+
+    "UnifiedCard": {
+      "type": "object",
+      "description": "Unified card structure (target format)",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+
+        "holographic": {
+          "type": "object",
+          "properties": {
+            "image": { "type": "string", "format": "uri" },
+            "backImage": { "type": "string", "format": "uri" },
+            "effect": {
+              "type": "string",
+              "enum": ["overlay", "soft-light", "hard-light"]
+            },
+            "intensity": { "type": "number", "minimum": 0, "maximum": 100 },
+            "isFlipped": { "type": "boolean" },
+            "animationDuration": { "type": "number", "minimum": 300, "maximum": 1000 }
+          },
+          "required": ["image", "backImage", "effect", "intensity", "isFlipped", "animationDuration"]
+        },
+
+        "photocard": {
+          "type": "object",
+          "properties": {
+            "rarity": {
+              "type": "string",
+              "enum": ["common", "rare", "epic", "legendary"]
+            },
+            "stats": {
+              "type": "object",
+              "properties": {
+                "totalViews": { "type": "number" },
+                "uniqueCollectors": { "type": "number" },
+                "completionRate": { "type": "number", "minimum": 0, "maximum": 100 }
+              },
+              "required": ["totalViews", "uniqueCollectors", "completionRate"]
+            },
+            "collections": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "acquiredAt": { "type": "string", "format": "date-time" }
+          },
+          "required": ["rarity", "stats", "collections"]
+        },
+
+        "community": {
+          "type": "object",
+          "properties": {
+            "creator": { "type": "string" },
+            "isPublic": { "type": "boolean" },
+            "tags": {
+              "type": "array",
+              "items": { "type": "string" },
+              "maxItems": 10
+            },
+            "template": { "type": "string" },
+            "metadata": {
+              "type": "object",
+              "properties": {
+                "likes": { "type": "number" },
+                "downloads": { "type": "number" },
+                "rating": { "type": "number", "minimum": 0, "maximum": 5 },
+                "ratingCount": { "type": "number" }
+              },
+              "required": ["likes", "downloads", "rating", "ratingCount"]
+            }
+          },
+          "required": ["creator", "isPublic", "tags", "metadata"]
+        },
+
+        "context": {
+          "type": "string",
+          "enum": ["test", "main", "gallery", "community"]
+        }
+      },
+      "required": ["id", "title", "createdAt", "updatedAt", "holographic", "photocard", "community"]
+    },
+
+    "MigrationResult": {
+      "type": "object",
+      "description": "Result of a migration operation",
+      "properties": {
+        "success": { "type": "boolean" },
+        "migratedCount": { "type": "number" },
+        "failedCount": { "type": "number" },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sourceId": { "type": "string" },
+              "error": { "type": "string" },
+              "timestamp": { "type": "string", "format": "date-time" }
+            }
+          }
+        },
+        "duration": { "type": "number", "description": "Migration duration in milliseconds" }
+      },
+      "required": ["success", "migratedCount", "failedCount", "errors", "duration"]
+    }
+  },
+
+  "type": "object",
+  "description": "Migration operation configuration",
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Migration version"
+    },
+    "source": {
+      "type": "string",
+      "enum": ["phase1", "phase2", "phase4"],
+      "description": "Source phase to migrate from"
+    },
+    "target": {
+      "type": "string",
+      "const": "integrated-platform",
+      "description": "Target platform (always integrated-platform)"
+    },
+    "options": {
+      "type": "object",
+      "properties": {
+        "dryRun": {
+          "type": "boolean",
+          "description": "If true, simulate migration without writing data",
+          "default": false
+        },
+        "batchSize": {
+          "type": "number",
+          "description": "Number of records to migrate per batch",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "preserveIds": {
+          "type": "boolean",
+          "description": "If true, preserve original IDs; if false, generate new UUIDs",
+          "default": true
+        },
+        "backupBefore": {
+          "type": "boolean",
+          "description": "Create backup before migration",
+          "default": true
+        },
+        "rollbackOnError": {
+          "type": "boolean",
+          "description": "Rollback all changes if any error occurs",
+          "default": true
+        }
+      }
+    },
+    "mapping": {
+      "type": "object",
+      "description": "Field mapping rules",
+      "properties": {
+        "phase1": {
+          "type": "object",
+          "description": "Phase 1 field mappings",
+          "properties": {
+            "image": { "type": "string", "const": "holographic.image" },
+            "backImage": { "type": "string", "const": "holographic.backImage" },
+            "holographicEffect": { "type": "string", "const": "holographic.effect" }
+          }
+        },
+        "phase2": {
+          "type": "object",
+          "description": "Phase 2 field mappings",
+          "properties": {
+            "rarity": { "type": "string", "const": "photocard.rarity" },
+            "collections": { "type": "string", "const": "photocard.collections" },
+            "acquiredAt": { "type": "string", "const": "photocard.acquiredAt" }
+          }
+        },
+        "phase4": {
+          "type": "object",
+          "description": "Phase 4 field mappings",
+          "properties": {
+            "creator": { "type": "string", "const": "community.creator" },
+            "tags": { "type": "string", "const": "community.tags" },
+            "isPublic": { "type": "string", "const": "community.isPublic" },
+            "likes": { "type": "string", "const": "community.metadata.likes" },
+            "downloads": { "type": "string", "const": "community.metadata.downloads" }
+          }
+        }
+      }
+    },
+    "defaults": {
+      "type": "object",
+      "description": "Default values for missing fields",
+      "properties": {
+        "holographic.intensity": { "type": "number", "default": 80 },
+        "holographic.isFlipped": { "type": "boolean", "default": false },
+        "holographic.animationDuration": { "type": "number", "default": 600 },
+        "photocard.rarity": { "type": "string", "default": "common" },
+        "photocard.stats.totalViews": { "type": "number", "default": 0 },
+        "photocard.stats.uniqueCollectors": { "type": "number", "default": 0 },
+        "photocard.stats.completionRate": { "type": "number", "default": 0 },
+        "community.creator": { "type": "string", "default": "system" },
+        "community.isPublic": { "type": "boolean", "default": false },
+        "community.tags": { "type": "array", "default": ["legacy"] },
+        "community.metadata.likes": { "type": "number", "default": 0 },
+        "community.metadata.downloads": { "type": "number", "default": 0 },
+        "community.metadata.rating": { "type": "number", "default": 0 },
+        "community.metadata.ratingCount": { "type": "number", "default": 0 }
+      }
+    }
+  },
+  "required": ["version", "source", "target"],
+
+  "examples": [
+    {
+      "$comment": "Example: Migrate Phase 1 Enhanced Cards",
+      "version": "1.0.0",
+      "source": "phase1",
+      "target": "integrated-platform",
+      "options": {
+        "dryRun": false,
+        "batchSize": 50,
+        "preserveIds": true,
+        "backupBefore": true,
+        "rollbackOnError": true
+      }
+    },
+    {
+      "$comment": "Example: Dry-run migration of Phase 4 Community Cards",
+      "version": "1.0.0",
+      "source": "phase4",
+      "target": "integrated-platform",
+      "options": {
+        "dryRun": true,
+        "batchSize": 100
+      }
+    }
+  ]
+}

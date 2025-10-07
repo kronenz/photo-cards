@@ -7,10 +7,22 @@ import { spring } from 'svelte/motion';
 import type { Spring } from 'svelte/motion';
 import { writable, derived, type Writable, type Readable } from 'svelte/store';
 
-// 홀로그래픽 효과 타입 정의
-export type HolographicType = 
-  | 'basic' | 'cosmic' | 'rainbow' | 'aurora' | 'secret' | 'galaxy'
-  | 'lg' | 'doosan' | 'kt' | 'samsung' | 'lotte' 
+// 홀로그래픽 효과 타입 정의 (Pokemon 카드 스타일 + KBO 커스텀)
+export type HolographicType =
+  // Pokemon 스타일 효과들
+  | 'basic' | 'holo' | 'reverse-holo'
+  | 'galaxy-holo' | 'cosmos-holo'
+  | 'v-regular' | 'v-full-art'
+  | 'vmax' | 'vstar'
+  | 'rainbow' | 'rainbow-alt'
+  | 'secret' | 'gold-secret'
+  | 'radiant' | 'amazing-rare'
+  | 'trainer-gallery-holo' | 'trainer-gallery-v'
+  | 'trainer-full-art'
+  // 기본 커스텀 효과
+  | 'cosmic' | 'aurora' | 'neon'
+  // KBO 구단별 테마
+  | 'lg' | 'doosan' | 'kt' | 'samsung' | 'lotte'
   | 'kia' | 'nc' | 'hanwha' | 'ssg' | 'kiwoom';
 
 // 물리학 기반 Spring 설정 (Apple 스타일)
@@ -269,17 +281,207 @@ export class HolographicEngine {
       return { ...KBO_TEAM_CONFIGS[type] };
     }
     
-    // 기본 홀로그래픽 효과 설정
+    // Pokemon 스타일 홀로그래픽 효과 설정 (how2code_v2.md 기반)
     const baseConfigs: Record<string, HolographicParams> = {
+      // 기본 효과
       basic: {
-        intensity: 0.6,
+        intensity: 0.5,
         colorShift: 0,
         reflectionAngle: 45,
         animationSpeed: 1.0,
         brightness: 1.0,
-        saturation: 1.2,
-        contrast: 1.1
+        saturation: 1.0,
+        contrast: 1.0
       },
+
+      // HOLO (rare holo) - 기본 홀로그래픽
+      holo: {
+        intensity: 0.7,
+        colorShift: 21,
+        reflectionAngle: 45,
+        animationSpeed: 1.2,
+        brightness: 0.7,
+        saturation: 0.66,
+        contrast: 3.2
+      },
+
+      // REVERSE HOLO - 리버스 홀로
+      'reverse-holo': {
+        intensity: 0.6,
+        colorShift: 0,
+        reflectionAngle: 60,
+        animationSpeed: 1.0,
+        brightness: 0.8,
+        saturation: 1.0,
+        contrast: 1.5
+      },
+
+      // GALAXY HOLO - 갤럭시 홀로그래픽
+      'galaxy-holo': {
+        intensity: 0.75,
+        colorShift: 82,
+        reflectionAngle: 50,
+        animationSpeed: 0.8,
+        brightness: 0.75,
+        saturation: 1.5,
+        contrast: 1.2
+      },
+
+      // COSMOS HOLO - 코스믹 홀로그래픽
+      'cosmos-holo': {
+        intensity: 0.8,
+        colorShift: 120,
+        reflectionAngle: 60,
+        animationSpeed: 1.5,
+        brightness: 1.1,
+        saturation: 1.4,
+        contrast: 1.2
+      },
+
+      // V REGULAR - V 카드
+      'v-regular': {
+        intensity: 0.8,
+        colorShift: 0,
+        reflectionAngle: 133,
+        animationSpeed: 1.3,
+        brightness: 0.8,
+        saturation: 0.5,
+        contrast: 2.95
+      },
+
+      // V FULL ART - 풀아트 V
+      'v-full-art': {
+        intensity: 0.9,
+        colorShift: 0,
+        reflectionAngle: 133,
+        animationSpeed: 1.5,
+        brightness: 0.5,
+        saturation: 1.5,
+        contrast: 2.0
+      },
+
+      // VMAX - VMAX 카드
+      vmax: {
+        intensity: 0.85,
+        colorShift: 333,
+        reflectionAngle: 133,
+        animationSpeed: 1.2,
+        brightness: 0.5,
+        saturation: 0.6,
+        contrast: 2.5
+      },
+
+      // VSTAR - VSTAR 카드
+      vstar: {
+        intensity: 0.8,
+        colorShift: 0,
+        reflectionAngle: 133,
+        animationSpeed: 1.1,
+        brightness: 0.8,
+        saturation: 0.75,
+        contrast: 2.0
+      },
+
+      // RAINBOW - 레인보우 시크릿
+      rainbow: {
+        intensity: 1.0,
+        colorShift: 340,
+        reflectionAngle: 340,
+        animationSpeed: 2.0,
+        brightness: 0.66,
+        saturation: 0.95,
+        contrast: 2.0
+      },
+
+      // RAINBOW ALT - 레인보우 얼터네이트
+      'rainbow-alt': {
+        intensity: 1.0,
+        colorShift: 340,
+        reflectionAngle: 340,
+        animationSpeed: 1.8,
+        brightness: 0.66,
+        saturation: 0.7,
+        contrast: 3.0
+      },
+
+      // GOLD SECRET - 골드 시크릿
+      secret: {
+        intensity: 0.9,
+        colorShift: 39,
+        reflectionAngle: 110,
+        animationSpeed: 1.2,
+        brightness: 0.7,
+        saturation: 0.66,
+        contrast: 3.0
+      },
+
+      // GOLD SECRET (별칭)
+      'gold-secret': {
+        intensity: 0.9,
+        colorShift: 39,
+        reflectionAngle: 110,
+        animationSpeed: 1.2,
+        brightness: 0.7,
+        saturation: 0.66,
+        contrast: 3.0
+      },
+
+      // RADIANT - 래디언트
+      radiant: {
+        intensity: 0.95,
+        colorShift: 55,
+        reflectionAngle: 55,
+        animationSpeed: 1.0,
+        brightness: 0.95,
+        saturation: 0.75,
+        contrast: 4.0
+      },
+
+      // AMAZING RARE - 어메이징 레어
+      'amazing-rare': {
+        intensity: 0.85,
+        colorShift: 180,
+        reflectionAngle: 60,
+        animationSpeed: 1.4,
+        brightness: 0.9,
+        saturation: 1.2,
+        contrast: 2.5
+      },
+
+      // TRAINER GALLERY HOLO - 트레이너 갤러리 홀로
+      'trainer-gallery-holo': {
+        intensity: 0.8,
+        colorShift: 338,
+        reflectionAngle: 338,
+        animationSpeed: 1.1,
+        brightness: 0.6,
+        saturation: 1.1,
+        contrast: 2.3
+      },
+
+      // TRAINER GALLERY V - 트레이너 갤러리 V
+      'trainer-gallery-v': {
+        intensity: 0.85,
+        colorShift: 0,
+        reflectionAngle: 133,
+        animationSpeed: 1.2,
+        brightness: 0.5,
+        saturation: 1.0,
+        contrast: 2.5
+      },
+
+      // TRAINER FULL ART - 트레이너 풀아트
+      'trainer-full-art': {
+        intensity: 0.9,
+        colorShift: 0,
+        reflectionAngle: 133,
+        animationSpeed: 1.3,
+        brightness: 0.75,
+        saturation: 0.75,
+        contrast: 2.5
+      },
+
+      // 커스텀 효과들
       cosmic: {
         intensity: 0.8,
         colorShift: 120,
@@ -289,15 +491,7 @@ export class HolographicEngine {
         saturation: 1.4,
         contrast: 1.2
       },
-      rainbow: {
-        intensity: 1.0,
-        colorShift: 0,
-        reflectionAngle: 90,
-        animationSpeed: 2.0,
-        brightness: 1.2,
-        saturation: 1.6,
-        contrast: 1.3
-      },
+
       aurora: {
         intensity: 0.7,
         colorShift: 180,
@@ -307,26 +501,29 @@ export class HolographicEngine {
         saturation: 1.1,
         contrast: 1.0
       },
-      secret: {
-        intensity: 0.9,
-        colorShift: 45,
+
+      neon: {
+        intensity: 0.95,
+        colorShift: 280,
         reflectionAngle: 45,
-        animationSpeed: 1.2,
+        animationSpeed: 1.8,
         brightness: 1.3,
-        saturation: 1.5,
-        contrast: 1.4
+        saturation: 1.6,
+        contrast: 1.5
       },
+
+      // 하위 호환성 (기존 galaxy -> galaxy-holo)
       galaxy: {
-        intensity: 0.8,
-        colorShift: 270,
-        reflectionAngle: 75,
-        animationSpeed: 0.6,
-        brightness: 1.0,
-        saturation: 1.3,
+        intensity: 0.75,
+        colorShift: 82,
+        reflectionAngle: 50,
+        animationSpeed: 0.8,
+        brightness: 0.75,
+        saturation: 1.5,
         contrast: 1.2
       }
     };
-    
+
     return baseConfigs[type] || baseConfigs.basic;
   }
   

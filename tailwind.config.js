@@ -2,6 +2,16 @@
 export default {
   content: ['./src/**/*.{html,js,svelte,ts}'],
   darkMode: 'class',
+  safelist: [
+    // Holographic blend modes for unified cards
+    'mix-blend-overlay',
+    'mix-blend-soft-light',
+    'mix-blend-hard-light',
+    // Transform perspective for 3D card flips
+    'transform-style-3d',
+    'backface-hidden',
+    'perspective-1000',
+  ],
   theme: {
     extend: {
       colors: {
