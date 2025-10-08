@@ -1,5 +1,9 @@
 <script lang="ts">
 	import EnhancedCard from '$lib/components/EnhancedCard.svelte';
+	import UnifiedHolographicCard from '$lib/components/unified/UnifiedHolographicCard.svelte';
+	import FPSCounterOverlay from '$lib/components/FPSCounterOverlay.svelte';
+	import type { UnifiedCard } from '$lib/types/unified';
+	import { dev } from '$app/environment';
 
 	// Enhanced card event handlers
 	function handleCardFlip(event: CustomEvent) {
@@ -21,6 +25,42 @@
 	function handleAnimationEnd(event: CustomEvent) {
 		console.log('Animation ended:', event.detail);
 	}
+
+	// Unified card demo data (Phase 3 integration test)
+	const unifiedTestCard: UnifiedCard = {
+		id: 'unified-test-001',
+		title: 'Unified Holographic Card',
+		holographic: {
+			image: 'https://assets.codepen.io/13471/charizard-gx.webp',
+			backImage: '',
+			effect: 'soft-light',
+			intensity: 80,
+			isFlipped: false,
+			animationDuration: 600
+		},
+		photocard: {
+			rarity: 'legendary',
+			season: '2025',
+			stats: {
+				totalViews: 1520,
+				uniqueCollectors: 342,
+				completionRate: 87.5
+			},
+			collections: ['test-collection']
+		},
+		community: {
+			creator: 'test-user',
+			isPublic: true,
+			tags: ['phase-3', 'integration-test', 'unified-card'],
+			metadata: {
+				likes: 125,
+				downloads: 89,
+				rating: 4.8,
+				ratingCount: 45
+			}
+		},
+		context: 'test'
+	};
 </script>
 
 <svelte:head>
@@ -109,8 +149,27 @@
 		<div class="demo-card enhanced-demo" style="--front: none"><span>soft-light</span></div>
 	</section>
 
+	<!-- Phase 3: Unified Holographic Card Integration Test -->
+	<h2>Phase 3: 통합 홀로그래픽 카드 시스템</h2>
+	<p style="background: rgba(0, 255, 200, 0.1); border-left: 4px solid #00ffc8; padding: 1em;">
+		<strong>✅ Phase 3 Integration:</strong> UnifiedHolographicCard 컴포넌트는 Phase 1, 2, 4의 데이터를 통합하며 v2-prototype의 고급 3D 효과를 포함합니다.<br />
+		<strong>Features:</strong> 7가지 홀로그래픽 효과, 희귀도별 글로우, 3D 회전 (±15도), Context-aware 렌더링
+	</p>
+
+	<section class="cards">
+		<div class="three-d-wrapper">
+			<UnifiedHolographicCard
+				card={unifiedTestCard}
+				context="test"
+				size="large"
+				enableHolographic={true}
+				enableFlip={true}
+			/>
+		</div>
+	</section>
+
 	<!-- KBO 구단별 카드 섹션 -->
-	<h2>KBO 구단별 홀로그래픽 카드</h2>
+	<h2>KBO 구단별 홀로그래픽 카드 (Phase 1 Legacy)</h2>
 
 	<section class="kbo-cards">
 		<div class="three-d-wrapper">
@@ -429,3 +488,14 @@
 		}
 	}
 </style>
+
+<!-- FPS Counter Overlay for Development Mode -->
+{#if dev}
+	<FPSCounterOverlay 
+		enabled={true}
+		position="top-right"
+		updateInterval={100}
+		showDetails={true}
+		autoHide={false}
+	/>
+{/if}

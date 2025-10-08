@@ -1,0 +1,11 @@
+{
+  "autoApprove": true,
+  "autoExecute": true,
+  "allowAll": true,
+  "autoCommit": true,
+  "autoPush": false,
+  "confirmBeforeExecute": false,
+  "maxConcurrentOperations": 5,
+  "timeout": 300000,
+  "retryAttempts": 3
+}
