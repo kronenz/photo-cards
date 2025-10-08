@@ -1,0 +1,503 @@
+openapi: 3.0.3
+info:
+  title: Template Storage API
+  description: |
+    Abstraction layer for Cloudflare R2 cloud storage operations.
+
+    **Features**:
+    - Presigned upload URLs (client-side uploads)
+    - Presigned download URLs (temporary access)
+    - Thumbnail generation
+    - File integrity verification
+
+    **Storage Backend**: Cloudflare R2 (S3-compatible)
+
+    **Requirements**: research.md Decision 1 (Cloud Storage)
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:5173/api
+    description: Local SvelteKit server
+  - url: https://kbo-cards.com/api
+    description: Production server
+
+tags:
+  - name: upload
+    description: Upload operations
+  - name: download
+    description: Download operations
+  - name: metadata
+    description: File metadata operations
+
+security:
+  - PocketBaseAuth: []
+
+paths:
+  # ============================================================
+  # Upload Operations
+  # ============================================================
+
+  /storage/presign-upload:
+    post:
+      tags: [upload]
+      summary: Generate presigned upload URL
+      description: |
+        Generate a presigned S3 PUT URL for client-side upload to Cloudflare R2.
+        Client uploads directly to R2 without going through the server.
+
+        **Workflow**:
+        1. Client requests presigned URL
+        2. Server generates URL with 1-hour expiry
+        3. Client uploads file to R2 using PUT request
+        4. Client creates template record with storage_url
+
+        **Requirements**: User Story 1.5 (Template Upload)
+      operationId: presignUpload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - filename
+                - fileSize
+                - contentType
+                - fileHash
+              properties:
+                filename:
+                  type: string
+                  pattern: ^tpl_[a-z0-9_]+\.json$
+                  description: Template JSON filename
+                  example: tpl_lg_homerun_001.json
+                fileSize:
+                  type: integer
+                  minimum: 1
+                  maximum: 15728640
+                  description: File size in bytes (max 15MB)
+                  example: 524288
+                contentType:
+                  type: string
+                  enum: [application/json]
+                  description: MIME type
+                fileHash:
+                  type: string
+                  pattern: ^sha256:[a-f0-9]{64}$
+                  description: SHA-256 hash for integrity verification
+                  example: sha256:a3f2b1c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2
+      responses:
+        '200':
+          description: Presigned URL generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uploadUrl:
+                    type: string
+                    format: uri
+                    description: Presigned S3 PUT URL (1 hour expiry)
+                    example: https://r2.cloudflarestorage.com/kbo-templates/tpl_lg_homerun_001.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=...
+                  storageUrl:
+                    type: string
+                    format: uri
+                    description: Final public CDN URL after successful upload
+                    example: https://cdn.kbo-cards.com/templates/tpl_lg_homerun_001.json
+                  expiresIn:
+                    type: integer
+                    description: URL expiry in seconds
+                    example: 3600
+                  uploadId:
+                    type: string
+                    description: Upload tracking ID for verification
+                    example: upld_xyz789
+        '400':
+          description: Invalid request (file too large, invalid hash, etc.)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /storage/verify-upload:
+    post:
+      tags: [upload]
+      summary: Verify upload completion
+      description: |
+        Verify that file was successfully uploaded to R2 and matches expected hash.
+        Called after client completes PUT to presigned URL.
+
+        **Requirements**: User Story 1.6 (Copyright Detection)
+      operationId: verifyUpload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - uploadId
+                - storageUrl
+              properties:
+                uploadId:
+                  type: string
+                  description: Upload ID from presign-upload response
+                  example: upld_xyz789
+                storageUrl:
+                  type: string
+                  format: uri
+                  description: Storage URL from presign-upload response
+      responses:
+        '200':
+          description: Upload verified successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  verified:
+                    type: boolean
+                    example: true
+                  fileSize:
+                    type: integer
+                    example: 524288
+                  fileHash:
+                    type: string
+                    example: sha256:a3f2b1c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2
+                  storageUrl:
+                    type: string
+                    format: uri
+        '400':
+          description: Upload verification failed (file not found, hash mismatch)
+
+  /storage/upload-thumbnail:
+    post:
+      tags: [upload]
+      summary: Upload template thumbnail
+      description: |
+        Generate presigned URL for thumbnail image upload.
+        Supports JPEG, PNG, WebP formats.
+
+        **Requirements**: User Story 1.2 (Template Preview)
+      operationId: uploadThumbnail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - templateId
+                - contentType
+                - fileSize
+              properties:
+                templateId:
+                  type: string
+                  pattern: ^tpl_[a-z0-9_]+$
+                  example: tpl_lg_homerun_001
+                contentType:
+                  type: string
+                  enum: [image/jpeg, image/png, image/webp]
+                fileSize:
+                  type: integer
+                  minimum: 1
+                  maximum: 2097152
+                  description: Max 2MB for thumbnails
+      responses:
+        '200':
+          description: Presigned URL for thumbnail upload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uploadUrl:
+                    type: string
+                    format: uri
+                  thumbnailUrl:
+                    type: string
+                    format: uri
+                    description: Public CDN URL for thumbnail
+                    example: https://cdn.kbo-cards.com/thumbnails/tpl_lg_homerun_001.webp
+                  expiresIn:
+                    type: integer
+                    example: 3600
+
+  # ============================================================
+  # Download Operations
+  # ============================================================
+
+  /storage/download/{templateId}:
+    get:
+      tags: [download]
+      summary: Get download URL
+      description: |
+        Get direct download URL for template JSON file.
+        Returns public CDN URL (no presigning needed for public templates).
+
+        **Requirements**: User Story 1.3 (Template Download)
+      operationId: getDownloadUrl
+      security: []
+      parameters:
+        - name: templateId
+          in: path
+          required: true
+          description: Template ID (without .json extension)
+          schema:
+            type: string
+            pattern: ^tpl_[a-z0-9_]+$
+          example: tpl_lg_homerun_001
+      responses:
+        '200':
+          description: Download URL retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  downloadUrl:
+                    type: string
+                    format: uri
+                    description: Direct download URL
+                    example: https://cdn.kbo-cards.com/templates/tpl_lg_homerun_001.json
+                  fileSize:
+                    type: integer
+                    example: 524288
+                  contentType:
+                    type: string
+                    example: application/json
+        '404':
+          description: Template file not found
+
+  /storage/presign-download/{templateId}:
+    get:
+      tags: [download]
+      summary: Get presigned download URL (for premium templates)
+      description: |
+        Generate temporary presigned download URL for premium templates.
+        URL expires after 15 minutes.
+
+        **Requirements**: User Story 6 (Premium Templates - Phase 4)
+      operationId: presignDownload
+      parameters:
+        - name: templateId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: ^tpl_[a-z0-9_]+$
+      responses:
+        '200':
+          description: Presigned download URL generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  downloadUrl:
+                    type: string
+                    format: uri
+                    description: Presigned S3 GET URL (15 min expiry)
+                  expiresIn:
+                    type: integer
+                    example: 900
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: User has not purchased this template
+        '404':
+          description: Template not found
+
+  # ============================================================
+  # Metadata Operations
+  # ============================================================
+
+  /storage/metadata/{templateId}:
+    get:
+      tags: [metadata]
+      summary: Get file metadata
+      description: |
+        Get file metadata from R2 without downloading the file.
+        Includes size, content-type, ETag, last-modified.
+      operationId: getFileMetadata
+      security: []
+      parameters:
+        - name: templateId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: ^tpl_[a-z0-9_]+$
+      responses:
+        '200':
+          description: Metadata retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileMetadata'
+        '404':
+          description: File not found
+
+  /storage/validate-hash:
+    post:
+      tags: [metadata]
+      summary: Validate file hash
+      description: |
+        Verify that file in R2 matches expected SHA-256 hash.
+        Used during upload verification and copyright checks.
+      operationId: validateHash
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - storageUrl
+                - expectedHash
+              properties:
+                storageUrl:
+                  type: string
+                  format: uri
+                expectedHash:
+                  type: string
+                  pattern: ^sha256:[a-f0-9]{64}$
+      responses:
+        '200':
+          description: Hash validation result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid:
+                    type: boolean
+                    example: true
+                  actualHash:
+                    type: string
+                    example: sha256:a3f2b1c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2
+                  expectedHash:
+                    type: string
+
+  # ============================================================
+  # Admin Operations
+  # ============================================================
+
+  /storage/delete/{templateId}:
+    delete:
+      tags: [metadata]
+      summary: Delete file from R2
+      description: |
+        Delete template JSON and thumbnail from R2.
+        Only admin or template author can delete.
+      operationId: deleteFile
+      parameters:
+        - name: templateId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: ^tpl_[a-z0-9_]+$
+      responses:
+        '204':
+          description: File deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Not authorized to delete this file
+        '404':
+          description: File not found
+
+# ============================================================
+# Components
+# ============================================================
+
+components:
+  securitySchemes:
+    PocketBaseAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    FileMetadata:
+      type: object
+      description: R2 file metadata (from HeadObject)
+      properties:
+        key:
+          type: string
+          description: R2 object key
+          example: templates/tpl_lg_homerun_001.json
+        size:
+          type: integer
+          description: File size in bytes
+          example: 524288
+        contentType:
+          type: string
+          example: application/json
+        etag:
+          type: string
+          description: S3 ETag (MD5 hash)
+          example: "a3f2b1c4d5e6f7a8b9c0d1e2f3a4b5c6"
+        lastModified:
+          type: string
+          format: date-time
+          description: Last modification timestamp
+        storageClass:
+          type: string
+          example: STANDARD
+        publicUrl:
+          type: string
+          format: uri
+          description: Public CDN URL
+          example: https://cdn.kbo-cards.com/templates/tpl_lg_homerun_001.json
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 400
+        message:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+
+  responses:
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 401
+            message: Authentication required
+
+  examples:
+    PresignUploadRequest:
+      value:
+        filename: tpl_lg_homerun_001.json
+        fileSize: 524288
+        contentType: application/json
+        fileHash: sha256:a3f2b1c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2
+
+    PresignUploadResponse:
+      value:
+        uploadUrl: https://r2.cloudflarestorage.com/kbo-templates/tpl_lg_homerun_001.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=...
+        storageUrl: https://cdn.kbo-cards.com/templates/tpl_lg_homerun_001.json
+        expiresIn: 3600
+        uploadId: upld_xyz789
+
+    FileMetadataResponse:
+      value:
+        key: templates/tpl_lg_homerun_001.json
+        size: 524288
+        contentType: application/json
+        etag: "a3f2b1c4d5e6f7a8b9c0d1e2f3a4b5c6"
+        lastModified: "2025-01-07T12:34:56Z"
+        storageClass: STANDARD
+        publicUrl: https://cdn.kbo-cards.com/templates/tpl_lg_homerun_001.json

@@ -1,0 +1,856 @@
+openapi: 3.0.3
+info:
+  title: Template Marketplace API
+  description: |
+    REST API for browsing, uploading, downloading, and managing holographic card templates.
+
+    **Features**:
+    - Template CRUD operations
+    - Discovery & search
+    - Copyright detection integration
+    - Download tracking
+
+    **Authentication**: All write operations require PocketBase auth token.
+  version: 1.0.0
+  contact:
+    name: KBO Holographic Cards Platform
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:8090/api
+    description: Local PocketBase server
+  - url: https://api.kbo-cards.com/api
+    description: Production server
+
+tags:
+  - name: templates
+    description: Template CRUD operations
+  - name: discovery
+    description: Browse and search templates
+  - name: upload
+    description: Template upload workflow
+  - name: download
+    description: Template download workflow
+
+security:
+  - PocketBaseAuth: []
+
+paths:
+  # ============================================================
+  # Discovery & Browsing
+  # ============================================================
+
+  /collections/templates/records:
+    get:
+      tags: [discovery]
+      summary: List all published templates
+      description: |
+        Paginated list of templates with filtering, sorting, and search.
+        Only returns published templates with approved copyright status.
+
+        **Requirements**: User Story 1.1, 1.2
+      operationId: listTemplates
+      security: []
+      parameters:
+        - name: page
+          in: query
+          description: Page number (1-indexed)
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: perPage
+          in: query
+          description: Items per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: sort
+          in: query
+          description: Sort field and direction
+          schema:
+            type: string
+            enum:
+              - -created        # Newest first
+              - -rating_average # Highest rated
+              - -download_count # Most popular
+              - title          # A-Z
+            default: -created
+        - name: filter
+          in: query
+          description: PocketBase filter expression
+          schema:
+            type: string
+          examples:
+            byCategory:
+              value: category='lg-twins'
+            byTags:
+              value: tags~'홈런'
+            featured:
+              value: featured=true
+        - name: expand
+          in: query
+          description: Expand relations
+          schema:
+            type: string
+            default: author,category
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                    example: 1
+                  perPage:
+                    type: integer
+                    example: 20
+                  totalItems:
+                    type: integer
+                    example: 156
+                  totalPages:
+                    type: integer
+                    example: 8
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Template'
+              examples:
+                default:
+                  value:
+                    page: 1
+                    perPage: 20
+                    totalItems: 156
+                    totalPages: 8
+                    items:
+                      - id: rec_abc123
+                        template_id: tpl_lg_homerun_001
+                        title: LG 트윈스 홈런 순간
+                        rating_average: 4.8
+                        download_count: 342
+                        expand:
+                          author:
+                            username: baseball_designer_92
+                          category:
+                            name: 순간 카드
+
+  /collections/templates/records/{id}:
+    get:
+      tags: [templates]
+      summary: Get template by ID
+      description: Fetch detailed template information including all metadata
+      operationId: getTemplate
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Template record ID
+          schema:
+            type: string
+        - name: expand
+          in: query
+          description: Expand relations
+          schema:
+            type: string
+            default: author,category,original_template_id
+      responses:
+        '200':
+          description: Template found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
+        '404':
+          description: Template not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # ============================================================
+  # Search
+  # ============================================================
+
+  /templates/search:
+    get:
+      tags: [discovery]
+      summary: Full-text search templates
+      description: |
+        Search templates by title, description, tags, and author.
+        Returns relevance-ranked results.
+
+        **Requirements**: User Story 3.1, 3.2
+      operationId: searchTemplates
+      security: []
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Search query
+          schema:
+            type: string
+            minLength: 2
+          example: LG 홈런
+        - name: category
+          in: query
+          description: Filter by category slug
+          schema:
+            type: string
+          example: moment-cards
+        - name: tags
+          in: query
+          description: Filter by tags (comma-separated)
+          schema:
+            type: string
+          example: LG 트윈스,홈런
+        - name: minRating
+          in: query
+          description: Minimum rating filter
+          schema:
+            type: number
+            minimum: 0
+            maximum: 5
+          example: 4.0
+        - name: license
+          in: query
+          description: Filter by license type
+          schema:
+            type: string
+            enum: [CC-BY, CC-BY-SA, CC-BY-NC, CC-BY-NC-SA, All Rights Reserved]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: perPage
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  query:
+                    type: string
+                  page:
+                    type: integer
+                  perPage:
+                    type: integer
+                  totalItems:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Template'
+
+  # ============================================================
+  # Upload Workflow
+  # ============================================================
+
+  /templates/upload/presign:
+    post:
+      tags: [upload]
+      summary: Get presigned upload URL
+      description: |
+        Request a presigned URL for uploading template JSON to Cloudflare R2.
+        Client uploads directly to R2 using the returned URL.
+
+        **Requirements**: User Story 1.5
+      operationId: getPresignedUploadUrl
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - filename
+                - fileSize
+                - contentType
+              properties:
+                filename:
+                  type: string
+                  pattern: ^tpl_[a-z0-9_]+\.json$
+                  example: tpl_lg_homerun_001.json
+                fileSize:
+                  type: integer
+                  minimum: 1
+                  maximum: 15728640
+                  description: File size in bytes (max 15MB)
+                contentType:
+                  type: string
+                  enum: [application/json]
+      responses:
+        '200':
+          description: Presigned URL generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uploadUrl:
+                    type: string
+                    format: uri
+                    description: Presigned S3 PUT URL
+                    example: https://r2.cloudflarestorage.com/templates/tpl_lg_homerun_001.json?X-Amz-Signature=...
+                  storageUrl:
+                    type: string
+                    format: uri
+                    description: Final public URL after upload
+                    example: https://cdn.kbo-cards.com/templates/tpl_lg_homerun_001.json
+                  expiresIn:
+                    type: integer
+                    description: URL expiry in seconds
+                    example: 3600
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /collections/templates/records:
+    post:
+      tags: [upload]
+      summary: Create template record
+      description: |
+        Create template metadata after successful file upload to R2.
+        Triggers copyright detection workflow.
+
+        **Requirements**: User Story 1.5, 1.6
+      operationId: createTemplate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplateCreate'
+      responses:
+        '201':
+          description: Template created (pending copyright check)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ============================================================
+  # Download Workflow
+  # ============================================================
+
+  /templates/{id}/download:
+    post:
+      tags: [download]
+      summary: Download template
+      description: |
+        Record download event and return template JSON URL.
+        Increments download counter.
+
+        **Requirements**: User Story 1.3
+      operationId: downloadTemplate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Template record ID
+          schema:
+            type: string
+        - name: source
+          in: query
+          description: Download source for analytics
+          schema:
+            type: string
+            enum: [marketplace, profile, search, featured, direct]
+            default: marketplace
+      responses:
+        '200':
+          description: Download URL generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  downloadUrl:
+                    type: string
+                    format: uri
+                    description: Direct download URL
+                    example: https://cdn.kbo-cards.com/templates/tpl_lg_homerun_001.json
+                  template:
+                    $ref: '#/components/schemas/Template'
+        '404':
+          description: Template not found
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ============================================================
+  # Template Management
+  # ============================================================
+
+  /collections/templates/records/{id}:
+    patch:
+      tags: [templates]
+      summary: Update template metadata
+      description: |
+        Update template title, description, tags, etc.
+        Only author can update.
+      operationId: updateTemplate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplateUpdate'
+      responses:
+        '200':
+          description: Template updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
+        '400':
+          description: Validation error
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Not authorized to update this template
+        '404':
+          description: Template not found
+
+    delete:
+      tags: [templates]
+      summary: Delete template
+      description: |
+        Soft-delete template by setting is_published=false.
+        Only author can delete.
+      operationId: deleteTemplate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Template deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Not authorized to delete this template
+        '404':
+          description: Template not found
+
+  # ============================================================
+  # Statistics
+  # ============================================================
+
+  /templates/{id}/stats:
+    get:
+      tags: [templates]
+      summary: Get template statistics
+      description: Get download count, view count, rating breakdown
+      operationId: getTemplateStats
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Statistics retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  downloads:
+                    type: integer
+                    example: 342
+                  views:
+                    type: integer
+                    example: 1523
+                  rating:
+                    type: object
+                    properties:
+                      average:
+                        type: number
+                        example: 4.8
+                      count:
+                        type: integer
+                        example: 156
+                      distribution:
+                        type: object
+                        properties:
+                          '5':
+                            type: integer
+                            example: 120
+                          '4':
+                            type: integer
+                            example: 25
+                          '3':
+                            type: integer
+                            example: 8
+                          '2':
+                            type: integer
+                            example: 2
+                          '1':
+                            type: integer
+                            example: 1
+                  remixes:
+                    type: integer
+                    example: 12
+
+# ============================================================
+# Components
+# ============================================================
+
+components:
+  securitySchemes:
+    PocketBaseAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: PocketBase auth token from login
+
+  schemas:
+    Template:
+      type: object
+      description: Full template record with all fields
+      properties:
+        id:
+          type: string
+          example: rec_abc123
+        collectionId:
+          type: string
+        collectionName:
+          type: string
+          enum: [templates]
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+        template_id:
+          type: string
+          pattern: ^tpl_[a-z0-9_]{3,50}$
+          example: tpl_lg_homerun_001
+        version:
+          type: string
+          pattern: ^\d+\.\d+\.\d+$
+          example: 1.2.0
+        template_version:
+          type: string
+          pattern: ^\d+\.\d+\.\d+$
+          example: 1.0.0
+        title:
+          type: string
+          minLength: 3
+          maxLength: 100
+          example: LG 트윈스 홈런 순간
+        description:
+          type: string
+          minLength: 10
+          maxLength: 1000
+        author:
+          type: string
+          description: User ID (relation)
+        category:
+          type: string
+          description: Category ID (relation)
+        tags:
+          type: array
+          items:
+            type: string
+          example: [LG 트윈스, 홈런, 우승]
+        storage_url:
+          type: string
+          format: uri
+        thumbnail_url:
+          type: string
+          format: uri
+        file_size:
+          type: integer
+          minimum: 1
+          maximum: 15728640
+        file_hash:
+          type: string
+          pattern: ^sha256:[a-f0-9]{64}$
+        rating_average:
+          type: number
+          minimum: 0
+          maximum: 5
+          nullable: true
+        rating_count:
+          type: integer
+          minimum: 0
+          nullable: true
+        download_count:
+          type: integer
+          minimum: 0
+          nullable: true
+        view_count:
+          type: integer
+          minimum: 0
+          nullable: true
+        is_remix:
+          type: boolean
+        original_template_id:
+          type: string
+          nullable: true
+        allow_remix:
+          type: boolean
+        license:
+          type: string
+          enum: [CC-BY, CC-BY-SA, CC-BY-NC, CC-BY-NC-SA, All Rights Reserved]
+        is_premium:
+          type: boolean
+        price:
+          type: number
+          minimum: 0
+          nullable: true
+        currency:
+          type: string
+          enum: [KRW, USD]
+          nullable: true
+        copyright_status:
+          type: string
+          enum: [pending, approved, flagged, rejected]
+        copyright_check_metadata:
+          type: object
+          nullable: true
+        is_published:
+          type: boolean
+        published_at:
+          type: string
+          format: date-time
+          nullable: true
+        featured:
+          type: boolean
+        metadata:
+          type: object
+          nullable: true
+        expand:
+          type: object
+          description: Expanded relations
+          properties:
+            author:
+              $ref: '#/components/schemas/User'
+            category:
+              $ref: '#/components/schemas/Category'
+      required:
+        - template_id
+        - version
+        - template_version
+        - title
+        - description
+        - author
+        - category
+        - tags
+        - storage_url
+        - thumbnail_url
+        - file_size
+        - file_hash
+        - is_remix
+        - allow_remix
+        - license
+        - is_premium
+        - copyright_status
+        - is_published
+
+    TemplateCreate:
+      type: object
+      description: Request body for creating a template
+      properties:
+        template_id:
+          type: string
+          pattern: ^tpl_[a-z0-9_]{3,50}$
+        version:
+          type: string
+          pattern: ^\d+\.\d+\.\d+$
+        template_version:
+          type: string
+          pattern: ^\d+\.\d+\.\d+$
+        title:
+          type: string
+          minLength: 3
+          maxLength: 100
+        description:
+          type: string
+          minLength: 10
+          maxLength: 1000
+        category:
+          type: string
+          description: Category ID
+        tags:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          maxItems: 10
+        storage_url:
+          type: string
+          format: uri
+          description: R2 URL from presign endpoint
+        thumbnail_url:
+          type: string
+          format: uri
+        file_size:
+          type: integer
+        file_hash:
+          type: string
+          pattern: ^sha256:[a-f0-9]{64}$
+        is_remix:
+          type: boolean
+          default: false
+        original_template_id:
+          type: string
+          nullable: true
+        allow_remix:
+          type: boolean
+          default: true
+        license:
+          type: string
+          enum: [CC-BY, CC-BY-SA, CC-BY-NC, CC-BY-NC-SA, All Rights Reserved]
+          default: CC-BY
+        is_premium:
+          type: boolean
+          default: false
+        price:
+          type: number
+          nullable: true
+        currency:
+          type: string
+          enum: [KRW, USD]
+          nullable: true
+      required:
+        - template_id
+        - version
+        - template_version
+        - title
+        - description
+        - category
+        - tags
+        - storage_url
+        - thumbnail_url
+        - file_size
+        - file_hash
+        - license
+
+    TemplateUpdate:
+      type: object
+      description: Request body for updating a template
+      properties:
+        title:
+          type: string
+          minLength: 3
+          maxLength: 100
+        description:
+          type: string
+          minLength: 10
+          maxLength: 1000
+        category:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        thumbnail_url:
+          type: string
+          format: uri
+        allow_remix:
+          type: boolean
+        license:
+          type: string
+          enum: [CC-BY, CC-BY-SA, CC-BY-NC, CC-BY-NC-SA, All Rights Reserved]
+        is_published:
+          type: boolean
+
+    User:
+      type: object
+      description: User record (expanded relation)
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        avatar:
+          type: string
+          format: uri
+
+    Category:
+      type: object
+      description: Template category (expanded relation)
+      properties:
+        id:
+          type: string
+        slug:
+          type: string
+        name:
+          type: string
+        icon:
+          type: string
+        color:
+          type: string
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: Invalid request parameters
+        data:
+          type: object
+          description: Validation errors (field-level)
+          additionalProperties:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+
+  responses:
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 401
+            message: The request requires valid user authentication

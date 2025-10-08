@@ -1,0 +1,497 @@
+openapi: 3.0.3
+info:
+  title: Template Review API
+  description: |
+    REST API for template reviews and ratings system.
+
+    **Features**:
+    - Submit 1-5 star ratings
+    - Write text reviews
+    - Vote on helpful reviews
+    - Verified purchase badges
+
+    **Requirements**: User Story 2 (Template Reviews & Ratings)
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8090/api
+    description: Local PocketBase server
+  - url: https://api.kbo-cards.com/api
+    description: Production server
+
+tags:
+  - name: reviews
+    description: Review CRUD operations
+  - name: ratings
+    description: Rating statistics
+
+security:
+  - PocketBaseAuth: []
+
+paths:
+  # ============================================================
+  # Review CRUD
+  # ============================================================
+
+  /collections/template_reviews/records:
+    get:
+      tags: [reviews]
+      summary: List reviews for a template
+      description: Get all reviews for a specific template with pagination
+      operationId: listReviews
+      security: []
+      parameters:
+        - name: filter
+          in: query
+          required: true
+          description: Filter by template ID
+          schema:
+            type: string
+          example: template='rec_abc123'
+        - name: sort
+          in: query
+          description: Sort reviews
+          schema:
+            type: string
+            enum:
+              - -created         # Newest first
+              - -helpful_count   # Most helpful
+              - -rating          # Highest rated
+              - rating           # Lowest rated
+            default: -helpful_count
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: perPage
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+        - name: expand
+          in: query
+          schema:
+            type: string
+            default: user
+      responses:
+        '200':
+          description: Reviews retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                  perPage:
+                    type: integer
+                  totalItems:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Review'
+
+    post:
+      tags: [reviews]
+      summary: Submit a review
+      description: |
+        Create a new review for a template.
+        User can only submit one review per template.
+
+        **Requirements**: User Story 2.1
+      operationId: createReview
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewCreate'
+      responses:
+        '201':
+          description: Review created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '400':
+          description: Validation error or duplicate review
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /collections/template_reviews/records/{id}:
+    get:
+      tags: [reviews]
+      summary: Get review by ID
+      description: Fetch a single review
+      operationId: getReview
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: expand
+          in: query
+          schema:
+            type: string
+            default: user,template
+      responses:
+        '200':
+          description: Review found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '404':
+          description: Review not found
+
+    patch:
+      tags: [reviews]
+      summary: Update review
+      description: |
+        Update rating or comment.
+        Only review author can update.
+      operationId: updateReview
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewUpdate'
+      responses:
+        '200':
+          description: Review updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '400':
+          description: Validation error
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Not authorized to update this review
+        '404':
+          description: Review not found
+
+    delete:
+      tags: [reviews]
+      summary: Delete review
+      description: Only review author can delete
+      operationId: deleteReview
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Review deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Not authorized to delete this review
+        '404':
+          description: Review not found
+
+  # ============================================================
+  # Helpful Votes
+  # ============================================================
+
+  /reviews/{id}/helpful:
+    post:
+      tags: [reviews]
+      summary: Mark review as helpful
+      description: |
+        Increment helpful_count for a review.
+        User can only vote once per review.
+
+        **Requirements**: User Story 2.2
+      operationId: markReviewHelpful
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Review ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Vote recorded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  helpful_count:
+                    type: integer
+                    example: 42
+        '400':
+          description: Already voted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Review not found
+
+  # ============================================================
+  # Rating Statistics
+  # ============================================================
+
+  /templates/{templateId}/rating:
+    get:
+      tags: [ratings]
+      summary: Get rating statistics
+      description: |
+        Get aggregate rating statistics for a template.
+        Includes average, count, and distribution.
+
+        **Requirements**: User Story 2.3
+      operationId: getRatingStats
+      security: []
+      parameters:
+        - name: templateId
+          in: path
+          required: true
+          description: Template record ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Rating stats retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RatingStats'
+        '404':
+          description: Template not found
+
+  /templates/{templateId}/my-review:
+    get:
+      tags: [reviews]
+      summary: Get current user's review
+      description: Check if current user has already reviewed this template
+      operationId: getMyReview
+      parameters:
+        - name: templateId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User has reviewed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '404':
+          description: User has not reviewed yet
+
+# ============================================================
+# Components
+# ============================================================
+
+components:
+  securitySchemes:
+    PocketBaseAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Review:
+      type: object
+      description: Full review record
+      properties:
+        id:
+          type: string
+          example: rec_rev123
+        collectionId:
+          type: string
+        collectionName:
+          type: string
+          enum: [template_reviews]
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+        template:
+          type: string
+          description: Template ID (relation)
+        user:
+          type: string
+          description: User ID (relation)
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          example: 5
+        comment:
+          type: string
+          maxLength: 2000
+          nullable: true
+          example: 완벽한 템플릿입니다! 홀로그래픽 효과가 정말 멋져요.
+        helpful_count:
+          type: integer
+          minimum: 0
+          example: 12
+        is_verified_purchase:
+          type: boolean
+          description: True if user downloaded this template
+          example: true
+        expand:
+          type: object
+          description: Expanded relations
+          properties:
+            user:
+              type: object
+              properties:
+                id:
+                  type: string
+                username:
+                  type: string
+                avatar:
+                  type: string
+            template:
+              type: object
+              properties:
+                id:
+                  type: string
+                title:
+                  type: string
+      required:
+        - template
+        - user
+        - rating
+
+    ReviewCreate:
+      type: object
+      description: Request body for creating a review
+      properties:
+        template:
+          type: string
+          description: Template record ID
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+          maxLength: 2000
+          nullable: true
+      required:
+        - template
+        - rating
+      example:
+        template: rec_abc123
+        rating: 5
+        comment: 완벽한 템플릿입니다!
+
+    ReviewUpdate:
+      type: object
+      description: Request body for updating a review
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+          maxLength: 2000
+          nullable: true
+      example:
+        rating: 4
+        comment: 업데이트된 리뷰 내용
+
+    RatingStats:
+      type: object
+      description: Aggregate rating statistics
+      properties:
+        average:
+          type: number
+          minimum: 0
+          maximum: 5
+          example: 4.8
+        count:
+          type: integer
+          minimum: 0
+          example: 156
+        distribution:
+          type: object
+          description: Rating distribution (1-5 stars)
+          properties:
+            '5':
+              type: integer
+              example: 120
+            '4':
+              type: integer
+              example: 25
+            '3':
+              type: integer
+              example: 8
+            '2':
+              type: integer
+              example: 2
+            '1':
+              type: integer
+              example: 1
+        verified_purchase_percentage:
+          type: number
+          minimum: 0
+          maximum: 100
+          description: Percentage of verified purchase reviews
+          example: 85.3
+      example:
+        average: 4.8
+        count: 156
+        distribution:
+          '5': 120
+          '4': 25
+          '3': 8
+          '2': 2
+          '1': 1
+        verified_purchase_percentage: 85.3
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        data:
+          type: object
+          additionalProperties:
+            type: object
+
+  responses:
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 401
+            message: The request requires valid user authentication
