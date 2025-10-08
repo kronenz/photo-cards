@@ -2,29 +2,43 @@
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import AppInit from '../lib/components/AppInit.svelte';
+  import NotificationCenter from '../lib/components/unified/NotificationCenter.svelte';
+  import { currentUser, teamTheme } from '$lib/stores/unified';
   import '../lib/styles/apple-design-system.css';
   import '../app.css';
-  
+
   // 테마 관리
   let theme = 'dark';
   let mounted = false;
   let mobileMenuOpen = false;
+  let showNotifications = false;
+
+  // User data from unified store
+  $: user = $currentUser;
   
-  // Mock user data - replace with actual user store
-  let user: any = null;
-  
+  // Apply team theme CSS variables
+  $: if (browser && $teamTheme) {
+    const root = document.documentElement;
+    root.style.setProperty('--team-primary-color', $teamTheme.color || '');
+    root.classList.add('theme-kbo');
+  } else if (browser) {
+    const root = document.documentElement;
+    root.style.removeProperty('--team-primary-color');
+    root.classList.remove('theme-kbo');
+  }
+
   onMount(() => {
     mounted = true;
-    
+
     // Initialize theme from localStorage or system preference
     const savedTheme = localStorage.getItem('kbo-cards-theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     theme = savedTheme || (prefersDark ? 'dark' : 'light');
-    
+
     // Apply theme to document
     document.body.classList.remove('light', 'dark');
     document.body.classList.add(theme);
-    
+
     // Listen for system theme changes
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleThemeChange = (e: MediaQueryListEvent) => {
@@ -34,9 +48,9 @@
         document.body.classList.add(theme);
       }
     };
-    
+
     mediaQuery.addEventListener('change', handleThemeChange);
-    
+
     return () => {
       mediaQuery.removeEventListener('change', handleThemeChange);
     };
@@ -65,6 +79,9 @@
 
 <!-- App initialization component -->
 <AppInit />
+
+<!-- Notification Center -->
+<NotificationCenter isOpen={showNotifications} />
 
 <!-- 글로벌 레이아웃 -->
 <div class="app-layout" class:dark={theme === 'dark'} class:mounted>
@@ -95,7 +112,7 @@
       </button>
       
       <div class="nav-actions">
-        <button 
+        <button
           class="theme-toggle"
           on:click={toggleTheme}
           aria-label="테마 전환"
@@ -106,8 +123,19 @@
             ☀️
           {/if}
         </button>
-        
+
         {#if user}
+          <!-- Notification Button -->
+          <button
+            class="notification-btn"
+            data-testid="notification-btn"
+            on:click={() => showNotifications = !showNotifications}
+            aria-label="알림"
+          >
+            🔔
+            <span class="unread-badge" data-testid="unread-count">3</span>
+          </button>
+
           <div class="user-profile">
             <img src={user.avatar || '/default-avatar.png'} alt="Profile" class="profile-avatar" />
             <span class="user-name">{user.username}</span>
@@ -590,7 +618,55 @@
   .theme-toggle:active {
     transform: translateY(0) scale(1);
   }
-  
+
+  .notification-btn {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(250, 250, 255, 0.8) 100%
+    );
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.04),
+      inset 0 1px 1px rgba(255, 255, 255, 0.8);
+  }
+
+  .notification-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    border-color: rgba(102, 126, 234, 0.3);
+    box-shadow:
+      0 4px 16px rgba(102, 126, 234, 0.2),
+      0 8px 24px rgba(118, 75, 162, 0.1),
+      inset 0 1px 1px rgba(255, 255, 255, 0.9);
+  }
+
+  .unread-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    min-width: 18px;
+    height: 18px;
+    background: #ef4444;
+    color: white;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    border: 2px solid white;
+  }
+
   .auth-buttons {
     display: flex;
     align-items: center;

@@ -1,7 +1,74 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./src/**/*.{html,js,svelte,ts}'],
+  content: [
+    './src/**/*.{html,js,svelte,ts}',
+    './src/app.html',
+    './src/routes/**/*.{html,js,svelte,ts}',
+    './src/lib/**/*.{html,js,svelte,ts}',
+    './src/components/**/*.{html,js,svelte,ts}',
+  ],
   darkMode: 'class',
+  // PurgeCSS optimization settings
+  purge: {
+    enabled: process.env.NODE_ENV === 'production',
+    content: [
+      './src/**/*.{html,js,svelte,ts}',
+      './src/app.html',
+    ],
+    options: {
+      safelist: [
+        // Holographic blend modes for unified cards
+        'mix-blend-overlay',
+        'mix-blend-soft-light',
+        'mix-blend-hard-light',
+        // Transform perspective for 3D card flips
+        'transform-style-3d',
+        'backface-hidden',
+        'perspective-1000',
+        // Dynamic classes that might be missed
+        /^bg-kbo-/,
+        /^text-kbo-/,
+        /^border-kbo-/,
+        /^shadow-kbo-/,
+        /^from-kbo-/,
+        /^to-kbo-/,
+        /^via-kbo-/,
+        /^holographic-/,
+        /^apple-/,
+        /^glass-/,
+        // Animation classes
+        /^animate-/,
+        /^transition-/,
+        /^duration-/,
+        /^ease-/,
+        // Responsive variants
+        /^sm:/,
+        /^md:/,
+        /^lg:/,
+        /^xl:/,
+        /^2xl:/,
+        // Hover and focus states
+        /^hover:/,
+        /^focus:/,
+        /^active:/,
+        /^group-hover:/,
+        // Dark mode variants
+        /^dark:/,
+        // Arbitrary values
+        /^\[.*\]$/,
+      ],
+      // Blocklist for unused classes
+      blocklist: [
+        // Remove unused default classes
+        'container',
+        'prose',
+        'prose-sm',
+        'prose-lg',
+        'prose-xl',
+        'prose-2xl',
+      ],
+    },
+  },
   safelist: [
     // Holographic blend modes for unified cards
     'mix-blend-overlay',

@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount, onDestroy } from 'svelte';
+  import { createFocusTrap, type FocusTrap } from '$lib/utils/focus-trap';
   import UnifiedCard from './v2/UnifiedCard.svelte';
 
   export let show = false;
@@ -33,6 +34,11 @@
   let visibility: 'public' | 'private' | 'followers' = 'public';
   let allowCollect = true;
   let autoPost = false;
+
+  // Focus trap
+  let modalContainer: HTMLDivElement;
+  let focusTrap: FocusTrap | null = null;
+  let previouslyFocusedElement: HTMLElement | null = null;
 
   // KBO 팀 목록
   const teams = [
@@ -167,17 +173,54 @@
       closeModal();
     }
   }
+
+  // Focus trap management
+  function initializeFocusTrap() {
+    if (modalContainer && show) {
+      previouslyFocusedElement = document.activeElement as HTMLElement;
+      focusTrap = createFocusTrap(modalContainer, {
+        returnFocusTo: previouslyFocusedElement,
+        trapFocus: true,
+        allowEscape: true,
+        preventScroll: true,
+        onEscape: closeModal,
+      });
+      focusTrap.activate();
+    }
+  }
+
+  function cleanupFocusTrap() {
+    if (focusTrap) {
+      focusTrap.deactivate();
+      focusTrap = null;
+    }
+  }
+
+  // Reactive statement to handle focus trap when modal opens/closes
+  $: if (show && modalContainer) {
+    initializeFocusTrap();
+  } else if (!show && focusTrap) {
+    cleanupFocusTrap();
+  }
+
+  onDestroy(() => {
+    cleanupFocusTrap();
+  });
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
 
 {#if show}
   <div class="modal-overlay" on:click={closeModal}>
-    <div class="modal-container" on:click|stopPropagation>
+    <div class="modal-container" on:click|stopPropagation role="dialog" aria-modal="true" aria-labelledby="modal-title" bind:this={modalContainer}>
       <!-- Header -->
       <div class="modal-header">
-        <h2>🎨 나만의 카드 만들기</h2>
-        <button class="close-btn" on:click={closeModal}>✕</button>
+        <h2 id="modal-title">🎨 나만의 카드 만들기</h2>
+        <button 
+          class="close-btn" 
+          on:click={closeModal}
+          aria-label="모달 닫기"
+        >✕</button>
       </div>
 
       <!-- Content -->

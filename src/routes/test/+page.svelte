@@ -1,7 +1,9 @@
 <script lang="ts">
 	import EnhancedCard from '$lib/components/EnhancedCard.svelte';
 	import UnifiedHolographicCard from '$lib/components/unified/UnifiedHolographicCard.svelte';
+	import FPSCounterOverlay from '$lib/components/FPSCounterOverlay.svelte';
 	import type { UnifiedCard } from '$lib/types/unified';
+	import { dev } from '$app/environment';
 
 	// Enhanced card event handlers
 	function handleCardFlip(event: CustomEvent) {
@@ -486,3 +488,14 @@
 		}
 	}
 </style>
+
+<!-- FPS Counter Overlay for Development Mode -->
+{#if dev}
+	<FPSCounterOverlay 
+		enabled={true}
+		position="top-right"
+		updateInterval={100}
+		showDetails={true}
+		autoHide={false}
+	/>
+{/if}

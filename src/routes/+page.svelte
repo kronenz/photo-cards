@@ -3,6 +3,9 @@
   import CollectionStack from '$lib/components/v2/CollectionStack.svelte';
   import ShowoffModal from '$lib/components/ShowoffModal.svelte';
   import CreateCardModal from '$lib/components/CreateCardModal.svelte';
+  import FPSCounterOverlay from '$lib/components/FPSCounterOverlay.svelte';
+  import SkipLinks from '$lib/components/SkipLinks.svelte';
+  import { dev } from '$app/environment';
 
   // KBO 10개 구단 데이터
   const teams = [
@@ -265,6 +268,9 @@
   <meta name="description" content="생동감 있고 화려한 KBO 야구 카드 컬렉션 플랫폼" />
 </svelte:head>
 
+<!-- Skip Links for Accessibility -->
+<SkipLinks />
+
 <div
   class="main-page"
   class:team-theme={selectedTeam !== null}
@@ -307,7 +313,7 @@
   </section>
 
   <!-- My Collection Dashboard -->
-  <section class="dashboard-section">
+  <section id="main-collection" class="dashboard-section" tabindex="-1">
     <div class="section-header">
       <div class="header-content">
         <h2 class="section-title">나의 컬렉션 대시보드</h2>
@@ -351,7 +357,7 @@
   </section>
 
   <!-- Collections Section -->
-  <section class="collections-section">
+  <section id="main-content" class="collections-section" tabindex="-1">
     <div class="section-header">
       <h2 class="section-title">나의 컬렉션</h2>
       <p class="section-subtitle">카드를 클릭하여 컬렉션을 펼쳐보세요</p>
@@ -412,7 +418,7 @@
   {/if}
 
   <!-- Community Feed Section -->
-  <section class="community-feed-section">
+  <section id="main-feed" class="community-feed-section" tabindex="-1">
     <div class="section-header">
       <h2 class="section-title">커뮤니티 피드</h2>
       <p class="section-subtitle">팬들이 자랑하는 특별한 카드들</p>
@@ -539,7 +545,7 @@
   </section>
 
   <!-- KBO Team Selection Section -->
-  <section class="team-selection-section">
+  <section id="main-teams" class="team-selection-section" tabindex="-1">
     <div class="section-header">
       <h2 class="section-title">나의 팀 선택하기</h2>
       <p class="section-subtitle">좋아하는 구단을 선택하면 구단 테마가 적용됩니다</p>
@@ -1660,3 +1666,14 @@
     }
   }
 </style>
+
+<!-- FPS Counter Overlay for Development Mode -->
+{#if dev}
+  <FPSCounterOverlay 
+    enabled={true}
+    position="top-right"
+    updateInterval={100}
+    showDetails={true}
+    autoHide={false}
+  />
+{/if}

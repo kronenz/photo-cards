@@ -96,22 +96,22 @@ description: "Implementation tasks for Integrated Holographic Platform"
 
 ### Tests for User Story 2 (Layout Integration)
 
-- [ ] T029 [P] [US2] Create `tests/unit/IntegratedMainPage.test.ts` - Test section visibility, layout rendering, user prop handling
-- [ ] T030 [P] [US2] Create `tests/integration/state-sync.test.ts` - Test stores synchronize between CollectionDashboard and CommunityFeed
-- [ ] T031 [US2] Create `tests/e2e/main-page-navigation.spec.ts` - Test user can navigate from main page to collections, feed, teams
+- [x] T029 [P] [US2] Create `tests/unit/IntegratedMainPage.test.ts` - Test section visibility, layout rendering, user prop handling ✅
+- [x] T030 [P] [US2] Create `tests/integration/state-sync.test.ts` - Test stores synchronize between CollectionDashboard and CommunityFeed ✅
+- [x] T031 [US2] Create `tests/e2e/main-page-navigation.spec.ts` - Test user can navigate from main page to collections, feed, teams ✅
 
 ### Implementation for User Story 2
 
-- [ ] T032 [P] [US2] Create `src/lib/components/unified/IntegratedMainPage.svelte` - Main layout component with sections (hero, collection-dashboard, kbo-teams, community-feed, recommendations)
-- [ ] T033 [US2] Integrate existing CollectionDashboard component into IntegratedMainPage
-- [ ] T034 [US2] Implement CollectionDashboard configuration (latestCardsCount: 3, showProgress: true, showStats: true, maxCollections: 5)
-- [ ] T035 [US2] Integrate existing CommunityFeed component (Phase 4) into IntegratedMainPage
-- [ ] T036 [US2] Implement CommunityFeed configuration (layout: 'masonry', columns: 3, postsPerPage: 20, filter: 'following', infiniteScroll: true)
-- [ ] T037 [P] [US2] Create `src/lib/components/unified/ShowoffModal.svelte` - Modal for selecting and posting cards to community
-- [ ] T038 [US2] Implement "자랑하기" button in CollectionDashboard that opens ShowoffModal
-- [ ] T039 [US2] Update `src/routes/+page.svelte` to use IntegratedMainPage component
-- [ ] T040 [US2] Implement responsive breakpoints (mobile: 1 col, tablet: 2 col, desktop: 3 col) in IntegratedMainPage
-- [ ] T041 [US2] Add infinite scroll loading indicator and loadmore event handler
+- [x] T032 [P] [US2] Create `src/lib/components/unified/IntegratedMainPage.svelte` - Main layout component with sections (hero, collection-dashboard, kbo-teams, community-feed, recommendations) ✅
+- [x] T033 [US2] Integrate existing CollectionDashboard component into IntegratedMainPage ✅
+- [x] T034 [US2] Implement CollectionDashboard configuration (latestCardsCount: 3, showProgress: true, showStats: true, maxCollections: 5) ✅
+- [x] T035 [US2] Integrate existing CommunityFeed component (Phase 4) into IntegratedMainPage ✅
+- [x] T036 [US2] Implement CommunityFeed configuration (layout: 'masonry', columns: 3, postsPerPage: 20, filter: 'following', infiniteScroll: true) ✅
+- [x] T037 [P] [US2] Create `src/lib/components/unified/ShowoffModal.svelte` - Modal for selecting and posting cards to community ✅
+- [x] T038 [US2] Implement "자랑하기" button in CollectionDashboard that opens ShowoffModal ✅
+- [x] T039 [US2] Update `src/routes/+page.svelte` to use IntegratedMainPage component ✅
+- [x] T040 [US2] Implement responsive breakpoints (mobile: 1 col, tablet: 2 col, desktop: 3 col) in IntegratedMainPage ✅
+- [x] T041 [US2] Add infinite scroll loading indicator and loadmore event handler ✅
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work - cards display consistently, main page integrates all sections
 
@@ -125,15 +125,15 @@ description: "Implementation tasks for Integrated Holographic Platform"
 
 ### Tests for User Story 5 (Performance Validation - NON-NEGOTIABLE)
 
-- [ ] T042 [P] [US5] Create `tests/performance/fps-validation.test.ts` - Automated FPS measurement using Chrome DevTools Performance API
-- [ ] T043 [P] [US5] Create `tests/accessibility/keyboard-nav.test.ts` - Test Tab/Enter/Space/Esc navigation with axe-core
-- [ ] T044 [P] [US5] Create `tests/accessibility/screen-reader.test.ts` - Test ARIA labels and announcements
+- [x] T042 [P] [US5] Create `tests/performance/fps-validation.test.ts` - Automated FPS measurement using Chrome DevTools Performance API ✅
+- [x] T043 [P] [US5] Create `tests/accessibility/keyboard-nav.test.ts` - Test Tab/Enter/Space/Esc navigation with axe-core ✅
+- [x] T044 [P] [US5] Create `tests/accessibility/screen-reader.test.ts` - Test ARIA labels and announcements ✅
 - [ ] T045 [US5] Create `tests/e2e/mobile-touch.spec.ts` - Test touch responsiveness on mobile viewport
 
 ### Implementation for User Story 5
 
-- [ ] T046 [P] [US5] Implement virtual scrolling in IntegratedMainPage using @tanstack/svelte-virtual for 100+ cards
-- [ ] T047 [US5] Add CSS GPU acceleration hints (will-change: transform, translateZ(0)) to UnifiedHolographicCard
+- [x] T046 [P] [US5] Implement virtual scrolling in IntegratedMainPage using @tanstack/svelte-virtual for 100+ cards ✅
+- [x] T047 [US5] Add CSS GPU acceleration hints (will-change: transform, translateZ(0)) to UnifiedHolographicCard ✅
 - [ ] T048 [US5] Implement throttled mouse move handler (16ms throttle) in UnifiedHolographicCard
 - [ ] T049 [US5] Add performance monitoring in dev mode (FPS counter overlay) using src/lib/utils/performance.ts
 - [ ] T050 [US5] Optimize Tailwind CSS bundle with PurgeCSS configuration
@@ -154,23 +154,23 @@ description: "Implementation tasks for Integrated Holographic Platform"
 
 ### Tests for User Story 3 (Theme & Leveling System)
 
-- [ ] T055 [P] [US3] Create `tests/unit/KBOTeamsSection.test.ts` - Test team selection, theme application, fan level calculations
-- [ ] T056 [P] [US3] Create `tests/integration/team-theme.test.ts` - Test theme changes propagate to all components
-- [ ] T057 [US3] Create `tests/e2e/fan-level-progression.spec.ts` - Test user activity increases fan level with visual feedback
+- [x] T055 [P] [US3] Create `tests/unit/KBOTeamsSection.test.ts` - Test team selection, theme application, fan level calculations
+- [x] T056 [P] [US3] Create `tests/integration/team-theme.test.ts` - Test theme changes propagate to all components
+- [x] T057 [US3] Create `tests/e2e/fan-level-progression.spec.ts` - Test user activity increases fan level with visual feedback
 
 ### Implementation for User Story 3
 
-- [ ] T058 [P] [US3] Create `src/lib/components/unified/KBOTeamsSection.svelte` - Display 10 KBO teams with team colors and logos
-- [ ] T059 [US3] Implement team selection handler that updates currentUser.fanProfile.favoriteTeam in stores
-- [ ] T060 [US3] Update `src/routes/+layout.svelte` to apply teamTheme from unified stores (CSS variables for primary/secondary colors)
-- [ ] T061 [P] [US3] Create `src/lib/data/kbo-teams.ts` - Static data for 10 KBO teams (LG, Doosan, KIA, Samsung, Lotte, SSG, NC, Hanwha, KT, Kiwoom) with colors, logos, mascots
-- [ ] T062 [P] [US3] Create `src/lib/data/fan-levels.ts` - Static data for 5 fan levels (야구 입문자, 외야석 팬, 응원단 멤버, 시즌권 홀더, 구단 레전드) with requiredPoints and perks
-- [ ] T063 [US3] Implement fan level calculation logic in `src/lib/utils/fan-level.ts` - Check user points and upgrade level
-- [ ] T064 [US3] Add fan level upgrade notification component (toast/modal) with celebration animation
-- [ ] T065 [P] [US3] Create `src/lib/components/unified/TodayGameBanner.svelte` - Display today's game info (opponent, time, score) for user's favorite team
-- [ ] T066 [US3] Integrate TodayGameBanner into IntegratedMainPage hero section
-- [ ] T067 [US3] Add special event banner support in IntegratedMainPage (Korean Series, All-Star Game) with conditional rendering
-- [ ] T068 [P] [US3] Create `src/routes/fanclub/[teamId]/+page.svelte` - Team-specific fanclub page with team theme, fan rankings, team cards
+- [x] T058 [P] [US3] Create `src/lib/components/unified/KBOTeamsSection.svelte` - Display 10 KBO teams with team colors and logos
+- [x] T059 [US3] Implement team selection handler that updates currentUser.fanProfile.favoriteTeam in stores
+- [x] T060 [US3] Update `src/routes/+layout.svelte` to apply teamTheme from unified stores (CSS variables for primary/secondary colors)
+- [x] T061 [P] [US3] Create `src/lib/data/kbo-teams.ts` - Static data for 10 KBO teams (LG, Doosan, KIA, Samsung, Lotte, SSG, NC, Hanwha, KT, Kiwoom) with colors, logos, mascots
+- [x] T062 [P] [US3] Create `src/lib/data/fan-levels.ts` - Static data for 5 fan levels (야구 입문자, 외야석 팬, 응원단 멤버, 시즌권 홀더, 구단 레전드) with requiredPoints and perks
+- [x] T063 [US3] Implement fan level calculation logic in `src/lib/utils/fan-level.ts` - Check user points and upgrade level
+- [x] T064 [US3] Add fan level upgrade notification component (toast/modal) with celebration animation
+- [x] T065 [P] [US3] Create `src/lib/components/unified/TodayGameBanner.svelte` - Display today's game info (opponent, time, score) for user's favorite team
+- [x] T066 [US3] Integrate TodayGameBanner into IntegratedMainPage hero section
+- [x] T067 [US3] Add special event banner support in IntegratedMainPage (Korean Series, All-Star Game) with conditional rendering
+- [x] T068 [P] [US3] Create `src/routes/fanclub/[teamId]/+page.svelte` - Team-specific fanclub page with team theme, fan rankings, team cards
 
 **Checkpoint**: User Story 3 complete - KBO fan culture features integrated, main page supports team themes
 
@@ -184,22 +184,22 @@ description: "Implementation tasks for Integrated Holographic Platform"
 
 ### Tests for User Story 4 (Social Features)
 
-- [ ] T069 [P] [US4] Create `tests/unit/UnifiedCommunityFeed.test.ts` - Test post rendering, filter logic, pagination
-- [ ] T070 [P] [US4] Create `tests/integration/social-actions.test.ts` - Test like/comment/follow actions update stores and trigger notifications
-- [ ] T071 [US4] Create `tests/e2e/community-workflow.spec.ts` - Test user shares card, receives like notification, follows creator
+- [x] T069 [P] [US4] Create `tests/unit/UnifiedCommunityFeed.test.ts` - Test post rendering, filter logic, pagination
+- [x] T070 [P] [US4] Create `tests/integration/social-actions.test.ts` - Test like/comment/follow actions update stores and trigger notifications
+- [x] T071 [US4] Create `tests/e2e/community-workflow.spec.ts` - Test user shares card, receives like notification, follows creator
 
 ### Implementation for User Story 4
 
-- [ ] T072 [P] [US4] Create `src/lib/components/unified/UnifiedCommunityFeed.svelte` - Wrapper for Phase 4 CommunityFeed with unified stores
-- [ ] T073 [US4] Implement card sharing flow: ShowoffModal → create CommunityPost → update unifiedCards store → trigger PocketBase realtime notification
-- [ ] T074 [US4] Implement like action: update card.community.metadata.likes → save to PocketBase → send notification to creator
-- [ ] T075 [US4] Implement comment system: add comment to CommunityPost → update PocketBase → notify creator
-- [ ] T076 [US4] Implement follow system: update UnifiedUser.creatorProfile.stats.followers → save to PocketBase → send notification
-- [ ] T077 [US4] Implement personalized feed algorithm: prioritize followed creators' cards in CommunityFeed
-- [ ] T078 [P] [US4] Create `src/lib/components/unified/NotificationCenter.svelte` - Display realtime notifications (likes, comments, follows, new cards)
-- [ ] T079 [US4] Add NotificationCenter to IntegratedMainPage header with notification count badge
-- [ ] T080 [US4] Implement "템플릿으로 저장" button in card detail view that creates template entry in PocketBase
-- [ ] T081 [US4] Update ShowoffModal to support visibility options (public, fanclub, followers)
+- [x] T072 [P] [US4] Create `src/lib/components/unified/UnifiedCommunityFeed.svelte` - Wrapper for Phase 4 CommunityFeed with unified stores
+- [x] T073 [US4] Implement card sharing flow: ShowoffModal → create CommunityPost → update unifiedCards store → trigger PocketBase realtime notification
+- [x] T074 [US4] Implement like action: update card.community.metadata.likes → save to PocketBase → send notification to creator
+- [x] T075 [US4] Implement comment system: add comment to CommunityPost → update PocketBase → notify creator
+- [x] T076 [US4] Implement follow system: update UnifiedUser.creatorProfile.stats.followers → save to PocketBase → send notification
+- [x] T077 [US4] Implement personalized feed algorithm: prioritize followed creators' cards in CommunityFeed
+- [x] T078 [P] [US4] Create `src/lib/components/unified/NotificationCenter.svelte` - Display realtime notifications (likes, comments, follows, new cards)
+- [x] T079 [US4] Add NotificationCenter to IntegratedMainPage header with notification count badge
+- [x] T080 [US4] Implement "템플릿으로 저장" button in card detail view that creates template entry in PocketBase
+- [x] T081 [US4] Update ShowoffModal to support visibility options (public, fanclub, followers)
 
 **Checkpoint**: All user stories (1, 2, 3, 4, 5) complete - Full integrated platform functional
 

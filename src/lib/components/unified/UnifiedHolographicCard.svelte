@@ -24,6 +24,7 @@
   import { setContext, onMount } from 'svelte';
   import { writable, type Writable } from 'svelte/store';
   import type { UnifiedCard, CardContext } from '$lib/types/unified';
+  import { throttle } from '$lib/utils/mobileOptimization';
 
   // ===== PROPS =====
 
@@ -50,6 +51,9 @@
   // Mouse/Touch 3D rotation values
   let rotateX = 0;
   let rotateY = 0;
+
+  // Throttled mouse handler for 60fps performance
+  let throttledPointerMove: ((e: PointerEvent) => void) | null = null;
 
   // Image error handling state
   let frontImageError = false;
@@ -90,25 +94,40 @@
 
   // ===== EVENT HANDLERS (v2-prototype advanced effects) =====
 
+  // Initialize throttled pointer move handler
+  function initializeThrottledHandler() {
+    if (throttledPointerMove) return;
+    
+    throttledPointerMove = throttle((e: PointerEvent) => {
+      if (!interactive || !enableHolographic || !cardRotator) return;
+
+      const rect = cardRotator.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      // Normalized position (0-100%)
+      const posX = (x / rect.width) * 100;
+      const posY = (y / rect.height) * 100;
+      $holographicParams = { x: posX, y: posY };
+
+      // 3D rotation effect (±15 degrees)
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      rotateY = ((x - centerX) / centerX) * 15;
+      rotateX = ((centerY - y) / centerY) * 15;
+
+      isInteracting = true;
+    }, 16); // 16ms throttle for 60fps performance
+  }
+
   function handlePointerMove(e: PointerEvent) {
-    if (!interactive || !enableHolographic || !cardRotator) return;
-
-    const rect = cardRotator.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    // Normalized position (0-100%)
-    const posX = (x / rect.width) * 100;
-    const posY = (y / rect.height) * 100;
-    $holographicParams = { x: posX, y: posY };
-
-    // 3D rotation effect (±15 degrees)
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    rotateY = ((x - centerX) / centerX) * 15;
-    rotateX = ((centerY - y) / centerY) * 15;
-
-    isInteracting = true;
+    // Initialize throttled handler if not already done
+    if (!throttledPointerMove) {
+      initializeThrottledHandler();
+    }
+    
+    // Use throttled version
+    throttledPointerMove!(e);
   }
 
   function handlePointerLeave() {
@@ -437,6 +456,9 @@
     transform-style: preserve-3d;
     transform-origin: center center;
     will-change: transform;
+    /* GPU acceleration hints */
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
 
   .card-face {
@@ -470,6 +492,9 @@
     inset: 0;
     pointer-events: none;
     transition: background 16ms linear;
+    /* GPU acceleration for smooth animations */
+    will-change: opacity, transform;
+    transform: translateZ(0);
   }
 
   .holographic-shimmer {
@@ -675,3 +700,12 @@
     display: none;
   }
 </style>
+
+<script>
+  // ===== LIFECYCLE =====
+  
+  onMount(() => {
+    // Initialize throttled pointer move handler for 60fps performance
+    initializeThrottledHandler();
+  });
+</script>
