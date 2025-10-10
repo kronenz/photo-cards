@@ -49,3 +49,14 @@ uploads/
 Thumbs.db
 .DS_Store
 .env
+
+# Vercel
+.vercel/
+
+# Backup files
+*.backup
+*.bak
+
+# Stats and reports
+stats.html
+*.html

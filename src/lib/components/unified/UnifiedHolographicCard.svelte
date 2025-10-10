@@ -230,6 +230,13 @@
   $: ariaLabel = `${card.title}, ${card.photocard.rarity} rarity card${
     card.community.creator !== 'system' ? `, created by ${card.community.creator}` : ''
   }`;
+
+  // ===== LIFECYCLE =====
+  
+  onMount(() => {
+    // Initialize throttled pointer move handler for 60fps performance
+    initializeThrottledHandler();
+  });
 </script>
 
 <div
@@ -386,40 +393,41 @@
               loading="lazy"
               on:load={handleBackImageLoad}
               on:error={handleBackImageError}
-          />
-
-          <!-- Holographic on back -->
-          {#if enableHolographic && interactive}
-            <div
-              class="holographic-overlay"
-              style="
-                background: {holographicGradient};
-                mix-blend-mode: {card.holographic.effect};
-                opacity: {card.holographic.intensity / 100};
-              "
             />
+
+            <!-- Holographic on back -->
+            {#if enableHolographic && interactive}
+              <div
+                class="holographic-overlay"
+                style="
+                  background: {holographicGradient};
+                  mix-blend-mode: {card.holographic.effect};
+                  opacity: {card.holographic.intensity / 100};
+                "
+              />
+            {/if}
+
+            <!-- Back Info -->
+            <div class="back-info {currentSize.fontSize}">
+              <h3 class="back-title">{card.title}</h3>
+              <p class="back-rarity">{card.photocard.rarity}</p>
+
+              {#if card.photocard.stats.totalViews > 0}
+                <div class="back-stats">
+                  <p>{card.photocard.stats.totalViews} views</p>
+                  <p>{card.photocard.stats.uniqueCollectors} collectors</p>
+                </div>
+              {/if}
+
+              {#if card.community.tags.length > 0}
+                <div class="back-tags">
+                  {#each card.community.tags.slice(0, 3) as tag}
+                    <span class="tag">#{tag}</span>
+                  {/each}
+                </div>
+              {/if}
+            </div>
           {/if}
-
-          <!-- Back Info -->
-          <div class="back-info {currentSize.fontSize}">
-            <h3 class="back-title">{card.title}</h3>
-            <p class="back-rarity">{card.photocard.rarity}</p>
-
-            {#if card.photocard.stats.totalViews > 0}
-              <div class="back-stats">
-                <p>{card.photocard.stats.totalViews} views</p>
-                <p>{card.photocard.stats.uniqueCollectors} collectors</p>
-              </div>
-            {/if}
-
-            {#if card.community.tags.length > 0}
-              <div class="back-tags">
-                {#each card.community.tags.slice(0, 3) as tag}
-                  <span class="tag">#{tag}</span>
-                {/each}
-              </div>
-            {/if}
-          </div>
         {/if}
       </div>
     </div>
@@ -700,12 +708,3 @@
     display: none;
   }
 </style>
-
-<script>
-  // ===== LIFECYCLE =====
-  
-  onMount(() => {
-    // Initialize throttled pointer move handler for 60fps performance
-    initializeThrottledHandler();
-  });
-</script>

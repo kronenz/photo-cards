@@ -57,7 +57,7 @@
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
     "@tailwindcss/postcss": "^4.1.14",
     "@tanstack/svelte-virtual": "^3.13.12",
-    "bits-ui": "^1.8.0",
+    "bits-ui": "^0.22.0",
     "jszip": "^3.10.1",
     "phash-js": "^0.3.0",
     "pocketbase": "^0.21.4",

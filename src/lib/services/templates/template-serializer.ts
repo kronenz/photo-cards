@@ -9,7 +9,18 @@
 
 import type { TemplateJSON } from '$lib/types/template';
 import type { UnifiedHolographicCard } from '$lib/types/card';
-import { createHash } from 'crypto';
+
+// Simple hash function for browser environment
+function simpleHash(str: string): string {
+  let hash = 0;
+  if (str.length === 0) return hash.toString();
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return Math.abs(hash).toString(16);
+}
 
 export class TemplateSerializer {
 	/**
@@ -127,7 +138,7 @@ export class TemplateSerializer {
 	 */
 	calculateHash(json: TemplateJSON): string {
 		const jsonString = JSON.stringify(json);
-		const hash = createHash('sha256').update(jsonString).digest('hex');
+		const hash = simpleHash(jsonString);
 		return `sha256:${hash}`;
 	}
 
@@ -240,7 +251,7 @@ export class TemplateSerializer {
 
 	private hashData(data: string | File | Blob): string {
 		const dataString = typeof data === 'string' ? data : data.toString();
-		return createHash('sha256').update(dataString).digest('hex');
+		return simpleHash(dataString);
 	}
 }
 

@@ -1,174 +1,102 @@
 <script lang="ts">
-  import { currentUser } from '$lib/stores/unified';
-  import { getTeamById, type KBOTeam } from '$lib/data/kbo-teams';
   import { onMount } from 'svelte';
-  import { fade, fly } from 'svelte/transition';
-
-  // Game data interface
-  interface GameInfo {
-    id: string;
-    homeTeam: KBOTeam;
-    awayTeam: KBOTeam;
-    gameTime: Date;
-    stadium: string;
-    status: 'scheduled' | 'live' | 'finished';
-    score?: {
-      home: number;
-      away: number;
-    };
-    inning?: string;
-    broadcaster?: string;
-  }
+  import { fly, fade } from 'svelte/transition';
 
   // Props
+  export let className: string = '';
   export let compact: boolean = false;
   export let showBroadcaster: boolean = true;
 
   // State
-  let todayGame: GameInfo | null = null;
-  let favoriteTeam: KBOTeam | null = null;
-  let isUserTeamPlaying: boolean = false;
-  let loading: boolean = true;
+  let loading = true;
+  let todayGame: any = null;
+  let favoriteTeam: any = null;
 
-  // Reactive statements
-  $: if ($currentUser?.fanProfile.favoriteTeam) {
-    favoriteTeam = getTeamById($currentUser.fanProfile.favoriteTeam) || null;
-    loadTodayGame();
-  }
+  // Mock data for testing
+  const mockTodayGame = {
+    id: 'game-001',
+    status: 'live',
+    inning: '9회 초',
+    broadcaster: 'KBSN',
+    homeTeam: {
+      name: '삼성 라이온즈',
+      logo: '/static/images/kbo/samsung.webp',
+      color: '#1E3A8A'
+    },
+    awayTeam: {
+      name: 'LG 트윈스',
+      logo: '/static/images/kbo/lg.webp',
+      color: '#DC2626'
+    },
+    score: {
+      home: 5,
+      away: 3
+    },
+    stadium: '대구 삼성 라이온즈 파크',
+    gameTime: new Date()
+  };
+
+  const mockFavoriteTeam = {
+    name: '삼성 라이온즈',
+    color: '#1E3A8A',
+    logo: '/static/images/kbo/samsung.webp'
+  };
 
   // Functions
-  async function loadTodayGame() {
-    loading = true;
-
-    try {
-      // In production, this would fetch from API
-      // For now, we'll use mock data
-      const mockGame = await fetchTodayGame(favoriteTeam?.id);
-
-      if (mockGame) {
-        todayGame = mockGame;
-        isUserTeamPlaying =
-          mockGame.homeTeam.id === favoriteTeam?.id ||
-          mockGame.awayTeam.id === favoriteTeam?.id;
-      } else {
-        todayGame = null;
-        isUserTeamPlaying = false;
-      }
-    } catch (error) {
-      console.error('Failed to load today\'s game:', error);
-      todayGame = null;
-    } finally {
-      loading = false;
-    }
-  }
-
-  // Mock API call - replace with actual API integration
-  async function fetchTodayGame(teamId?: string): Promise<GameInfo | null> {
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    if (!teamId) return null;
-
-    // Mock game data
-    const team = getTeamById(teamId);
-    if (!team) return null;
-
-    // Simulate a game for the user's team
-    const opponents = [
-      'team-doosan-bears',
-      'team-kia-tigers',
-      'team-samsung-lions',
-      'team-lotte-giants',
-    ];
-    const randomOpponent = opponents[Math.floor(Math.random() * opponents.length)];
-    const opponentTeam = getTeamById(randomOpponent);
-
-    if (!opponentTeam) return null;
-
-    const now = new Date();
-    const gameTime = new Date(now);
-    gameTime.setHours(18, 30, 0, 0); // 6:30 PM game time
-
-    // Determine game status
-    let status: 'scheduled' | 'live' | 'finished' = 'scheduled';
-    let score: { home: number; away: number } | undefined;
-    let inning: string | undefined;
-
-    const currentHour = now.getHours();
-    if (currentHour >= 18 && currentHour < 21) {
-      status = 'live';
-      score = {
-        home: Math.floor(Math.random() * 8),
-        away: Math.floor(Math.random() * 8),
-      };
-      inning = `${Math.floor(Math.random() * 9) + 1}회`;
-    } else if (currentHour >= 21) {
-      status = 'finished';
-      score = {
-        home: Math.floor(Math.random() * 10),
-        away: Math.floor(Math.random() * 10),
-      };
-    }
-
-    return {
-      id: `game-${now.toISOString().split('T')[0]}`,
-      homeTeam: team,
-      awayTeam: opponentTeam,
-      gameTime,
-      stadium: team.stadium,
-      status,
-      score,
-      inning,
-      broadcaster: 'SPOTV',
-    };
-  }
-
-  function formatGameTime(date: Date): string {
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-  }
-
-  function getStatusBadge(status: string): { text: string; color: string } {
+  function getStatusBadge(status: string) {
     switch (status) {
       case 'live':
         return { text: 'LIVE', color: 'bg-red-500' };
+      case 'scheduled':
+        return { text: '예정', color: 'bg-blue-500' };
       case 'finished':
-        return { text: '경기종료', color: 'bg-gray-500' };
+        return { text: '종료', color: 'bg-gray-500' };
       default:
-        return { text: '경기예정', color: 'bg-blue-500' };
+        return { text: '알 수 없음', color: 'bg-gray-500' };
     }
   }
 
+  function formatGameTime(gameTime: Date) {
+    return gameTime.toLocaleTimeString('ko-KR', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  // Lifecycle
   onMount(() => {
-    if (favoriteTeam) {
-      loadTodayGame();
-    } else {
+    // Simulate loading
+    setTimeout(() => {
+      todayGame = mockTodayGame;
+      favoriteTeam = mockFavoriteTeam;
       loading = false;
-    }
+    }, 1000);
   });
 </script>
 
-{#if !loading && todayGame && isUserTeamPlaying}
-  <div
-    class="today-game-banner"
-    class:compact
-    transition:fly={{ y: -20, duration: 400 }}
-    data-testid="today-game-banner"
-  >
+<div
+  class="today-game-banner {className}"
+  class:compact
+  transition:fly={{ y: -20, duration: 400 }}
+  data-testid="today-game-banner"
+>
+  {#if loading}
+    <div class="banner-container rounded-2xl overflow-hidden shadow-lg bg-gray-100 animate-pulse">
+      <div class="p-4">
+        <div class="h-4 bg-gray-300 rounded w-1/4 mb-2"></div>
+        <div class="h-8 bg-gray-300 rounded w-3/4"></div>
+      </div>
+    </div>
+  {:else if todayGame}
     <div
       class="banner-container rounded-2xl overflow-hidden shadow-lg"
-      style="background: linear-gradient(135deg, {favoriteTeam?.color}15 0%, {favoriteTeam
-        ?.color}05 100%); border: 2px solid {favoriteTeam?.color}30"
+      style="background: linear-gradient(135deg, {favoriteTeam?.color}15 0%, {favoriteTeam?.color}05 100%); border: 2px solid {favoriteTeam?.color}30"
     >
       <!-- Status Badge -->
-      {@const statusBadge = getStatusBadge(todayGame.status)}
       <div class="banner-header flex items-center justify-between p-4 pb-2">
         <div class="flex items-center space-x-2">
-          <span
-            class="status-badge px-3 py-1 rounded-full text-xs font-bold text-white {statusBadge.color} animate-pulse"
-          >
-            {statusBadge.text}
+          <span class="status-badge px-3 py-1 rounded-full text-xs font-bold text-white {getStatusBadge(todayGame.status).color} animate-pulse">
+            {getStatusBadge(todayGame.status).text}
           </span>
           {#if todayGame.status === 'live' && todayGame.inning}
             <span class="text-sm font-medium text-gray-600">{todayGame.inning}</span>
@@ -179,9 +107,7 @@
           <div class="flex items-center space-x-1 text-xs text-gray-500">
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
-              <path
-                d="M14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"
-              />
+              <path d="M14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
             </svg>
             <span>{todayGame.broadcaster}</span>
           </div>
@@ -258,8 +184,7 @@
             <a
               href="/game/{todayGame.id}"
               class="block w-full py-2 px-4 rounded-lg text-center font-semibold text-white transition-all hover:shadow-lg"
-              style="background: linear-gradient(135deg, {favoriteTeam?.color}, {favoriteTeam
-                ?.color}dd)"
+              style="background: linear-gradient(135deg, {favoriteTeam?.color}, {favoriteTeam?.color}dd)"
             >
               실시간 중계 보기 →
             </a>
@@ -276,96 +201,102 @@
         {/if}
       </div>
     </div>
-  </div>
-{:else if !loading && !todayGame && favoriteTeam}
-  <!-- No Game Today -->
-  <div
-    class="no-game-banner p-4 rounded-2xl text-center"
-    style="background: linear-gradient(135deg, {favoriteTeam?.color}10 0%, {favoriteTeam
-      ?.color}05 100%); border: 2px solid {favoriteTeam?.color}20"
-    transition:fade
-    data-testid="no-game-banner"
-  >
-    <p class="text-sm text-gray-600">
-      오늘은 {favoriteTeam.name}의 경기가 없습니다
-    </p>
-    <p class="text-xs text-gray-500 mt-1">다음 경기를 기대해주세요! ⚾</p>
-  </div>
-{:else if loading}
-  <!-- Loading State -->
-  <div class="loading-banner p-8 rounded-2xl bg-gray-100 animate-pulse" data-testid="loading-banner">
-    <div class="flex items-center justify-center space-x-4">
-      <div class="w-16 h-16 bg-gray-300 rounded-full"></div>
-      <div class="text-2xl font-bold text-gray-400">VS</div>
-      <div class="w-16 h-16 bg-gray-300 rounded-full"></div>
+  {:else if !loading && !todayGame && favoriteTeam}
+    <!-- No Game Today -->
+    <div
+      class="no-game-banner p-4 rounded-2xl text-center"
+      style="background: linear-gradient(135deg, {favoriteTeam?.color}10 0%, {favoriteTeam?.color}05 100%); border: 2px solid {favoriteTeam?.color}20"
+      transition:fade
+      data-testid="no-game-banner"
+    >
+      <div class="text-4xl mb-2">⚾</div>
+      <h3 class="text-lg font-bold mb-1" style="color: {favoriteTeam?.color}">
+        오늘은 경기가 없습니다
+      </h3>
+      <p class="text-sm text-gray-600">
+        {favoriteTeam?.name}의 다음 경기를 기다려주세요
+      </p>
     </div>
-  </div>
-{/if}
+  {:else}
+    <!-- No Favorite Team -->
+    <div
+      class="no-team-banner p-4 rounded-2xl text-center bg-gray-100"
+      transition:fade
+      data-testid="no-team-banner"
+    >
+      <div class="text-4xl mb-2">🏟️</div>
+      <h3 class="text-lg font-bold mb-1 text-gray-700">
+        좋아하는 팀을 설정해주세요
+      </h3>
+      <p class="text-sm text-gray-600">
+        오늘의 경기 정보를 받아보세요
+      </p>
+    </div>
+  {/if}
+</div>
 
 <style>
   .today-game-banner {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
+    @apply w-full;
   }
 
   .today-game-banner.compact {
-    max-width: 400px;
+    @apply text-sm;
   }
 
-  .team-info {
-    transition: transform 0.2s ease;
+  .banner-container {
+    @apply relative overflow-hidden;
   }
 
-  .team-info:hover {
-    transform: translateY(-2px);
+  .banner-header {
+    @apply border-b border-gray-200;
   }
 
   .status-badge {
-    animation: pulse-badge 2s ease-in-out infinite;
+    @apply inline-flex items-center;
   }
 
-  @keyframes pulse-badge {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.8;
-    }
+  .team-info {
+    @apply min-h-0;
+  }
+
+  .team-name {
+    @apply truncate;
   }
 
   .team-score {
-    animation: score-update 0.5s ease-out;
+    @apply leading-none;
   }
 
-  @keyframes score-update {
-    0% {
-      transform: scale(1.2);
-    }
-    100% {
-      transform: scale(1);
-    }
+  .vs-divider {
+    @apply flex flex-col justify-center;
   }
 
-  /* Responsive Design */
-  @media (max-width: 480px) {
-    .team-info img {
-      width: 48px;
-      height: 48px;
-    }
+  .stadium-info {
+    @apply border-t border-gray-200 pt-2;
+  }
 
-    .team-name {
-      font-size: 0.75rem;
-    }
+  .action-button {
+    @apply border-t border-gray-200 pt-2;
+  }
 
-    .team-score {
-      font-size: 1.5rem;
-    }
+  .action-button a,
+  .action-button button {
+    @apply transition-all duration-200;
+  }
 
-    .vs-divider {
-      font-size: 1.25rem;
-      margin: 0 0.5rem;
-    }
+  .action-button a:hover,
+  .action-button button:hover {
+    @apply transform scale-105;
+  }
+
+  .no-game-banner,
+  .no-team-banner {
+    @apply transition-all duration-300;
+  }
+
+  .no-game-banner:hover,
+  .no-team-banner:hover {
+    @apply transform scale-105;
   }
 </style>
