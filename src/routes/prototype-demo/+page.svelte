@@ -42,7 +42,7 @@
     <h1 class="hero-title">
       <span class="text-gradient">Design System V2</span>
     </h1>
-    <p class="hero-subtitle">생동감 있고 화려한 KBO 홀로그래픽 카드 프로토타입</p>
+    <p class="hero-subtitle">생동감 있고 화려한 홀로그래픽 카드 프로토타입</p>
   </div>
 
   <!-- Main Demo Section -->

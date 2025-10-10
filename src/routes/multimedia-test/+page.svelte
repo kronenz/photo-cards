@@ -134,8 +134,8 @@
 </script>
 
 <svelte:head>
-  <title>멀티미디어 업로드 테스트 - KBO 홀로그래픽 카드</title>
-  <meta name="description" content="KBO 홀로그래픽 카드 멀티미디어 업로드 시스템 테스트 페이지" />
+  <title>멀티미디어 업로드 테스트 - 홀로그래픽 카드</title>
+  <meta name="description" content="홀로그래픽 카드 멀티미디어 업로드 시스템 테스트 페이지" />
 </svelte:head>
 
 <div class="multimedia-test-page">

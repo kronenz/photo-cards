@@ -68,7 +68,7 @@
 			<div class="text-2xl">🏆</div>
 			<div>
 				<h2 class="text-xl font-bold text-gray-900 dark:text-white">
-					KBO 팬 등급 리더보드
+					팬 등급 리더보드
 				</h2>
 				<p class="text-sm text-gray-600 dark:text-gray-400">
 					가장 활발한 야구 덕후들을 만나보세요
@@ -100,7 +100,7 @@
 					아직 등급 데이터가 없습니다
 				</h3>
 				<p class="text-gray-600 dark:text-gray-400">
-					첫 번째 KBO 레전드가 되어보세요!
+					첫 번째 레전드가 되어보세요!
 				</p>
 			</div>
 		{:else}

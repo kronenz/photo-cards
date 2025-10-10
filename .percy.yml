@@ -1,0 +1,47 @@
+# Percy Visual Regression Testing Configuration
+# Feature: 003-navigation-ui-renewal
+
+version: 2
+
+snapshot:
+  # Responsive breakpoints from spec.md
+  widths: [375, 768, 1280]
+
+  # Minimum height for full-page screenshots
+  min-height: 1024
+
+  # Percy-specific CSS to hide dynamic content
+  percy-css: |
+    /* Hide dynamic timestamps */
+    .dynamic-timestamp { display: none !important; }
+
+    /* Hide animations during snapshot */
+    *, *::before, *::after {
+      animation-duration: 0s !important;
+      transition-duration: 0s !important;
+    }
+
+    /* Hide scrollbars for consistent snapshots */
+    ::-webkit-scrollbar { display: none !important; }
+
+# Discovery configuration
+discovery:
+  # Disable JavaScript execution for consistent snapshots
+  disable-javascript: false
+
+  # Network idle timeout
+  network-idle-timeout: 750
+
+# Static site configuration (SvelteKit build)
+static:
+  # Base URL for static assets
+  base-url: /
+
+  # Include source maps for debugging
+  include: src-maps
+
+# Ignored elements (CSS selectors)
+ignore:
+  - ".loader"
+  - ".spinner"
+  - "[data-test-id='dynamic-content']"

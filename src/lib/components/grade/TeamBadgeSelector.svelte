@@ -47,7 +47,7 @@
 	<!-- Header -->
 	<div class="text-center">
 		<h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-			응원하는 KBO 팀을 선택하세요
+			응원하는 팀을 선택하세요
 		</h3>
 		<p class="text-sm text-gray-600 dark:text-gray-400">
 			선택한 팀의 컬러로 특별한 홀로그래픽 효과를 사용할 수 있습니다

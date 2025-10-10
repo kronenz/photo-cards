@@ -1,0 +1,29 @@
+# PocketBase Dockerfile
+FROM alpine:latest
+
+# PocketBase 버전 설정
+ARG POCKETBASE_VERSION=0.30.1
+ARG ARCH=amd64
+
+# 필요한 패키지 설치
+RUN apk add --no-cache \
+    wget \
+    unzip \
+    ca-certificates \
+    tzdata
+
+# PocketBase 다운로드 및 설치
+RUN wget -O /tmp/pocketbase.zip \
+    "https://github.com/pocketbase/pocketbase/releases/download/v${POCKETBASE_VERSION}/pocketbase_${POCKETBASE_VERSION}_linux_${ARCH}.zip" && \
+    unzip /tmp/pocketbase.zip -d /usr/local/bin/ && \
+    chmod +x /usr/local/bin/pocketbase && \
+    rm /tmp/pocketbase.zip
+
+# 작업 디렉토리 설정
+WORKDIR /app
+
+# 포트 노출
+EXPOSE 8090
+
+# PocketBase 실행
+CMD ["pocketbase", "serve", "--http=0.0.0.0:8090"]

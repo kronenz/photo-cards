@@ -76,7 +76,7 @@
       ]
     },
     kbo: {
-      name: 'KBO 팀 컬러',
+      name: '팀 컬러',
       icon: '⚾',
       effects: [
         {

@@ -52,8 +52,8 @@
 </script>
 
 <svelte:head>
-  <title>영광의 순간 템플릿 - KBO 홀로그래픽 카드</title>
-  <meta name="description" content="KBO 야구의 특별한 순간을 홀로그래픽 카드로 만들어보세요. 우승, 끝내기, 데뷔 등 다양한 템플릿을 제공합니다." />
+  <title>영광의 순간 템플릿 - 홀로그래픽 카드</title>
+  <meta name="description" content="특별한 순간을 홀로그래픽 카드로 만들어보세요. 우승, 끝내기, 데뷔 등 다양한 템플릿을 제공합니다." />
 </svelte:head>
 
 <!-- 성공 메시지 -->

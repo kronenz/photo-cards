@@ -6,7 +6,7 @@
 
 ## Executive Summary
 
-This document consolidates research for 5 critical technical decisions required to implement the Template Marketplace feature for the KBO Holographic Card platform. All research is complete and ready for Phase 1 implementation.
+This document consolidates research for 5 critical technical decisions required to implement the Template Marketplace feature for the Holographic Card platform. All research is complete and ready for Phase 1 implementation.
 
 **Key Decisions Made**:
 1. ✅ **Cloud Storage**: Cloudflare R2 (S3-compatible, zero egress fees)
@@ -571,7 +571,7 @@ A multi-layer detection strategy balances cost, accuracy, privacy, and user expe
 ```typescript
 import phash from 'phash-js';
 
-// Pre-computed KBO logo hashes (10 teams)
+// Pre-computed logo hashes (10 teams)
 const kboLogoHashes = [
   { team: 'LG Twins', hash: 'a8c5d3e9f1b2c4a5...' },
   { team: 'Doosan Bears', hash: 'b9d6e4f0c2a3d5b6...' },
@@ -627,7 +627,7 @@ function hammingDistance(hash1: string, hash2: string): number {
     const clientCheck = await detectLogoClientSide(file);
 
     if (clientCheck.detected) {
-      showError(`KBO ${clientCheck.team} 로고가 감지되었습니다. 저작권 준수를 위해 업로드할 수 없습니다.`);
+      showError(`${clientCheck.team} 로고가 감지되었습니다. 저작권 준수를 위해 업로드할 수 없습니다.`);
       return;
     }
 
@@ -1161,7 +1161,7 @@ npm install phash-js
 }
 ```
 
-### KBO Logo Hash Database
+### Logo Hash Database
 
 **Required for Copyright Detection**:
 
@@ -1181,7 +1181,7 @@ export const kboLogoHashes = [
 ];
 ```
 
-**Action Required**: Collect high-quality KBO team logos and generate pHashes.
+**Action Required**: Collect high-quality team logos and generate pHashes.
 
 ### Phase 1 Prerequisites
 

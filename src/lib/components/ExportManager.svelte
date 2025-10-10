@@ -253,8 +253,8 @@
           const file = new File([blob], `${filename}.png`, { type: blob.type });
           
           navigator.share({
-            title: 'KBO 홀로그래픽 카드',
-            text: '내가 만든 KBO 홀로그래픽 카드를 확인해보세요!',
+            title: '홀로그래픽 카드',
+            text: '내가 만든 홀로그래픽 카드를 확인해보세요!',
             files: [file]
           });
         });

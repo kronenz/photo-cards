@@ -67,7 +67,7 @@
       opacity: 1,
       zIndex: 2,
       data: {
-        content: 'KBO 홀로그래픽 카드',
+        content: '홀로그래픽 카드',
         fontSize: 36,
         fontFamily: 'Apple SD Gothic Neo',
         color: '#ffffff',
@@ -156,8 +156,8 @@
     setTimeout(() => {
       if (navigator.share) {
         navigator.share({
-          title: 'KBO 홀로그래픽 카드',
-          text: '내가 만든 KBO 홀로그래픽 카드를 확인해보세요!',
+          title: '홀로그래픽 카드',
+          text: '내가 만든 홀로그래픽 카드를 확인해보세요!',
           url: window.location.href
         });
       } else {

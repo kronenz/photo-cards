@@ -8,6 +8,9 @@
 
 	export let isOpen = false;
 	export let selectedCard: Card | null = null;
+	export let isNewVersion = false;
+	export let isRemix = false;
+	export let originalTemplateId = '';
 
 	const dispatch = createEventDispatcher();
 	const serializer = new TemplateSerializer();
@@ -20,6 +23,10 @@
 	let selectedCategory = '';
 	let selectedLicense: TemplateLicense = 'CC-BY';
 	let allowRemix = true;
+
+	// Version state
+	let versionNumber = '1.0.0';
+	let changelog = '';
 
 	// Upload state
 	let isUploading = false;
@@ -164,8 +171,8 @@
 			// Step 7: Create template record in PocketBase (90%)
 			uploadProgress = 90;
 			const templateData = {
-				template_id: templateJSON.metadata.id,
-				version: templateJSON.metadata.version,
+				template_id: isNewVersion ? originalTemplateId : templateJSON.metadata.id,
+				version: isNewVersion ? versionNumber : templateJSON.metadata.version,
 				template_version: '1.0.0',
 				title: title.trim(),
 				description: description.trim(),
@@ -177,7 +184,8 @@
 				file_hash: `sha256:${fileHash}`,
 				license: selectedLicense,
 				allow_remix: allowRemix,
-				is_remix: false,
+				is_remix: isRemix,
+				original_template_id: isRemix ? originalTemplateId : undefined,
 				is_premium: false,
 				is_published: true,
 				copyright_status: logoCheck.detected ? 'pending' : 'approved',
@@ -185,7 +193,8 @@
 					phash_checked: true,
 					phash_results: logoCheck,
 					ai_checked: false
-				}
+				},
+				...(isNewVersion && { changelog })
 			};
 
 			const createResponse = await fetch('/api/templates', {
@@ -201,7 +210,17 @@
 
 			const template = await createResponse.json();
 
-			// Step 8: Complete (100%)
+			// Step 8: Notify existing downloaders if new version (95%)
+			if (isNewVersion) {
+				uploadProgress = 95;
+				await fetch('/api/templates/notify-update', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ templateId: originalTemplateId })
+				});
+			}
+
+			// Step 9: Complete (100%)
 			uploadProgress = 100;
 
 			// Success - close modal and notify parent
@@ -254,6 +273,57 @@
 
 					<!-- Upload Form -->
 					<form on:submit|preventDefault={handleUpload}>
+						<!-- Remix Info (if remix) -->
+						{#if isRemix}
+							<div class="remix-info">
+								<h3>🎨 리믹스 업로드</h3>
+								<p class="info-text">
+									기존 템플릿을 기반으로 새로운 창작물을 만드셨군요!<br />
+									원작자에게 자동으로 크레딧이 표시됩니다.
+								</p>
+								<div class="attribution-preview">
+									<span class="attribution-label">Based on:</span>
+									<span class="attribution-template">원본 템플릿 (ID: {originalTemplateId})</span>
+								</div>
+							</div>
+						{/if}
+
+						<!-- Version Info (if new version) -->
+						{#if isNewVersion}
+							<div class="version-info">
+								<h3>새 버전 업로드</h3>
+								<div class="form-group">
+									<label for="version">
+										버전 번호 <span class="required">*</span>
+									</label>
+									<input
+										id="version"
+										type="text"
+										bind:value={versionNumber}
+										placeholder="1.0.0 (Semantic Versioning)"
+										pattern="^\d+\.\d+\.\d+$"
+										required
+										disabled={isUploading}
+									/>
+								</div>
+								<div class="form-group">
+									<label for="changelog">
+										변경 사항 <span class="required">*</span>
+									</label>
+									<textarea
+										id="changelog"
+										bind:value={changelog}
+										placeholder="이 버전에서 변경된 내용을 입력하세요..."
+										minlength="10"
+										maxlength="1000"
+										rows="3"
+										required
+										disabled={isUploading}
+									/>
+								</div>
+							</div>
+						{/if}
+
 						<!-- Title -->
 						<div class="form-group">
 							<label for="title">
@@ -680,6 +750,65 @@
 		padding: 40px;
 		color: #999;
 		font-size: 16px;
+	}
+
+	.version-info {
+		padding: 16px;
+		background: rgba(0, 122, 255, 0.1);
+		border: 1px solid rgba(0, 122, 255, 0.3);
+		border-radius: 12px;
+		margin-bottom: 24px;
+	}
+
+	.version-info h3 {
+		margin: 0 0 16px 0;
+		font-size: 16px;
+		font-weight: 600;
+		color: #4da6ff;
+	}
+
+	.remix-info {
+		padding: 16px;
+		background: rgba(147, 51, 234, 0.1);
+		border: 1px solid rgba(147, 51, 234, 0.3);
+		border-radius: 12px;
+		margin-bottom: 24px;
+	}
+
+	.remix-info h3 {
+		margin: 0 0 12px 0;
+		font-size: 16px;
+		font-weight: 600;
+		color: #a78bfa;
+	}
+
+	.remix-info .info-text {
+		margin: 0 0 16px 0;
+		font-size: 14px;
+		line-height: 1.6;
+		color: #c4b5fd;
+	}
+
+	.attribution-preview {
+		padding: 12px 16px;
+		background: rgba(0, 0, 0, 0.3);
+		border-left: 3px solid rgba(147, 51, 234, 0.6);
+		border-radius: 6px;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.attribution-label {
+		font-size: 13px;
+		font-weight: 600;
+		color: #a78bfa;
+	}
+
+	.attribution-template {
+		font-size: 13px;
+		color: #e0e0e0;
+		font-family: 'SF Mono', monospace;
 	}
 
 	/* Scrollbar styling */

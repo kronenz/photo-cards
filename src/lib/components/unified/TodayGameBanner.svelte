@@ -41,7 +41,7 @@
     loading = true;
 
     try {
-      // In production, this would fetch from KBO API
+      // In production, this would fetch from API
       // For now, we'll use mock data
       const mockGame = await fetchTodayGame(favoriteTeam?.id);
 
@@ -62,7 +62,7 @@
     }
   }
 
-  // Mock API call - replace with actual KBO API integration
+  // Mock API call - replace with actual API integration
   async function fetchTodayGame(teamId?: string): Promise<GameInfo | null> {
     // Simulate API delay
     await new Promise((resolve) => setTimeout(resolve, 500));

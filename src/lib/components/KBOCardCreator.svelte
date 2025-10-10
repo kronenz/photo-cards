@@ -202,7 +202,7 @@
   <div class="progress-header">
     <h1 class="creator-title">
       <span class="title-icon">⚾</span>
-      KBO 홀로그래픽 카드 제작
+      홀로그래픽 카드 제작
     </h1>
     
     <div class="progress-steps">
@@ -271,7 +271,7 @@
         <div class="step-header">
           <h2 class="step-title">영광의 순간 템플릿 선택</h2>
           <p class="step-description">
-            KBO 야구의 특별한 순간을 담을 템플릿을 선택하세요
+            야구의 특별한 순간을 담을 템플릿을 선택하세요
           </p>
         </div>
         

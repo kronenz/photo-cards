@@ -204,7 +204,7 @@
           어떤 영광의 순간을 담고 싶으신가요?
         </h2>
         <p class="section-description">
-          KBO 야구의 특별한 순간들 중 하나를 선택해주세요
+          야구의 특별한 순간들 중 하나를 선택해주세요
         </p>
 
         <div class="category-grid">

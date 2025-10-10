@@ -33,7 +33,7 @@
       id: 'skip-to-teams',
       label: '팀 섹션으로 건너뛰기',
       target: 'main-teams',
-      description: 'KBO 팀 선택 섹션으로 이동'
+      description: '팀 선택 섹션으로 이동'
     },
     {
       id: 'skip-to-main',

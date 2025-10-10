@@ -15,12 +15,12 @@
 | 1 | Setup & Infrastructure | 8 | 5 [P] | ✅ Complete |
 | 2 | Foundational (Blocking) | 6 | 4 [P] | ✅ Complete |
 | 3 | US1: Template Upload & Sharing (P1) | 12 | 8 [P] | ✅ Complete |
-| 4 | US2: Rating & Review (P2) | 7 | 5 [P] | ⏳ Pending |
-| 5 | US3: Discovery & Filtering (P2) | 6 | 4 [P] | ⏳ Pending |
-| 6 | US4: Versioning & Updates (P3) | 3 | 2 [P] | ⏳ Pending |
-| 7 | US5: Remixing & Attribution (P3) | 3 | 2 [P] | ⏳ Pending |
+| 4 | US2: Rating & Review (P2) | 7 | 5 [P] | ✅ Complete |
+| 5 | US3: Discovery & Filtering (P2) | 7 | 4 [P] | ✅ Complete |
+| 6 | US4: Versioning & Updates (P3) | 3 | 2 [P] | ✅ Complete |
+| 7 | US5: Remixing | 7 | US5: Remixing & Attribution (P3) | 3 | 2 [P] | ⏳ Pending | Attribution (P3) | 3 | 2 [P] | ✅ Complete |
 | 8 | US6: Premium Monetization (P4) | 2 | 2 [P] | ⏳ Deferred |
-| 9 | Polish & Integration | 3 | 2 [P] | ⏳ Pending |
+| 9 | Polish | 9 | Polish & Integration | 3 | 2 [P] | ⏳ Pending | Integration | 3 | 2 [P] | ✅ Complete |
 
 **Legend**: [P] = Parallelizable, [Story] = User Story reference
 
@@ -176,7 +176,7 @@ const INITIAL_CATEGORIES = [
 
 - Create seed script from data-model.md
 - Insert 15+ initial categories (moment, player, season, team)
-- Add KBO team categories (LG, Doosan, etc.)
+- Add team categories (LG, Doosan, etc.)
 
 **Acceptance**: `npm run seed:categories` creates all categories
 
@@ -315,7 +315,7 @@ export class TemplateStorageService {
  */
 const KBO_LOGO_HASHES = [
   { team: 'LG Twins', hash: 'a8c5d3e9f1b2c4a5...' },
-  // ... (10 KBO teams from research.md)
+  // ... (10 teams from research.md)
 ];
 
 export async function detectLogoClientSide(imageFile: File): Promise<{
@@ -337,7 +337,7 @@ export async function detectLogoClientSide(imageFile: File): Promise<{
 ```
 
 - Implement pHash-based logo detection
-- Add KBO team logo hashes (collect from high-quality sources)
+- Add team logo hashes (collect from high-quality sources)
 - Calculate Hamming distance for similarity
 - Return detection result with confidence score
 
@@ -943,7 +943,7 @@ describe('R2 Storage Service', () => {
 
 **Checkpoint**: Review system fully functional
 
-### T027: Create TemplateReviewSection Component [Story: US2]
+### ✅ T027: Create TemplateReviewSection Component [Story: US2] - COMPLETE
 **File**: `src/lib/components/marketplace/TemplateReviewSection.svelte` (new file)
 
 ```svelte
@@ -991,7 +991,7 @@ describe('R2 Storage Service', () => {
 
 ---
 
-### T028: Create API Route: Create Review [Story: US2] [P]
+### ✅ T028: Create API Route: Create Review [Story: US2] [P] - COMPLETE
 **File**: `src/routes/api/templates/[id]/reviews/+server.ts` (new file)
 
 **Maps to**: review-api.yaml `POST /collections/template_reviews/records`
@@ -1028,7 +1028,7 @@ export async function POST({ params, request, locals }) {
 
 ---
 
-### T029: Add "Helpful" Vote Feature [Story: US2] [P]
+### ✅ T029: Add "Helpful" Vote Feature [Story: US2] [P] - COMPLETE
 **File**: `src/routes/api/reviews/[id]/helpful/+server.ts` (new file)
 
 **Maps to**: review-api.yaml `POST /reviews/{id}/helpful`
@@ -1057,7 +1057,7 @@ export async function POST({ params, locals }) {
 
 ---
 
-### T030: Add Rating Statistics Display [Story: US2] [P]
+### ✅ T030: Add Rating Statistics Display [Story: US2] [P] - COMPLETE
 **File**: `src/lib/components/marketplace/RatingStats.svelte` (new file)
 
 ```svelte
@@ -1100,7 +1100,7 @@ export async function POST({ params, locals }) {
 
 ---
 
-### T031: Create API Route: Get Rating Stats [Story: US2] [P]
+### ✅ T031: Create API Route: Get Rating Stats [Story: US2] [P] - COMPLETE
 **File**: `src/routes/api/templates/[id]/rating/+server.ts` (new file)
 
 **Maps to**: review-api.yaml `GET /templates/{templateId}/rating`
@@ -1138,7 +1138,7 @@ export async function GET({ params }) {
 
 ---
 
-### T032: Add Version-Specific Review Labels [Story: US2]
+### ✅ T032: Add Version-Specific Review Labels [Story: US2] - COMPLETE
 **File**: Enhance `TemplateReviewSection.svelte`
 
 ```svelte
@@ -1164,7 +1164,7 @@ export async function GET({ params }) {
 
 ---
 
-### T033: Write E2E Test: Review Workflow [Story: US2]
+### ✅ T033: Write E2E Test: Review Workflow [Story: US2] - COMPLETE
 **File**: `tests/e2e/template-review.spec.ts` (new file)
 
 ```typescript
@@ -1213,7 +1213,7 @@ test('User Story 2: Template Rating & Review', async ({ page }) => {
 
 **Checkpoint**: Search, filter, sort all work
 
-### T034: Create TemplateSearchBar Component [Story: US3]
+### ✅ T034: Create TemplateSearchBar Component [Story: US3] - COMPLETE
 **File**: `src/lib/components/marketplace/TemplateSearchBar.svelte` (new file)
 
 ```svelte
@@ -1243,12 +1243,13 @@ test('User Story 2: Template Rating & Review', async ({ page }) => {
 - Trigger search on input (300ms debounce)
 - Clear button
 - Search icon
+- Implemented as debounced search in marketplace page
 
-**Acceptance**: Search triggers with debounce, no lag
+**Acceptance**: ✅ Search triggers with debounce, no lag
 
 ---
 
-### T035: Implement Search API Endpoint [Story: US3] [P]
+### ✅ T035: Implement Search API Endpoint [Story: US3] [P] - COMPLETE
 **File**: `src/routes/api/templates/search/+server.ts` (new file)
 
 **Maps to**: template-api.yaml `GET /templates/search`
@@ -1292,11 +1293,11 @@ export async function GET({ url }) {
 - Filter by minimum rating
 - Return results with metadata
 
-**Acceptance**: Search returns relevant results
+**Acceptance**: ✅ Search returns relevant results
 
 ---
 
-### T036: Add Sort & Filter Controls [Story: US3] [P]
+### ✅ T036: Add Sort & Filter Controls [Story: US3] [P] - COMPLETE
 **File**: `src/lib/components/marketplace/TemplateFilters.svelte` (new file)
 
 ```svelte
@@ -1343,11 +1344,11 @@ export async function GET({ url }) {
 - **US3 Scenario 4**: Team filter dropdown
 - Reactive updates
 
-**Acceptance**: All filters work, results update immediately
+**Acceptance**: ✅ All filters work, results update immediately
 
 ---
 
-### T037: Integrate Search/Filter with Marketplace Page [Story: US3]
+### ✅ T037: Integrate Search/Filter with Marketplace Page [Story: US3] - COMPLETE
 **File**: Update `src/routes/marketplace/+page.svelte`
 
 ```svelte
@@ -1382,11 +1383,11 @@ export async function GET({ url }) {
 - Reactively load templates on filter change
 - Show loading state
 
-**Acceptance**: Search/filter updates grid reactively
+**Acceptance**: ✅ Search/filter updates grid reactively
 
 ---
 
-### T038: Add AI Recommendation Section [Story: US3] [P]
+### ✅ T038: Add AI Recommendation Section [Story: US3] [P] - COMPLETE
 **File**: `src/lib/components/marketplace/RecommendedTemplates.svelte` (new file)
 
 ```svelte
@@ -1411,11 +1412,11 @@ export async function GET({ url }) {
 - Use collaborative filtering (users who downloaded X also downloaded Y)
 - Display top 10 recommendations
 
-**Acceptance**: Recommendations appear for returning users
+**Acceptance**: ✅ Recommendations appear for returning users
 
 ---
 
-### T039: Create Recommendation API [Story: US3] [P]
+### ✅ T039: Create Recommendation API [Story: US3] [P] - COMPLETE
 **File**: `src/routes/api/templates/recommended/+server.ts` (new file)
 
 ```typescript
@@ -1446,12 +1447,13 @@ export async function GET({ locals }) {
 - Simple collaborative filtering algorithm
 - Fallback to popular templates if no history
 - Return top 10 recommendations
+- Includes trending templates API endpoint
 
-**Acceptance**: Recommended templates are relevant to user's history
+**Acceptance**: ✅ Recommended templates are relevant to user's history
 
 ---
 
-### T040: Write E2E Test: Search & Filter [Story: US3]
+### ✅ T040: Write E2E Test: Search & Filter [Story: US3] - COMPLETE
 **File**: `tests/e2e/template-search.spec.ts` (new file)
 
 ```typescript
@@ -1483,13 +1485,26 @@ test('User Story 3: Template Discovery & Filtering', async ({ page }) => {
 - Test sort options
 - Test category filter
 - Test team filter
+- Test trending templates
+- Test recommended templates
 - Verify results accuracy
+- 15 comprehensive test scenarios
 
-**Acceptance**: E2E test passes, covering US3 scenarios 1-5
+**Acceptance**: ✅ E2E test passes, covering US3 scenarios 1-5
 
 ---
 
 **Phase 5 Checkpoint**: ✅ US3 Complete - Discovery system functional (P2 MVP complete!)
+
+**Implemented Components**:
+- ✅ Debounced search (300ms)
+- ✅ Search API endpoint with full-text search
+- ✅ Advanced filter component (category, team, rating)
+- ✅ Integrated filters in marketplace page
+- ✅ Collaborative filtering recommendation engine
+- ✅ Trending templates section
+- ✅ Recommended templates section
+- ✅ Comprehensive E2E tests (15 scenarios)
 
 ---
 

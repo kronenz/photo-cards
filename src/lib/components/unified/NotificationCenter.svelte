@@ -21,7 +21,7 @@
       type: 'card_comment',
       actorName: 'kbofan',
       message: 'kbofan님이 댓글을 남겼습니다: "정말 멋진 카드네요!"',
-      cardTitle: 'KBO 야구 추억 카드',
+      cardTitle: '야구 추억 카드',
       read: false,
       createdAt: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
     },

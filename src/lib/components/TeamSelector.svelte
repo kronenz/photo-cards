@@ -65,7 +65,7 @@
         <div class="team-info">
           <span class="team-name">전체 구단</span>
           {#if !compact}
-            <span class="team-city">KBO 리그</span>
+            <span class="team-city">리그</span>
           {/if}
         </div>
       {/if}
@@ -100,7 +100,7 @@
           <div class="all-teams-icon">⚾</div>
           <div class="team-info">
             <span class="team-name">전체 구단</span>
-            <span class="team-city">KBO 리그</span>
+            <span class="team-city">리그</span>
           </div>
         </button>
       {/if}

@@ -264,7 +264,7 @@
 </script>
 
 <svelte:head>
-  <title>KBO 홀로그래픽 카드 플랫폼 - Design System V2</title>
+  <title>홀로그래픽 카드 플랫폼 - Design System V2</title>
   <meta name="description" content="생동감 있고 화려한 KBO 야구 카드 컬렉션 플랫폼" />
 </svelte:head>
 
@@ -280,11 +280,11 @@
   <section class="hero-section">
     <div class="hero-content">
       <h1 class="hero-title">
-        <span class="text-gradient">KBO 홀로그래픽 카드</span>
+        <span class="text-gradient">홀로그래픽 카드</span>
       </h1>
       <p class="hero-subtitle">생동감 있고 화려한 야구 카드 컬렉션 플랫폼</p>
       <p class="hero-description">
-        Pokemon 스타일 홀로그래픽 효과 · KBO 10개 구단 · 프리미엄 카드 경험
+        홀로그래픽 효과 · KBO 10개 구단 · 프리미엄 카드 경험
       </p>
 
       <div class="hero-actions">

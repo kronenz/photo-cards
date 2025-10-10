@@ -225,7 +225,7 @@
   <div class="card-footer">
     <div class="kbo-branding">
       <span class="kbo-logo">⚾</span>
-      <span class="kbo-text">KBO 리그</span>
+      <span class="kbo-text">리그</span>
     </div>
     
     <div class="holographic-indicator">

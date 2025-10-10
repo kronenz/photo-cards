@@ -38,7 +38,7 @@
 </script>
 
 <svelte:head>
-  <title>고급 카드 편집기 - KBO 홀로그래픽 카드</title>
+  <title>고급 카드 편집기 - 홀로그래픽 카드</title>
   <meta name="description" content="Apple Keynote 수준의 고급 편집 도구로 KBO 야구 카드를 제작하세요" />
 </svelte:head>
 

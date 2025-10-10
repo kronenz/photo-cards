@@ -1,0 +1,244 @@
+/**
+ * Design Tokens - Navigation & UI Renewal
+ * Feature: 003-navigation-ui-renewal
+ * Based on: spec.md Design System Requirements
+ */
+
+:root {
+	/* ===== Colors ===== */
+	/* Primary Colors */
+	--primary: #667eea;
+	--primary-dark: #5568d3;
+	--primary-light: #7c8ef0;
+
+	--secondary: #764ba2;
+	--secondary-dark: #63408a;
+	--secondary-light: #8a5fb8;
+
+	/* Backgrounds */
+	--background-primary: #ffffff;
+	--background-secondary: #f7fafc;
+	--surface-primary: #ffffff;
+	--surface-secondary: #edf2f7;
+	--surface-elevated: #ffffff;
+
+	/* Text Colors */
+	--text-primary: #1a202c;
+	--text-secondary: #4a5568;
+	--text-tertiary: #a0aec0;
+	--text-inverse: #ffffff;
+
+	/* Semantic Colors */
+	--success: #48bb78;
+	--warning: #ed8936;
+	--error: #f56565;
+	--info: #4299e1;
+
+	/* Borders */
+	--border-primary: #e2e8f0;
+	--border-secondary: #cbd5e0;
+	--border-focus: var(--primary);
+
+	/* ===== Typography ===== */
+	/* Font Families */
+	--font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui,
+		sans-serif;
+	--font-body: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+	--font-mono: 'SF Mono', 'Monaco', 'Cascadia Code', 'Consolas', monospace;
+
+	/* Font Sizes */
+	--font-display: 64px; /* Hero text */
+	--font-title1: 48px; /* Page titles */
+	--font-title2: 36px; /* Section titles */
+	--font-title3: 28px; /* Subsection titles */
+	--font-headline: 24px; /* Card titles */
+	--font-body: 16px; /* Body text */
+	--font-callout: 15px; /* Emphasized body */
+	--font-subheadline: 14px; /* Secondary info */
+	--font-footnote: 13px; /* Captions */
+	--font-caption1: 12px; /* Small labels */
+	--font-caption2: 11px; /* Tiny labels */
+
+	/* Font Weights */
+	--font-weight-regular: 400;
+	--font-weight-medium: 500;
+	--font-weight-semibold: 600;
+	--font-weight-bold: 700;
+
+	/* Line Heights */
+	--line-height-tight: 1.2;
+	--line-height-normal: 1.5;
+	--line-height-relaxed: 1.75;
+
+	/* ===== Spacing ===== */
+	--space-0: 0px;
+	--space-xs: 4px;
+	--space-sm: 8px;
+	--space-md: 16px;
+	--space-lg: 24px;
+	--space-xl: 32px;
+	--space-2xl: 48px;
+	--space-3xl: 64px;
+
+	/* ===== Layout ===== */
+	/* Breakpoints (matches Percy config) */
+	--breakpoint-mobile: 375px;
+	--breakpoint-tablet: 768px;
+	--breakpoint-desktop: 1024px;
+	--breakpoint-wide: 1280px;
+
+	/* Container Widths */
+	--container-sm: 640px;
+	--container-md: 768px;
+	--container-lg: 1024px;
+	--container-xl: 1280px;
+
+	/* Grid */
+	--grid-columns: 12;
+	--grid-gap: var(--space-md);
+
+	/* ===== Shadows ===== */
+	--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+	--shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+	--shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.2);
+	--shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.3);
+
+	/* Card Shadows */
+	--shadow-card: 0 2px 8px rgba(0, 0, 0, 0.1);
+	--shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.15);
+
+	/* ===== Border Radius ===== */
+	--radius-sm: 4px;
+	--radius-md: 8px;
+	--radius-lg: 12px;
+	--radius-xl: 16px;
+	--radius-full: 9999px;
+
+	/* ===== Z-Index ===== */
+	--z-base: 0;
+	--z-dropdown: 1000;
+	--z-sticky: 1020;
+	--z-fixed: 1030;
+	--z-modal-backdrop: 1040;
+	--z-modal: 1050;
+	--z-popover: 1060;
+	--z-tooltip: 1070;
+
+	/* ===== Transitions ===== */
+	--transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+	--transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+	--transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+
+	/* Easing Functions */
+	--ease-in: cubic-bezier(0.4, 0, 1, 1);
+	--ease-out: cubic-bezier(0, 0, 0.2, 1);
+	--ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+	/* ===== Opacity ===== */
+	--opacity-disabled: 0.5;
+	--opacity-hover: 0.8;
+	--opacity-loading: 0.6;
+}
+
+/* ===== Dark Mode ===== */
+:root.dark,
+[data-theme='dark'] {
+	/* Backgrounds */
+	--background-primary: #0a0a0a;
+	--background-secondary: #1a1a1a;
+	--surface-primary: #1a1a1a;
+	--surface-secondary: #2a2a2a;
+	--surface-elevated: #2a2a2a;
+
+	/* Text Colors */
+	--text-primary: #f7fafc;
+	--text-secondary: #cbd5e0;
+	--text-tertiary: #718096;
+	--text-inverse: #1a202c;
+
+	/* Borders */
+	--border-primary: #2d3748;
+	--border-secondary: #4a5568;
+
+	/* Shadows (lighter in dark mode) */
+	--shadow-sm: 0 1px 3px rgba(255, 255, 255, 0.05);
+	--shadow-md: 0 4px 12px rgba(255, 255, 255, 0.08);
+	--shadow-lg: 0 10px 30px rgba(255, 255, 255, 0.12);
+	--shadow-xl: 0 20px 60px rgba(255, 255, 255, 0.15);
+
+	--shadow-card: 0 2px 8px rgba(255, 255, 255, 0.05);
+	--shadow-card-hover: 0 8px 24px rgba(255, 255, 255, 0.1);
+}
+
+/* ===== KBO Team Colors (from Phase 4) ===== */
+:root[data-team='lg'],
+[data-favorite-team='lg'] {
+	--team-primary: #c30452;
+	--team-secondary: #ffffff;
+}
+
+:root[data-team='doosan'],
+[data-favorite-team='doosan'] {
+	--team-primary: #131230;
+	--team-secondary: #ea0029;
+}
+
+:root[data-team='kt'],
+[data-favorite-team='kt'] {
+	--team-primary: #000000;
+	--team-secondary: #e31937;
+}
+
+/* ===== Utility Classes ===== */
+
+/* Typography Helpers */
+.text-display {
+	font-size: var(--font-display);
+	font-weight: var(--font-weight-bold);
+	line-height: var(--line-height-tight);
+}
+
+.text-title1 {
+	font-size: var(--font-title1);
+	font-weight: var(--font-weight-bold);
+	line-height: var(--line-height-tight);
+}
+
+.text-body {
+	font-size: var(--font-body);
+	font-weight: var(--font-weight-regular);
+	line-height: var(--line-height-normal);
+}
+
+/* Spacing Helpers */
+.p-xs {
+	padding: var(--space-xs);
+}
+.p-sm {
+	padding: var(--space-sm);
+}
+.p-md {
+	padding: var(--space-md);
+}
+.p-lg {
+	padding: var(--space-lg);
+}
+
+/* Shadow Helpers */
+.shadow-card {
+	box-shadow: var(--shadow-card);
+	transition: box-shadow var(--transition-base);
+}
+
+.shadow-card:hover {
+	box-shadow: var(--shadow-card-hover);
+}
+
+/* Transition Helpers */
+.transition-fast {
+	transition: all var(--transition-fast);
+}
+
+.transition-base {
+	transition: all var(--transition-base);
+}

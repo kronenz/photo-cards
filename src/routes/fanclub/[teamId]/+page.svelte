@@ -139,7 +139,7 @@
 </script>
 
 <svelte:head>
-  <title>{team?.name} 팬클럽 | KBO 홀로그래픽 카드</title>
+  <title>{team?.name} 팬클럽 | 홀로그래픽 카드</title>
   <meta
     name="description"
     content="{team?.name} 팬클럽 - 팀 카드, 팬 랭킹, 커뮤니티"

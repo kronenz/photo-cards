@@ -54,7 +54,7 @@
 			<!-- Header -->
 			<div class="flex items-center justify-between mb-6">
 				<h2 id="signin-title" class="text-2xl font-bold text-gray-900 dark:text-white">
-					KBO 카드 커뮤니티 로그인
+					카드 커뮤니티 로그인
 				</h2>
 				<button
 					on:click={handleClose}
@@ -77,7 +77,7 @@
 				</div>
 				<p class="text-gray-600 dark:text-gray-400">
 					홀로그래픽 야구 카드를 만들고<br>
-					KBO 팬들과 함께 추억을 공유하세요
+					팬들과 함께 추억을 공유하세요
 				</p>
 			</div>
 

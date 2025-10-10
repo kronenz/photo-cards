@@ -33,8 +33,8 @@
 </script>
 
 <svelte:head>
-	<title>로그인 - KBO 홀로그래픽 카드 커뮤니티</title>
-	<meta name="description" content="KBO 홀로그래픽 카드 커뮤니티에 로그인하여 야구 카드를 만들고 공유하세요." />
+	<title>로그인 - 야구 홀로그래픽 카드 커뮤니티</title>
+	<meta name="description" content="야구 홀로그래픽 카드 커뮤니티에 로그인하여 야구 카드를 만들고 공유하세요." />
 </svelte:head>
 
 <!-- Background -->
@@ -43,7 +43,7 @@
 	<div class="container mx-auto px-4 py-16">
 		<div class="text-center mb-12">
 			<h1 class="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-				KBO 홀로그래픽 카드
+				홀로그래픽 카드
 				<span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
 					커뮤니티
 				</span>

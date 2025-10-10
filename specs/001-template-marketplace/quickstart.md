@@ -256,7 +256,7 @@ This will create:
 - 팀 카드 (Team Cards)
   - LG 트윈스
   - 두산 베어스
-  - ... (all 10 KBO teams)
+  - ... (all 10 teams)
 
 ---
 

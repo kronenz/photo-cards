@@ -26,7 +26,7 @@
 
   <!-- Team Logo Section -->
   <div class="card__back-content">
-    <!-- KBO Logo -->
+    <!-- Logo -->
     <div class="kbo-logo">
       <svg viewBox="0 0 100 100" class="logo-svg">
         <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="3"/>
@@ -171,7 +171,7 @@
     gap: 1.5rem;
   }
 
-  /* KBO Logo */
+  /* Logo */
   .kbo-logo {
     width: 80px;
     height: 80px;

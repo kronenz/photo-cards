@@ -147,7 +147,7 @@
   <div class="library-header">
     <h3 class="library-title">
       <span class="title-icon">🎵</span>
-      KBO 사운드 라이브러리
+      사운드 라이브러리
     </h3>
     <p class="library-description">
       구단별 응원가와 야구 효과음을 선택하여 카드에 생동감을 더하세요

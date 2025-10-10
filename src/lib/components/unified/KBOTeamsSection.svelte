@@ -129,7 +129,7 @@
       ? 'grid grid-cols-5 gap-3'
       : 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4'}"
     role="radiogroup"
-    aria-label="KBO 구단 선택"
+    aria-label="구단 선택"
   >
     {#each kboTeams as team (team.id)}
       {@const isSelected = selectedTeam === team.id}

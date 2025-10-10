@@ -9,7 +9,7 @@
   let customStoryText = '';
   let selectedEmotion = 'joy';
 
-  // KBO 스토리텔링 카테고리
+  // 스토리텔링 카테고리
   const storyCategories = {
     moments: {
       name: '영광의 순간',
@@ -51,7 +51,7 @@
           id: 'perfectgame',
           title: '완전경기',
           description: '역사에 남을 완벽한 경기',
-          template: '"{player}의 완전경기 달성! KBO 역사에 길이 남을 순간입니다!"',
+          template: '"{player}의 완전경기 달성! 역사에 길이 남을 순간입니다!"',
           background: 'linear-gradient(135deg, #ffecd2, #fcb69f)',
           icon: '👑'
         }
@@ -102,7 +102,7 @@
         {
           id: 'legendary',
           title: '레전드 어록',
-          description: 'KBO 역사에 남은 명언들',
+          description: '역사에 남은 명언들',
           template: '"야구는 실패의 스포츠다. 하지만 포기하지 않는 자가 승리한다."',
           background: 'linear-gradient(135deg, #2d3436, #636e72)',
           icon: '🎭'
@@ -133,7 +133,7 @@
           id: 'debut',
           title: '데뷔 첫 경기',
           description: '프로 무대 첫 발을 내딛는 순간',
-          template: '"{year}년 {month}월 {day}일, {player}의 KBO 데뷔전"',
+          template: '"{year}년 {month}월 {day}일, {player}의 데뷔전"',
           background: 'linear-gradient(135deg, #55a3ff, #003d82)',
           icon: '🌟'
         },
@@ -141,7 +141,7 @@
           id: 'record',
           title: '기록 달성',
           description: '새로운 기록을 세우는 역사적 순간',
-          template: '"{player}, KBO 역사상 {number}번째 {record} 달성!"',
+          template: '"{player}, 역사상 {number}번째 {record} 달성!"',
           background: 'linear-gradient(135deg, #ffd700, #ffb300)',
           icon: '📊'
         },
@@ -419,7 +419,7 @@
           width: 150,
           height: 30,
           data: {
-            content: '⚾ KBO 리그',
+            content: '⚾ 리그',
             fontSize: 16,
             fontFamily: 'Apple SD Gothic Neo',
             color: '#ffffff',

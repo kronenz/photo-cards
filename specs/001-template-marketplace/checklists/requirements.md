@@ -13,7 +13,7 @@
 
 **Validation Notes**:
 - ✅ Spec focuses on WHAT users need (template sharing, discovery, monetization) without HOW to implement
-- ✅ User stories explain value from KBO fan perspective (e.g., "preserve baseball memories", "discover quality templates")
+- ✅ User stories explain value from fan perspective (e.g., "preserve baseball memories", "discover quality templates")
 - ✅ Language is business-focused: "템플릿 마켓플레이스", "크리에이터 경제", "커뮤니티 신뢰도"
 - ✅ All mandatory sections present: User Scenarios, Requirements, Success Criteria, Key Entities
 
@@ -75,13 +75,13 @@
 ## Stakeholder Alignment
 
 - [x] Spec aligns with project constitution principles
-- [x] KBO baseball culture authentically represented
+- [x] baseball culture authentically represented
 - [x] Civitai-style community features appropriately adapted
 
 **Validation Notes**:
 - ✅ Constitution Principle I (Spec-Driven Development): requirements.md → design.md → tasks.md workflow
 - ✅ Constitution Principle II (Phase-Based Architecture): Clear Phase 1/4 dependencies documented
-- ✅ Constitution Principle V (User-Centric Design): Korean baseball culture (KBO 구단, 응원가, 팬 문화)
+- ✅ Constitution Principle V (User-Centric Design): Korean baseball culture (구단, 응원가, 팬 문화)
 - ✅ Civitai inspiration: 마소네리 그리드, 평점/리뷰 시스템, 템플릿 리믹스, 크리에이터 수익
 - ✅ Legal compliance: FR-021 (저작권 감지), Assumptions section (개인 창작물 범위)
 

@@ -146,7 +146,7 @@ description: "Implementation tasks for Integrated Holographic Platform"
 
 ---
 
-## Phase 6: User Story 3 - KBO Fan Culture Integration (Priority: P2)
+## Phase 6: User Story 3 - Fan Culture Integration (Priority: P2)
 
 **Goal**: Korean baseball culture integration with team themes, fan levels, special events
 
@@ -160,10 +160,10 @@ description: "Implementation tasks for Integrated Holographic Platform"
 
 ### Implementation for User Story 3
 
-- [x] T058 [P] [US3] Create `src/lib/components/unified/KBOTeamsSection.svelte` - Display 10 KBO teams with team colors and logos
+- [x] T058 [P] [US3] Create `src/lib/components/unified/KBOTeamsSection.svelte` - Display 10 teams with team colors and logos
 - [x] T059 [US3] Implement team selection handler that updates currentUser.fanProfile.favoriteTeam in stores
 - [x] T060 [US3] Update `src/routes/+layout.svelte` to apply teamTheme from unified stores (CSS variables for primary/secondary colors)
-- [x] T061 [P] [US3] Create `src/lib/data/kbo-teams.ts` - Static data for 10 KBO teams (LG, Doosan, KIA, Samsung, Lotte, SSG, NC, Hanwha, KT, Kiwoom) with colors, logos, mascots
+- [x] T061 [P] [US3] Create `src/lib/data/kbo-teams.ts` - Static data for 10 teams (LG, Doosan, KIA, Samsung, Lotte, SSG, NC, Hanwha, KT, Kiwoom) with colors, logos, mascots
 - [x] T062 [P] [US3] Create `src/lib/data/fan-levels.ts` - Static data for 5 fan levels (야구 입문자, 외야석 팬, 응원단 멤버, 시즌권 홀더, 구단 레전드) with requiredPoints and perks
 - [x] T063 [US3] Implement fan level calculation logic in `src/lib/utils/fan-level.ts` - Check user points and upgrade level
 - [x] T064 [US3] Add fan level upgrade notification component (toast/modal) with celebration animation
@@ -172,7 +172,7 @@ description: "Implementation tasks for Integrated Holographic Platform"
 - [x] T067 [US3] Add special event banner support in IntegratedMainPage (Korean Series, All-Star Game) with conditional rendering
 - [x] T068 [P] [US3] Create `src/routes/fanclub/[teamId]/+page.svelte` - Team-specific fanclub page with team theme, fan rankings, team cards
 
-**Checkpoint**: User Story 3 complete - KBO fan culture features integrated, main page supports team themes
+**Checkpoint**: User Story 3 complete - fan culture features integrated, main page supports team themes
 
 ---
 
@@ -258,7 +258,7 @@ Phase 2 (Foundational)
 - **US1 (P1)**: No dependencies beyond Foundational
 - **US2 (P1)**: Uses UnifiedHolographicCard from US1
 - **US5 (P1)**: Optimizes US1 and US2 components
-- **US3 (P2)**: Extends US2 (IntegratedMainPage) with KBO features
+- **US3 (P2)**: Extends US2 (IntegratedMainPage) with features
 - **US4 (P2)**: Extends US2 (IntegratedMainPage) with community features
 
 ### Within Each User Story
@@ -352,7 +352,7 @@ Task: "Add error handling"
    - Main page integrates collection + community
    - Keyboard accessible, Lighthouse ≥90
 3. **Enhancement Release v1.1**: US3 (T055-T068)
-   - Add KBO fan culture (team themes, fan levels)
+   - Add fan culture (team themes, fan levels)
 4. **Social Release v1.2**: US4 (T069-T081)
    - Add unified community features (sharing, following)
 5. **Production Release v1.3**: Polish (T082-T094)

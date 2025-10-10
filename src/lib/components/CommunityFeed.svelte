@@ -114,7 +114,7 @@
       {#if selectedTeamId}
         {getTeamById(selectedTeamId)?.name} 팬클럽
       {:else}
-        KBO 커뮤니티
+        커뮤니티
       {/if}
     </h2>
     

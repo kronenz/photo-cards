@@ -5,6 +5,10 @@
 	import TemplateCard from '$lib/components/marketplace/TemplateCard.svelte';
 	import TemplateDetailModal from '$lib/components/marketplace/TemplateDetailModal.svelte';
 	import TemplateUploadModal from '$lib/components/marketplace/TemplateUploadModal.svelte';
+	import TemplateFilters from '$lib/components/marketplace/TemplateFilters.svelte';
+	import TrendingTemplates from '$lib/components/marketplace/TrendingTemplates.svelte';
+	import RecommendedTemplates from '$lib/components/marketplace/RecommendedTemplates.svelte';
+	import { debounce } from '$lib/utils/debounce';
 	import type { Template, TemplateCategory } from '$lib/types/template';
 	import type { Card } from '$lib/types/collections';
 
@@ -18,6 +22,8 @@
 	let selectedCategory = '';
 	let searchQuery = '';
 	let selectedSort = '-created'; // Default: newest first
+	let minRating = 0;
+	let teamFilter = '';
 
 	// Pagination
 	let currentPage = 1;
@@ -60,6 +66,10 @@
 			loading = true;
 			error = null;
 
+			// Use search endpoint when filters are active
+			const hasAdvancedFilters = searchQuery.trim() || minRating > 0 || teamFilter;
+			const endpoint = hasAdvancedFilters ? '/api/templates/search' : '/api/templates';
+
 			// Build query params
 			const params = new URLSearchParams({
 				page: currentPage.toString(),
@@ -73,10 +83,18 @@
 			}
 
 			if (searchQuery.trim()) {
-				params.set('search', searchQuery.trim());
+				params.set('q', searchQuery.trim());
 			}
 
-			const response = await fetch(`/api/templates?${params}`);
+			if (minRating > 0) {
+				params.set('minRating', minRating.toString());
+			}
+
+			if (teamFilter) {
+				params.set('team', teamFilter);
+			}
+
+			const response = await fetch(`${endpoint}?${params}`);
 			if (!response.ok) throw new Error('Failed to load templates');
 
 			const data = await response.json();
@@ -112,13 +130,27 @@
 		loadTemplates();
 	}
 
+	// Debounced search (300ms)
+	const debouncedLoadTemplates = debounce(() => {
+		loadTemplates();
+	}, 300);
+
 	function handleSearchInput() {
-		// Debounce search
+		currentPage = 1;
+		debouncedLoadTemplates();
+	}
+
+	function handleSortChange() {
 		currentPage = 1;
 		loadTemplates();
 	}
 
-	function handleSortChange() {
+	function handleFilterChange(event: CustomEvent) {
+		const filters = event.detail;
+		selectedSort = filters.sortBy;
+		selectedCategory = filters.category;
+		minRating = filters.minRating;
+		teamFilter = filters.team;
 		currentPage = 1;
 		loadTemplates();
 	}
@@ -169,8 +201,8 @@
 </script>
 
 <svelte:head>
-	<title>템플릿 마켓플레이스 - KBO 홀로그래픽 카드</title>
-	<meta name="description" content="KBO 홀로그래픽 카드 템플릿을 검색하고 다운로드하세요" />
+	<title>템플릿 마켓플레이스 - 홀로그래픽 카드</title>
+	<meta name="description" content="홀로그래픽 카드 템플릿을 검색하고 다운로드하세요" />
 </svelte:head>
 
 <div class="marketplace-page">
@@ -215,25 +247,20 @@
 					class="search-input"
 				/>
 			</div>
+		</div>
 
-			<!-- Category Filter -->
-			<select
-				bind:value={selectedCategory}
-				on:change={handleCategoryChange}
-				class="filter-select"
-			>
-				<option value="">모든 카테고리</option>
-				{#each categories as category}
-					<option value={category.id}>{category.name}</option>
-				{/each}
-			</select>
-
-			<!-- Sort -->
-			<select bind:value={selectedSort} on:change={handleSortChange} class="filter-select">
-				{#each sortOptions as option}
-					<option value={option.value}>{option.label}</option>
-				{/each}
-			</select>
+		<!-- Advanced Filters Component -->
+		<div class="advanced-filters-wrapper">
+			<TemplateFilters
+				{categories}
+				initialFilters={{
+					sortBy: selectedSort,
+					category: selectedCategory,
+					minRating,
+					team: teamFilter
+				}}
+				on:change={handleFilterChange}
+			/>
 		</div>
 	</div>
 
@@ -253,6 +280,16 @@
 			</div>
 		{:else}
 			<TemplateGrid {templates} on:cardclick={handleCardClick} />
+
+			<!-- Trending Section (only show on first page with no filters) -->
+			{#if currentPage === 1 && !searchQuery && !selectedCategory && minRating === 0 && !teamFilter}
+				<TrendingTemplates on:cardclick={handleCardClick} />
+			{/if}
+
+			<!-- Recommended Section (only show on first page with no filters) -->
+			{#if currentPage === 1 && !searchQuery && !selectedCategory && minRating === 0 && !teamFilter}
+				<RecommendedTemplates on:cardclick={handleCardClick} />
+			{/if}
 
 			<!-- Pagination -->
 			{#if totalPages > 1}
@@ -412,6 +449,12 @@
 		margin: 0 auto;
 		display: flex;
 		gap: 16px;
+		margin-bottom: 16px;
+	}
+
+	.advanced-filters-wrapper {
+		max-width: 1400px;
+		margin: 0 auto;
 	}
 
 	.search-box {

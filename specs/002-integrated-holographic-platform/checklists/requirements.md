@@ -14,7 +14,7 @@
 **Validation Notes**:
 - ✅ Spec describes WHAT to integrate (Phase 1 + 2 + 4) without HOW (no SvelteKit, PocketBase details)
 - ✅ User value clear: "일관된 경험", "한 곳에서 모든 활동", "프리미엄 인터랙션"
-- ✅ Business stakeholders can understand: "통합 플랫폼", "KBO 팬 문화", "커뮤니티 시스템"
+- ✅ Business stakeholders can understand: "통합 플랫폼", "팬 문화", "커뮤니티 시스템"
 - ✅ All sections present: User Scenarios, Requirements, Success Criteria, Key Entities, Dependencies
 
 ## Requirement Completeness
@@ -41,7 +41,7 @@
 - ✅ All 5 user stories have Given-When-Then acceptance scenarios
 - ✅ Edge cases cover: 컴포넌트 충돌, 데이터 마이그레이션, 상태 관리, 테마 우선순위, 성능, 네비게이션, API
 - ✅ Out of Scope defines exclusions: 레거시 제거, 고급 AI, 실시간 경기, 모바일 앱, 다국어
-- ✅ Dependencies list all 3 phases + tech stack (PocketBase, Tailwind, Svelte Stores, KBO API)
+- ✅ Dependencies list all 3 phases + tech stack (PocketBase, Tailwind, Svelte Stores, API)
 - ✅ Assumptions cover: Phase 의존성, 컴포넌트 재사용, 데이터 마이그레이션, 상태 관리, 성능 최적화
 
 ## Feature Readiness
@@ -55,8 +55,8 @@
 - ✅ FR-001 to FR-026 all traceable to User Stories 1-5
 - ✅ Primary integration flows covered:
   - Unified Card: US1 (모든 페이지 일관성)
-  - Main Page: US2 (컬렉션 + 커뮤니티 + KBO 통합)
-  - KBO Culture: US3 (팀 테마, 팬 등급)
+  - Main Page: US2 (컬렉션 + 커뮤니티 + 통합)
+  - Culture: US3 (팀 테마, 팬 등급)
   - Community: US4 (카드 공유, 소셜 인터랙션)
   - Performance: US5 (60fps, 접근성, 모바일)
 - ✅ Success Criteria align with requirements (SC-001~SC-012 validate FR-001~FR-026)
@@ -70,7 +70,7 @@
 
 **Validation Notes**:
 - ✅ P1 (Unified Card, Main Page, Performance): Core platform foundation - everything depends on these
-- ✅ P2 (KBO Culture, Community): Enhancement features - add value but P1 must work first
+- ✅ P2 (Culture, Community): Enhancement features - add value but P1 must work first
 - ✅ MVP = P1 (US1 + US2 + US5) = 통합 카드 + 메인 화면 + 성능 보장
 - ✅ Rationale explicit:
   - US1: "카드 시스템이 통합되지 않으면 다른 모든 기능이 의미 없음"
@@ -111,7 +111,7 @@
   - US5 priority: "Constitution에서 60fps는 NON-NEGOTIABLE"
 - ✅ Principle IV (Reusability): FR-001 "UnifiedHolographicCard 컴포넌트 생성하여 모든 컨텍스트에서 재사용"
 - ✅ Principle V (User-Centric):
-  - KBO 팬 문화 통합 (US3)
+  - 팬 문화 통합 (US3)
   - 접근성 WCAG 2.1 AA (FR-023)
   - 모바일 터치 최적화 (FR-025)
 

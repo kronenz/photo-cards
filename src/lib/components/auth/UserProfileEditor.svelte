@@ -183,9 +183,9 @@
 					/>
 				</div>
 
-				<!-- KBO Fan Information -->
+				<!-- Fan Information -->
 				<div class="border-t border-gray-200 dark:border-gray-700 pt-6">
-					<h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">KBO 팬 정보</h3>
+					<h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">팬 정보</h3>
 					
 					<!-- Favorite Team -->
 					<div class="mb-4">

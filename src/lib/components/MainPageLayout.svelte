@@ -81,13 +81,13 @@
       </div>
     </section>
 
-    <!-- KBO Teams Section -->
+    <!-- Teams Section -->
     <section class="kbo-section">
       <div class="section-container">
         <slot name="kbo">
           <div class="kbo-placeholder">
-            <h3 class="section-title">KBO 구단</h3>
-            <p class="section-description">10개 KBO 구단 섹션이 여기에 표시됩니다.</p>
+            <h3 class="section-title">구단</h3>
+            <p class="section-description">10개 구단 섹션이 여기에 표시됩니다.</p>
           </div>
         </slot>
       </div>
@@ -279,7 +279,7 @@
     background: theme('colors.apple.light.background.primary');
   }
   
-  /* KBO Section */
+  /* Section */
   .kbo-section {
     padding: 60px 0;
     background: theme('colors.apple.light.background.secondary');

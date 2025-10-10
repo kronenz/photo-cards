@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv } from 'vite'
 import { sveltekit } from '@sveltejs/kit/vite';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 // https://vitejs.dev/config/
 export default defineConfig(({mode}) => {
@@ -48,7 +49,29 @@ export default defineConfig(({mode}) => {
   };
   return {
     // 플러그인 배열: Svelte, SvelteKit, 그리고 사용자 정의 HTML 플러그인을 사용
-    plugins: [ sveltekit(), htmlPlugin()],
+    plugins: [
+      sveltekit(),
+      htmlPlugin(),
+      visualizer({
+        filename: './stats.html',
+        gzipSize: true,
+        brotliSize: true,
+        open: false
+      })
+    ],
+    build: {
+      // Bundle size monitoring (T008)
+      chunkSizeWarningLimit: 500, // 500KB limit per chunk
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            // Separate vendor chunks for better caching
+            'vendor-svelte': ['svelte', '@sveltejs/kit'],
+            'vendor-ui': ['bits-ui']
+          }
+        }
+      }
+    },
     server: {
       watch: {
         // 파일 변경 감지를 위한 폴링 설정

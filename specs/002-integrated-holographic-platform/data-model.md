@@ -239,7 +239,7 @@ const exampleCard: UnifiedCard = {
 
 ### 2. UnifiedUser
 
-**Purpose**: Unified user model merging basic profile, KBO fan profile, and creator profile.
+**Purpose**: Unified user model merging basic profile, fan profile, and creator profile.
 
 **TypeScript Interface**:
 
@@ -253,7 +253,7 @@ interface UnifiedUser {
   createdAt: Date;
   lastLoginAt: Date;
 
-  // ===== KBO FAN PROFILE (Phase 2 + 4) =====
+  // ===== FAN PROFILE (Phase 2 + 4) =====
   fanProfile: {
     fanLevel: FanLevel; // Reference to FanLevel entity
     currentPoints: number; // Activity points for next level
@@ -394,7 +394,7 @@ const exampleUser: UnifiedUser = {
 
 ### 3. Collection
 
-**Purpose**: Represents a themed collection of cards (e.g., "KBO 2024 Season", "LG Twins Legends").
+**Purpose**: Represents a themed collection of cards (e.g., "2024 Season", "LG Twins Legends").
 
 **TypeScript Interface**:
 
@@ -412,7 +412,7 @@ interface Collection {
   // Metadata
   createdBy: string; // User ID of creator
   createdAt: Date;
-  isOfficial: boolean; // Official KBO collection vs user-created
+  isOfficial: boolean; // Official collection vs user-created
   tags: string[];
 
   // Rewards
@@ -429,8 +429,8 @@ interface Collection {
 ```typescript
 const exampleCollection: Collection = {
   id: 'col-kbo-2024',
-  name: 'KBO 2024 정규시즌',
-  description: '2024 KBO 리그 전 구단 선수 카드 컬렉션',
+  name: '2024 정규시즌',
+  description: '2024 리그 전 구단 선수 카드 컬렉션',
   thumbnailImage: 'https://cdn.example.com/collections/kbo-2024.jpg',
   cards: ['card-001', 'card-002', 'card-003'], // ... 30 cards
   totalCards: 30,
@@ -514,7 +514,7 @@ const examplePost: CommunityPost = {
 
 ### 5. KBOTeam
 
-**Purpose**: Represents a KBO team with branding and theme information.
+**Purpose**: Represents a team with branding and theme information.
 
 **TypeScript Interface**:
 
@@ -572,7 +572,7 @@ const exampleTeam: KBOTeam = {
 
 ### 6. FanLevel
 
-**Purpose**: Defines KBO fan tier system (5 levels).
+**Purpose**: Defines fan tier system (5 levels).
 
 **TypeScript Interface**:
 

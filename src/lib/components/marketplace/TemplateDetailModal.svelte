@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { pb } from '$lib/pocketbase';
+	import RatingStats from './RatingStats.svelte';
+	import TemplateReviewSection from './TemplateReviewSection.svelte';
 	import type { Template } from '$lib/types/template';
 
 	export let isOpen = false;
@@ -232,9 +234,40 @@
 
 					<!-- Original Template Link (if remix) -->
 					{#if template.is_remix && template.original_template_id}
-						<div class="remix-info">
-							<span class="remix-icon">🔄</span>
-							<span>이 템플릿은 다른 템플릿을 리믹스한 작품입니다</span>
+						<div class="remix-attribution">
+							<h3>리믹스 정보</h3>
+							<div class="attribution-box">
+								<span class="attribution-icon">🔄</span>
+								<div class="attribution-content">
+									<p class="attribution-text">
+										Based on:
+										{#if template.expand?.original_template_id}
+											<a
+												href="/marketplace/{template.original_template_id}"
+												class="template-link"
+												on:click|stopPropagation
+											>
+												{template.expand.original_template_id.title}
+											</a>
+											<span class="by-text">by</span>
+											<span class="author-name">
+												{template.expand.original_template_id.expand?.author?.username || '익명'}
+											</span>
+										{:else}
+											<a
+												href="/marketplace/{template.original_template_id}"
+												class="template-link"
+												on:click|stopPropagation
+											>
+												원본 템플릿 보기
+											</a>
+										{/if}
+									</p>
+									<p class="attribution-note">
+										이 작품은 원본 템플릿을 기반으로 재창작되었습니다.
+									</p>
+								</div>
+							</div>
 						</div>
 					{/if}
 
@@ -273,6 +306,14 @@
 							</button>
 						{/if}
 					</div>
+
+					<!-- Rating Statistics -->
+					<div class="rating-stats-section">
+						<RatingStats templateId={template.id} />
+					</div>
+
+					<!-- Reviews Section -->
+					<TemplateReviewSection templateId={template.id} currentUser={null} />
 				</div>
 			</div>
 		</div>
@@ -497,20 +538,71 @@
 		color: #66b3ff;
 	}
 
-	.remix-info {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		padding: 12px 16px;
-		background: rgba(156, 39, 176, 0.15);
-		border: 1px solid rgba(156, 39, 176, 0.3);
-		border-radius: 10px;
-		font-size: 14px;
-		color: #ba68c8;
+	.remix-attribution {
+		margin-top: 24px;
+		margin-bottom: 24px;
 	}
 
-	.remix-icon {
-		font-size: 20px;
+	.remix-attribution h3 {
+		font-size: 16px;
+		font-weight: 600;
+		color: #fff;
+		margin: 0 0 12px 0;
+	}
+
+	.attribution-box {
+		display: flex;
+		gap: 16px;
+		padding: 16px;
+		background: rgba(147, 51, 234, 0.1);
+		border: 1px solid rgba(147, 51, 234, 0.3);
+		border-radius: 12px;
+		border-left: 4px solid rgba(147, 51, 234, 0.6);
+	}
+
+	.attribution-icon {
+		font-size: 24px;
+		flex-shrink: 0;
+	}
+
+	.attribution-content {
+		flex: 1;
+	}
+
+	.attribution-text {
+		margin: 0 0 8px 0;
+		font-size: 14px;
+		line-height: 1.6;
+		color: #e0e0e0;
+	}
+
+	.template-link {
+		color: #a78bfa;
+		font-weight: 600;
+		text-decoration: none;
+		transition: color 0.2s;
+	}
+
+	.template-link:hover {
+		color: #c4b5fd;
+		text-decoration: underline;
+	}
+
+	.by-text {
+		color: #999;
+		margin: 0 4px;
+	}
+
+	.author-name {
+		color: #a78bfa;
+		font-weight: 500;
+	}
+
+	.attribution-note {
+		margin: 0;
+		font-size: 13px;
+		color: #999;
+		font-style: italic;
 	}
 
 	.download-section {

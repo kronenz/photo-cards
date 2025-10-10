@@ -71,7 +71,7 @@
 </script>
 
 <svelte:head>
-	<title>사용자 관리 시스템 데모 - KBO 홀로그래픽 카드 커뮤니티</title>
+	<title>사용자 관리 시스템 데모 - 홀로그래픽 카드 커뮤니티</title>
 </svelte:head>
 
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -299,7 +299,7 @@
 					</div>
 					
 					<h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-						KBO 홀로그래픽 카드 커뮤니티에 오신 것을 환영합니다
+						홀로그래픽 카드 커뮤니티에 오신 것을 환영합니다
 					</h2>
 					
 					<p class="text-xl text-gray-600 dark:text-gray-400 mb-8">

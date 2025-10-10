@@ -219,7 +219,7 @@
               <div class="event-content">
                 <h3 class="event-title">{specialEvent.title || '한국시리즈 개막!'}</h3>
                 <p class="event-description">
-                  {specialEvent.description || 'KBO 리그의 정점을 가리는 한국시리즈가 시작됩니다'}
+                  {specialEvent.description || '리그의 정점을 가리는 한국시리즈가 시작됩니다'}
                 </p>
               </div>
               <a href="/events/korean-series" class="event-cta">자세히 보기 →</a>
@@ -228,7 +228,7 @@
             <div class="event-card all-star">
               <div class="event-icon">⭐</div>
               <div class="event-content">
-                <h3 class="event-title">{specialEvent.title || 'KBO 올스타전'}</h3>
+                <h3 class="event-title">{specialEvent.title || '올스타전'}</h3>
                 <p class="event-description">
                   {specialEvent.description || '팬들이 선택한 최고의 선수들이 한자리에 모입니다'}
                 </p>
@@ -276,7 +276,7 @@
     {/if}
   </section>
 
-  <!-- KBO Teams Section -->
+  <!-- Teams Section -->
   {#if showKBOSection}
     <section id="kbo-teams" class="section kbo-section">
       <div class="section-header">

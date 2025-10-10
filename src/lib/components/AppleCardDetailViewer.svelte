@@ -38,7 +38,7 @@
   let newComment = '';
   let comments = [
     { id: 1, user: '야구팬123', content: '정말 멋진 카드네요! 홀로그래픽 효과가 환상적입니다.', time: '2분 전', likes: 5 },
-    { id: 2, user: 'KBO매니아', content: '이런 카드는 어떻게 만드나요? 튜토리얼 있나요?', time: '5분 전', likes: 2 },
+    { id: 2, user: '매니아', content: '이런 카드는 어떻게 만드나요? 튜토리얼 있나요?', time: '5분 전', likes: 2 },
     { id: 3, user: '카드수집가', content: '실물로도 제작 가능한가요?', time: '10분 전', likes: 8 }
   ];
   

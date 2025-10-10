@@ -120,7 +120,7 @@
       {:else}
         <div class="no-chat-selected">
           <div class="welcome-message">
-            <h2>⚾ KBO 팬 채팅</h2>
+            <h2>⚾ 팬 채팅</h2>
             <p>채팅방을 선택하여 다른 야구팬들과 대화해보세요!</p>
             <div class="features">
               <div class="feature">

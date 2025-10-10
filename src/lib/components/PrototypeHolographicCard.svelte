@@ -106,7 +106,7 @@
 </div>
 
 <style>
-  /* KBO Team Colors */
+  /* Team Colors */
   :global(:root) {
     --kbo-lg-primary: #C30452;
     --kbo-lg-gradient: linear-gradient(135deg, #C30452 0%, #ED2E7E 100%);

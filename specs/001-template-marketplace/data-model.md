@@ -951,7 +951,7 @@ export const INITIAL_CATEGORIES: Omit<TemplateCategory, 'id' | 'created' | 'upda
   {
     slug: 'moment-cards',
     name: '순간 카드',
-    description: 'KBO 경기의 명장면을 담은 카드 템플릿',
+    description: '경기의 명장면을 담은 카드 템플릿',
     parent: undefined,
     icon: '⚡',
     color: '#FF6B35',
@@ -961,7 +961,7 @@ export const INITIAL_CATEGORIES: Omit<TemplateCategory, 'id' | 'created' | 'upda
   {
     slug: 'player-cards',
     name: '선수 카드',
-    description: 'KBO 선수 프로필 카드 템플릿',
+    description: '선수 프로필 카드 템플릿',
     parent: undefined,
     icon: '👤',
     color: '#004E89',
@@ -981,7 +981,7 @@ export const INITIAL_CATEGORIES: Omit<TemplateCategory, 'id' | 'created' | 'upda
   {
     slug: 'team-cards',
     name: '팀 카드',
-    description: 'KBO 구단별 테마 카드 템플릿',
+    description: '구단별 테마 카드 템플릿',
     parent: undefined,
     icon: '🏆',
     color: '#C5283D',
@@ -1011,7 +1011,7 @@ export const INITIAL_CATEGORIES: Omit<TemplateCategory, 'id' | 'created' | 'upda
     is_active: true
   },
 
-  // Subcategories - Team Cards (10 KBO teams)
+  // Subcategories - Team Cards (10 teams)
   {
     slug: 'lg-twins',
     name: 'LG 트윈스',

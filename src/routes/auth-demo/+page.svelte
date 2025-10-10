@@ -26,7 +26,7 @@
 </script>
 
 <svelte:head>
-	<title>인증 시스템 데모 - KBO 홀로그래픽 카드 커뮤니티</title>
+	<title>인증 시스템 데모 - 홀로그래픽 카드 커뮤니티</title>
 </svelte:head>
 
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
@@ -185,7 +185,7 @@
 					로그인이 필요합니다
 				</h2>
 				<p class="text-gray-600 dark:text-gray-400 mb-8">
-					KBO 홀로그래픽 카드 커뮤니티에 참여하려면 로그인하세요
+					홀로그래픽 카드 커뮤니티에 참여하려면 로그인하세요
 				</p>
 				<button
 					on:click={handleSignIn}

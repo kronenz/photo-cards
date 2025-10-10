@@ -39,7 +39,7 @@
 </script>
 
 <svelte:head>
-	<title>로그인 오류 - KBO 홀로그래픽 카드 커뮤니티</title>
+	<title>로그인 오류 - 홀로그래픽 카드 커뮤니티</title>
 </svelte:head>
 
 <div class="min-h-screen bg-gradient-to-br from-red-50 via-white to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">

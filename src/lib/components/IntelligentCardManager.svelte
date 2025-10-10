@@ -25,7 +25,7 @@
     { id: 'recent', name: '최근 생성', icon: '🕒', query: 'recent:7d', count: 0 },
     { id: 'popular', name: '인기 카드', icon: '🔥', query: 'likes:>10', count: 0 },
     { id: 'holographic', name: '홀로그래픽', icon: '✨', query: 'effect:holographic', count: 0 },
-    { id: 'kbo', name: 'KBO 카드', icon: '⚾', query: 'category:kbo', count: 0 },
+    { id: 'kbo', name: '카드', icon: '⚾', query: 'category:kbo', count: 0 },
     { id: 'favorites', name: '즐겨찾기', icon: '❤️', query: 'favorited:true', count: 0 },
     { id: 'untagged', name: '태그 없음', icon: '🏷️', query: 'tags:empty', count: 0 }
   ]);
@@ -59,7 +59,7 @@
     // Analyze title and description
     const text = `${card.title || ''} ${card.description || ''}`.toLowerCase();
     
-    // KBO team detection
+    // team detection
     availableTeams.forEach(team => {
       if (text.includes(team.toLowerCase()) || text.includes(team.split(' ')[0].toLowerCase())) {
         tags.push(team);

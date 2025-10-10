@@ -155,7 +155,7 @@
       // 멀티미디어 서비스를 사용한 고급 처리
       const { multimediaService, KBO_PROCESSING_PRESETS } = await import('../services/multimediaService.js');
       
-      // KBO 특화 처리 옵션 선택
+      // 특화 처리 옵션 선택
       let processingOptions = KBO_PROCESSING_PRESETS.homerun; // 기본값
       
       if (fileType === 'video') {

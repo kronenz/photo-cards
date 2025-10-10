@@ -40,7 +40,7 @@
   let focusTrap: FocusTrap | null = null;
   let previouslyFocusedElement: HTMLElement | null = null;
 
-  // KBO 팀 목록
+  // 팀 목록
   const teams = [
     { id: 'lg', name: 'LG 트윈스' },
     { id: 'doosan', name: '두산 베어스' },

@@ -1,0 +1,124 @@
+version: '3.8'
+
+# MinIO 클러스터 구성 (4노드 erasure set)
+# 이 설정은 프로덕션 환경에서 고가용성을 위한 설정입니다.
+
+services:
+  # MinIO 노드 1
+  minio1:
+    image: minio/minio:latest
+    container_name: photo-cards-minio-1
+    restart: unless-stopped
+    command: server http://minio{1...4}/data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data_1:/data
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-minioadmin123}
+      - MINIO_DOMAIN=${MINIO_DOMAIN:-localhost}
+      - MINIO_SERVER_URL=${MINIO_SERVER_URL:-http://localhost:9000}
+    networks:
+      - photo-cards-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  # MinIO 노드 2
+  minio2:
+    image: minio/minio:latest
+    container_name: photo-cards-minio-2
+    restart: unless-stopped
+    command: server http://minio{1...4}/data --console-address ":9001"
+    volumes:
+      - minio_data_2:/data
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-minioadmin123}
+      - MINIO_DOMAIN=${MINIO_DOMAIN:-localhost}
+      - MINIO_SERVER_URL=${MINIO_SERVER_URL:-http://localhost:9000}
+    networks:
+      - photo-cards-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  # MinIO 노드 3
+  minio3:
+    image: minio/minio:latest
+    container_name: photo-cards-minio-3
+    restart: unless-stopped
+    command: server http://minio{1...4}/data --console-address ":9001"
+    volumes:
+      - minio_data_3:/data
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-minioadmin123}
+      - MINIO_DOMAIN=${MINIO_DOMAIN:-localhost}
+      - MINIO_SERVER_URL=${MINIO_SERVER_URL:-http://localhost:9000}
+    networks:
+      - photo-cards-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  # MinIO 노드 4
+  minio4:
+    image: minio/minio:latest
+    container_name: photo-cards-minio-4
+    restart: unless-stopped
+    command: server http://minio{1...4}/data --console-address ":9001"
+    volumes:
+      - minio_data_4:/data
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-minioadmin123}
+      - MINIO_DOMAIN=${MINIO_DOMAIN:-localhost}
+      - MINIO_SERVER_URL=${MINIO_SERVER_URL:-http://localhost:9000}
+    networks:
+      - photo-cards-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  # Nginx 로드 밸런서 (선택사항)
+  nginx:
+    image: nginx:alpine
+    container_name: photo-cards-minio-lb
+    restart: unless-stopped
+    ports:
+      - "9000:80"
+      - "9001:9001"
+    volumes:
+      - ./nginx/minio.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - minio1
+      - minio2
+      - minio3
+      - minio4
+    networks:
+      - photo-cards-network
+
+volumes:
+  minio_data_1:
+    driver: local
+  minio_data_2:
+    driver: local
+  minio_data_3:
+    driver: local
+  minio_data_4:
+    driver: local
+
+networks:
+  photo-cards-network:
+    driver: bridge

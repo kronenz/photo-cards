@@ -66,7 +66,7 @@
 </script>
 
 <svelte:head>
-  <title>미디어 업로드 - KBO 홀로그래픽 카드</title>
+  <title>미디어 업로드 - 홀로그래픽 카드</title>
   <meta name="description" content="Apple Photos 스타일 드래그 앤 드롭 미디어 업로드" />
 </svelte:head>
 

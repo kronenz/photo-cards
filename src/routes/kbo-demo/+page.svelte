@@ -138,8 +138,8 @@
 </script>
 
 <svelte:head>
-  <title>KBO 홀로그래픽 카드 데모 - 영광의 순간 템플릿</title>
-  <meta name="description" content="KBO 야구의 특별한 순간을 담은 홀로그래픽 카드 템플릿 시스템을 체험해보세요." />
+  <title>홀로그래픽 카드 데모 - 영광의 순간 템플릿</title>
+  <meta name="description" content="특별한 순간을 담은 홀로그래픽 카드 템플릿 시스템을 체험해보세요." />
 </svelte:head>
 
 <div class="kbo-demo-page">
@@ -148,7 +148,7 @@
     <div class="header-content">
       <h1 class="demo-title">
         <span class="title-icon">⚾</span>
-        KBO 홀로그래픽 카드 데모
+        홀로그래픽 카드 데모
       </h1>
       <p class="demo-subtitle">
         영광의 순간 템플릿 시스템으로 특별한 야구 카드를 만들어보세요

@@ -32,7 +32,7 @@
         teamStats = await communityService.getTeamLiveStats(selectedTeamId);
       }
     } catch (error) {
-      console.error('Failed to load KBO schedule:', error);
+      console.error('Failed to load schedule:', error);
     } finally {
       loading = false;
     }
@@ -74,7 +74,7 @@
     <div class="schedule-header">
       <h3>
         <span class="live-indicator">🔴</span>
-        KBO 실시간 일정
+        실시간 일정
       </h3>
       {#if liveGames.length > 0}
         <span class="live-count">{liveGames.length}경기 진행중</span>

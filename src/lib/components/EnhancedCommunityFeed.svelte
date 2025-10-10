@@ -166,7 +166,7 @@
           {currentTeam.name} 팬클럽
         {:else}
           <span class="kbo-badge">⚾</span>
-          KBO 커뮤니티
+          커뮤니티
         {/if}
       </h2>
       

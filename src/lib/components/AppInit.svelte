@@ -50,7 +50,7 @@
     if ('performance' in window) {
       const perfData = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
       if (perfData && console.groupCollapsed) {
-        console.groupCollapsed('🍎 KBO Cards Performance Metrics');
+        console.groupCollapsed('🍎 Cards Performance Metrics');
         console.log('⚡ DOM Content Loaded:', Math.round(perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart) + 'ms');
         console.log('🎨 First Paint:', Math.round(performance.getEntriesByType('paint')[0]?.startTime || 0) + 'ms');
         console.log('📱 Load Complete:', Math.round(perfData.loadEventEnd - perfData.loadEventStart) + 'ms');
@@ -60,11 +60,11 @@
     
     // Apple-style error handling
     window.addEventListener('error', (e) => {
-      console.error('🚨 KBO Cards Error:', e.error);
+      console.error('🚨 Cards Error:', e.error);
     });
     
     window.addEventListener('unhandledrejection', (e) => {
-      console.error('🚨 KBO Cards Promise Rejection:', e.reason);
+      console.error('🚨 Cards Promise Rejection:', e.reason);
     });
     
     // Apple-style viewport management for mobile
