@@ -78,7 +78,25 @@ export default defineConfig(({mode}) => {
         // true로 설정하면 파일 시스템 이벤트를 사용할 수 없는 환경에서도 변경 감지 가능
         // false로 설정하면 파일 시스템 이벤트를 사용하여 효율적으로 변경 감지
         // 기본값은 false이며, 대부분의 경우 이 설정이 적합함
-        usePolling: false
+        usePolling: true,
+        interval: 1000,
+        // 파일 감시 제한 설정
+        ignored: [
+          '**/node_modules/**',
+          '**/.git/**',
+          '**/dist/**',
+          '**/.svelte-kit/**',
+          '**/pocketbase/**',
+          '**/pb_data/**',
+          '**/pb_migrations/**',
+          '**/uploads/**',
+          '**/test-results/**',
+          '**/coverage/**',
+          '**/.vercel/**',
+          '**/stats.html',
+          '**/*.backup',
+          '**/*.bak'
+        ]
       },
       fs: {
         // 파일 시스템 접근에 대한 엄격한 제한을 해제
