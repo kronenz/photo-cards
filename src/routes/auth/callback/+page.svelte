@@ -1,30 +1,37 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
-	import { authService } from '$lib/services/authService';
+	import { supabase } from '$lib/supabase';
+	import { supabaseAuthService } from '$lib/services/supabaseAuthService';
 
 	let isLoading = true;
 	let error: string | null = null;
 
 	onMount(async () => {
 		try {
-			// Wait for session to be available
-			await new Promise(resolve => setTimeout(resolve, 1000));
-			
-			// Check if user is authenticated
-			const session = $page.data.session;
-			if (session?.user) {
-				// Redirect to dashboard or profile setup
-				await goto('/user-management-demo');
+			// Supabase OAuth callback 처리
+			const { data, error: authError } = await supabase.auth.exchangeCodeForSession(
+				window.location.search
+			);
+
+			if (authError) {
+				throw authError;
+			}
+
+			if (data.session) {
+				// 세션이 설정되면 사용자 프로필 로드
+				await new Promise((resolve) => setTimeout(resolve, 500));
+
+				// 홈페이지로 리다이렉트
+				await goto('/');
 			} else {
 				error = '인증에 실패했습니다. 다시 시도해주세요.';
-				setTimeout(() => goto('/auth/signin'), 3000);
+				setTimeout(() => goto('/login'), 3000);
 			}
-		} catch (err) {
+		} catch (err: any) {
 			error = '인증 처리 중 오류가 발생했습니다.';
 			console.error('OAuth callback error:', err);
-			setTimeout(() => goto('/auth/signin'), 3000);
+			setTimeout(() => goto('/login'), 3000);
 		} finally {
 			isLoading = false;
 		}

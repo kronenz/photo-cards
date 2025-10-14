@@ -499,9 +499,6 @@
 		clip-path: inset(10% 8.5% 52.5% 8.5%);
 
 		background-image:
-			url('https://res.cloudinary.com/simey/image/upload/Dev/PokemonCards/galaxy.png'),
-			url('https://res.cloudinary.com/simey/image/upload/Dev/PokemonCards/galaxy.png'),
-			url('https://res.cloudinary.com/simey/image/upload/Dev/PokemonCards/galaxy.png'),
 			repeating-linear-gradient(
 				82deg,
 				rgb(218, 56, 50) calc(var(--space) * 1),
@@ -614,7 +611,6 @@
 		--imgsize: 540px 700px;
 
 		background-image:
-			url('https://res.cloudinary.com/simey/image/upload/Dev/PokemonCards/rainbow2.jpg'),
 			repeating-linear-gradient(
 				var(--angle),
 				rgb(253, 71, 65) calc(var(--space) * 1),
@@ -633,19 +629,14 @@
 				hsl(180, 57%, 56%) 7.5%,
 				rgba(14, 21, 46, 0.5) 10%,
 				rgba(14, 21, 46, 0.5) 15%
-			),
-			url('https://res.cloudinary.com/simey/image/upload/Dev/PokemonCards/illusion2.webp');
+			);
 
 		background-size:
-			50% 50%,
 			500% 500%,
-			1000% 1000%,
-			var(--imgsize);
+			1000% 1000%;
 		background-position:
-			center,
 			0% calc(var(--posy) * 1.5),
-			var(--posx) var(--posy),
-			center;
+			var(--posx) var(--posy);
 		background-blend-mode: color-burn, soft-light, normal;
 
 		filter: brightness(calc((var(--hyp) * 0.25) + 0.66)) contrast(2) saturate(0.95);

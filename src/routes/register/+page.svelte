@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { pb } from '$lib/pocketbase';
 	import { browser } from '$app/environment';
 	import UnifiedCard from '$lib/components/v2/UnifiedCard.svelte';
+	import { supabaseAuthService } from '$lib/services/supabaseAuthService';
 
 	type TeamId = 'lg' | 'doosan' | 'kt' | 'samsung' | 'nc' | 'kia' | 'lotte' | 'ssg' | 'hanwha' | 'kiwoom';
 
@@ -136,37 +136,64 @@
 
 		error = '';
 		loading = true;
+		console.log('[Register] Starting handleSubmit, loading:', loading);
 
 		try {
-			const data = {
-				name,
-				email,
-				password,
-				passwordConfirm,
-				emailVisibility: true,
-				favoriteTeam,
-				bio
-			};
+			// Step 1: Create Supabase auth user
+			console.log('[Register] Starting signup with email:', email);
+			const user = await supabaseAuthService.signUpWithEmail(email, password, name);
+			console.log('[Register] Signup result:', user);
 
-			await pb.collection('users').create(data);
-			await pb.collection('users').authWithPassword(email, password);
+			if (!user) {
+				// Get detailed error from service
+				let errorMsg = '회원가입에 실패했습니다.';
+				supabaseAuthService.error.subscribe(err => {
+					if (err) {
+						console.error('[Register] Signup error details:', err);
+						errorMsg = err.message || errorMsg;
+					}
+				})();
+				throw new Error(errorMsg);
+			}
 
+			// Step 2: Update profile with additional data (optional, don't fail signup if this fails)
+			if (favoriteTeam || bio) {
+				console.log('[Register] Updating profile with additional data');
+				try {
+					// Wait a bit more for the profile to be fully created
+					await new Promise(resolve => setTimeout(resolve, 1000));
+
+					await supabaseAuthService.updateProfile({
+						bio: bio || undefined,
+						favorite_team: favoriteTeam || undefined
+					});
+					console.log('[Register] Profile updated successfully');
+				} catch (updateError: any) {
+					console.error('[Register] Failed to update profile, but signup succeeded:', updateError);
+					// Don't fail the signup even if profile update fails
+				}
+			}
+
+			console.log('[Register] Signup successful, redirecting to home');
 			goto('/');
 		} catch (err: any) {
+			console.error('[Register] Signup error:', err);
 			error = err.message || '회원가입에 실패했습니다.';
 			currentStep = 1;
 		} finally {
+			console.log('[Register] Finally block - setting loading to false');
 			loading = false;
+			console.log('[Register] Loading state after finally:', loading);
 		}
 	}
 
-	async function handleOAuth(provider: 'google' | 'github' | 'kakao' | 'naver') {
+	async function handleOAuth(provider: 'google' | 'kakao' | 'naver') {
 		error = '';
 		loading = true;
 
 		try {
-			await pb.collection('users').authWithOAuth2({ provider });
-			goto('/');
+			await supabaseAuthService.signInWithOAuth(provider);
+			// OAuth는 리다이렉트되므로 loading은 계속 유지
 		} catch (err: any) {
 			error = `${provider} 회원가입에 실패했습니다.`;
 			loading = false;
@@ -242,20 +269,6 @@
 								/>
 							</svg>
 							<span>Google로 빠른 가입</span>
-						</button>
-
-						<button
-							type="button"
-							class="oauth-button github"
-							on:click={() => handleOAuth('github')}
-							disabled={loading}
-						>
-							<svg class="oauth-icon" viewBox="0 0 24 24" fill="currentColor">
-								<path
-									d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-								/>
-							</svg>
-							<span>GitHub로 빠른 가입</span>
 						</button>
 
 						<button

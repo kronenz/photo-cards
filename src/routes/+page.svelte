@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
+  import { fade, fly, scale } from 'svelte/transition';
+  import { quintOut, cubicOut } from 'svelte/easing';
   import UnifiedCard from '$lib/components/v2/UnifiedCard.svelte';
   import CollectionStack from '$lib/components/v2/CollectionStack.svelte';
   import ShowoffModal from '$lib/components/ShowoffModal.svelte';
@@ -6,6 +9,17 @@
   import FPSCounterOverlay from '$lib/components/FPSCounterOverlay.svelte';
   import SkipLinks from '$lib/components/SkipLinks.svelte';
   import { dev } from '$app/environment';
+  import { fadeScale, flyTransition, bounceIn, staggerDelay } from '$lib/transitions/page-transitions';
+
+  // Animation control
+  let mounted = false;
+
+  onMount(() => {
+    // Trigger animations after mount
+    setTimeout(() => {
+      mounted = true;
+    }, 50);
+  });
 
   // KBO 10개 구단 데이터
   const teams = [
@@ -278,101 +292,103 @@
 >
   <!-- Hero Section -->
   <section class="hero-section">
-    <div class="hero-content">
-      <h1 class="hero-title">
-        <span class="text-gradient">홀로그래픽 카드</span>
-      </h1>
-      <p class="hero-subtitle">생동감 있고 화려한 야구 카드 컬렉션 플랫폼</p>
-      <p class="hero-description">
-        홀로그래픽 효과 · KBO 10개 구단 · 프리미엄 카드 경험
-      </p>
+    {#if mounted}
+      <div class="hero-content" in:fly={{ y: 30, duration: 800, easing: quintOut, delay: 100 }}>
+        <h1 class="hero-title">
+          <span class="text-gradient">홀로그래픽 카드</span>
+        </h1>
+        <p class="hero-subtitle" in:fly={{ y: 20, duration: 700, easing: quintOut, delay: 200 }}>
+          생동감 있고 화려한 야구 카드 컬렉션 플랫폼
+        </p>
+        <p class="hero-description" in:fly={{ y: 20, duration: 600, easing: quintOut, delay: 300 }}>
+          홀로그래픽 효과 · KBO 10개 구단 · 프리미엄 카드 경험
+        </p>
 
-      <div class="hero-actions">
-        <button class="create-card-btn" on:click={() => createCardModalOpen = true}>
-          🎨 나만의 카드 만들기
-        </button>
-      </div>
-    </div>
-
-    <!-- Hero Cards Carousel -->
-    <div class="hero-cards">
-      {#each heroCards as card}
-        <div class="hero-card">
-          <UnifiedCard
-            title={card.player}
-            subtitle={card.subtitle}
-            number={card.number}
-            team={card.team}
-            rarity={card.rarity}
-            image={card.image}
-            size="large"
-          />
+        <div class="hero-actions" in:scale={{ duration: 500, easing: quintOut, delay: 400 }}>
+          <button class="create-card-btn" on:click={() => createCardModalOpen = true}>
+            🎨 나만의 카드 만들기
+          </button>
         </div>
-      {/each}
-    </div>
+      </div>
+
+      <!-- Hero Cards Carousel -->
+      <div class="hero-cards">
+        {#each heroCards as card, i}
+          <div
+            class="hero-card"
+            in:fly={{ y: 50, duration: 700, easing: cubicOut, delay: staggerDelay(i, 500, 100) }}
+          >
+            <UnifiedCard
+              title={card.player}
+              subtitle={card.subtitle}
+              number={card.number}
+              team={card.team}
+              rarity={card.rarity}
+              image={card.image}
+              size="large"
+            />
+          </div>
+        {/each}
+      </div>
+    {/if}
   </section>
 
   <!-- My Collection Dashboard -->
   <section id="main-collection" class="dashboard-section" tabindex="-1">
-    <div class="section-header">
-      <div class="header-content">
-        <h2 class="section-title">나의 컬렉션 대시보드</h2>
-        <p class="section-subtitle">최근 획득한 카드와 컬렉션 진행 상황을 확인하세요</p>
+    {#if mounted}
+      <div class="section-header" in:fly={{ y: 30, duration: 600, easing: quintOut, delay: 900 }}>
+        <div class="header-content">
+          <h2 class="section-title">나의 컬렉션 대시보드</h2>
+          <p class="section-subtitle">최근 획득한 카드와 컬렉션 진행 상황을 확인하세요</p>
+        </div>
+        <button class="showoff-btn" on:click={() => showoffModalOpen = true}>
+          ✨ 카드 자랑하기
+        </button>
       </div>
-      <button class="showoff-btn" on:click={() => showoffModalOpen = true}>
-        ✨ 카드 자랑하기
-      </button>
-    </div>
 
-    <div class="dashboard-grid">
-      <div class="stat-card">
-        <div class="stat-icon">🎴</div>
-        <div class="stat-content">
-          <div class="stat-value">147</div>
-          <div class="stat-label">총 보유 카드</div>
-        </div>
+      <div class="dashboard-grid">
+        {#each [
+          { icon: '🎴', value: '147', label: '총 보유 카드' },
+          { icon: '⭐', value: '12', label: '레전더리 카드' },
+          { icon: '🏆', value: '5/8', label: '완성 컬렉션' },
+          { icon: '🔥', value: '7일', label: '연속 수집' }
+        ] as stat, i}
+          <div
+            class="stat-card"
+            in:scale={{ duration: 500, easing: cubicOut, delay: staggerDelay(i, 1000, 80) }}
+          >
+            <div class="stat-icon">{stat.icon}</div>
+            <div class="stat-content">
+              <div class="stat-value">{stat.value}</div>
+              <div class="stat-label">{stat.label}</div>
+            </div>
+          </div>
+        {/each}
       </div>
-      <div class="stat-card">
-        <div class="stat-icon">⭐</div>
-        <div class="stat-content">
-          <div class="stat-value">12</div>
-          <div class="stat-label">레전더리 카드</div>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">🏆</div>
-        <div class="stat-content">
-          <div class="stat-value">5/8</div>
-          <div class="stat-label">완성 컬렉션</div>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">🔥</div>
-        <div class="stat-content">
-          <div class="stat-value">7일</div>
-          <div class="stat-label">연속 수집</div>
-        </div>
-      </div>
-    </div>
+    {/if}
   </section>
 
   <!-- Collections Section -->
   <section id="main-content" class="collections-section" tabindex="-1">
-    <div class="section-header">
-      <h2 class="section-title">나의 컬렉션</h2>
-      <p class="section-subtitle">카드를 클릭하여 컬렉션을 펼쳐보세요</p>
-    </div>
+    {#if mounted}
+      <div class="section-header" in:fly={{ y: 30, duration: 600, easing: quintOut, delay: 1400 }}>
+        <h2 class="section-title">나의 컬렉션</h2>
+        <p class="section-subtitle">카드를 클릭하여 컬렉션을 펼쳐보세요</p>
+      </div>
 
-    <div class="collections-grid">
-      {#each collections as collection}
-        <CollectionStack
-          title={collection.title}
-          description={collection.description}
-          cards={collection.cards}
-          progress={collection.progress}
-        />
-      {/each}
-    </div>
+      <div class="collections-grid">
+        {#each collections as collection, i}
+          <div in:fly={{ x: -30, duration: 600, easing: cubicOut, delay: staggerDelay(i, 1600, 150) }}>
+            <CollectionStack
+              title={collection.title}
+              description={collection.description}
+              cards={collection.cards}
+              progress={collection.progress}
+            />
+          </div>
+        {/each}
+      </div>
+    {/if}
   </section>
 
   <!-- My Created Cards Section -->
@@ -419,46 +435,50 @@
 
   <!-- Community Feed Section -->
   <section id="main-feed" class="community-feed-section" tabindex="-1">
-    <div class="section-header">
-      <h2 class="section-title">커뮤니티 피드</h2>
-      <p class="section-subtitle">팬들이 자랑하는 특별한 카드들</p>
-    </div>
-
-    <div class="feed-container">
-      <div class="feed-filters">
-        <button
-          class="filter-btn"
-          class:active={feedFilter === 'all'}
-          on:click={() => feedFilter = 'all'}
-        >
-          전체
-        </button>
-        <button
-          class="filter-btn"
-          class:active={feedFilter === 'popular'}
-          on:click={() => feedFilter = 'popular'}
-        >
-          인기
-        </button>
-        <button
-          class="filter-btn"
-          class:active={feedFilter === 'recent'}
-          on:click={() => feedFilter = 'recent'}
-        >
-          최신
-        </button>
-        <button
-          class="filter-btn"
-          class:active={feedFilter === 'rare'}
-          on:click={() => feedFilter = 'rare'}
-        >
-          희귀
-        </button>
+    {#if mounted}
+      <div class="section-header" in:fly={{ y: 30, duration: 600, easing: quintOut, delay: 2100 }}>
+        <h2 class="section-title">커뮤니티 피드</h2>
+        <p class="section-subtitle">팬들이 자랑하는 특별한 카드들</p>
       </div>
 
-      <div class="feed-grid">
-        {#each filteredPosts as post (post.id)}
-          <div class="feed-card">
+      <div class="feed-container">
+        <div class="feed-filters" in:scale={{ duration: 400, easing: cubicOut, delay: 2300 }}>
+          <button
+            class="filter-btn"
+            class:active={feedFilter === 'all'}
+            on:click={() => feedFilter = 'all'}
+          >
+            전체
+          </button>
+          <button
+            class="filter-btn"
+            class:active={feedFilter === 'popular'}
+            on:click={() => feedFilter = 'popular'}
+          >
+            인기
+          </button>
+          <button
+            class="filter-btn"
+            class:active={feedFilter === 'recent'}
+            on:click={() => feedFilter = 'recent'}
+          >
+            최신
+          </button>
+          <button
+            class="filter-btn"
+            class:active={feedFilter === 'rare'}
+            on:click={() => feedFilter = 'rare'}
+          >
+            희귀
+          </button>
+        </div>
+
+        <div class="feed-grid">
+          {#each filteredPosts as post, i (post.id)}
+            <div
+              class="feed-card"
+              in:fly={{ x: -20, duration: 500, easing: cubicOut, delay: staggerDelay(i, 2500, 100) }}
+            >
             <div class="feed-card-image">
               <UnifiedCard
                 title={post.card.title}
@@ -508,9 +528,10 @@
               </div>
             </div>
           </div>
-        {/each}
+          {/each}
+        </div>
       </div>
-    </div>
+    {/if}
   </section>
 
   <!-- Live Activity Section -->
@@ -658,17 +679,25 @@
 </div>
 
 <!-- Showoff Modal -->
-<ShowoffModal
-  bind:show={showoffModalOpen}
-  userCards={myCards}
-  on:submit={handleShowoffSubmit}
-/>
+{#if showoffModalOpen}
+  <div in:fade={{ duration: 200 }} out:fade={{ duration: 150 }}>
+    <ShowoffModal
+      bind:show={showoffModalOpen}
+      userCards={myCards}
+      on:submit={handleShowoffSubmit}
+    />
+  </div>
+{/if}
 
 <!-- Create Card Modal -->
-<CreateCardModal
-  bind:show={createCardModalOpen}
-  on:submit={handleCreateCard}
-/>
+{#if createCardModalOpen}
+  <div in:fade={{ duration: 200 }} out:fade={{ duration: 150 }}>
+    <CreateCardModal
+      bind:show={createCardModalOpen}
+      on:submit={handleCreateCard}
+    />
+  </div>
+{/if}
 
 <style>
   .main-page {

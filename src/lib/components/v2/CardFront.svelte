@@ -415,7 +415,6 @@
     --imgsize: cover;
 
     background-image:
-      url("https://res.cloudinary.com/simey/image/upload/v1671043433/rainbow2.jpg"),
       repeating-linear-gradient(
         var(--angle),
         #0e152e 0%,
@@ -468,7 +467,6 @@
     --imgsize: cover;
 
     background-image:
-      url("https://res.cloudinary.com/simey/image/upload/v1671043433/rainbow2.jpg"),
       repeating-linear-gradient(
         var(--angle),
         #0e152e 0%,
@@ -734,7 +732,6 @@
     --imgsize: cover;
 
     background-image:
-      url("https://res.cloudinary.com/simey/image/upload/v1671043433/rainbow2.jpg"),
       repeating-linear-gradient(
         var(--angle),
         #0e152e 0%,
