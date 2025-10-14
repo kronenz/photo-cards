@@ -3,6 +3,7 @@
 	import { browser } from '$app/environment';
 	import UnifiedCard from '$lib/components/v2/UnifiedCard.svelte';
 	import { supabaseAuthService } from '$lib/services/supabaseAuthService';
+	import { scrollFadeUp, scrollFadeLeft, scrollScale } from '$lib/transitions/scroll-animations';
 
 	type TeamId = 'lg' | 'doosan' | 'kt' | 'samsung' | 'nc' | 'kia' | 'lotte' | 'ssg' | 'hanwha' | 'kiwoom';
 
@@ -205,10 +206,10 @@
 	<!-- Left: Holographic Card Animation -->
 	<div class="card-showcase">
 		<div class="showcase-content">
-			<h1 class="brand-title">홀로그래픽 카드 플랫폼</h1>
-			<p class="brand-subtitle">지금 바로 시작하세요</p>
+			<h1 class="brand-title" use:scrollFadeUp={{ duration: 700 }}>홀로그래픽 카드 플랫폼</h1>
+			<p class="brand-subtitle" use:scrollFadeUp={{ duration: 600, delay: 100 }}>지금 바로 시작하세요</p>
 
-			<div class="demo-card">
+			<div class="demo-card" use:scrollScale={{ duration: 800, delay: 200 }}>
 				<UnifiedCard
 					title="환영합니다"
 					subtitle="새로운 여정의 시작"
@@ -221,7 +222,7 @@
 				/>
 			</div>
 
-			<div class="step-progress">
+			<div class="step-progress" use:scrollFadeUp={{ duration: 500, delay: 300 }}>
 				<div class="progress-bar">
 					<div class="progress-fill" style="width: {(currentStep / totalSteps) * 100}%"></div>
 				</div>
@@ -233,7 +234,7 @@
 	<!-- Right: Registration Form -->
 	<div class="form-container">
 		<div class="form-wrapper">
-			<div class="form-header">
+			<div class="form-header" use:scrollFadeLeft={{ duration: 600 }}>
 				<h2 class="form-title">회원가입</h2>
 				<p class="form-subtitle">홀로그래픽 카드와 함께하세요</p>
 			</div>

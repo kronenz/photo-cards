@@ -4,6 +4,7 @@
   import UnifiedCard from '$lib/components/v2/UnifiedCard.svelte';
   import CommunityFeed from '$lib/components/CommunityFeed.svelte';
   import KBOLiveSchedule from '$lib/components/KBOLiveSchedule.svelte';
+  import { scrollFadeUp, scrollScale, scrollBlur } from '$lib/transitions/scroll-animations';
   
   // Type definitions
   interface CardStats {
@@ -249,7 +250,7 @@
 
 <div class="gallery-page">
   <!-- Navigation Tabs -->
-  <div class="page-tabs">
+  <div class="page-tabs" use:scrollFadeUp={{ duration: 500 }}>
     <button class="tab-button" class:active={activeTab === 'all'} on:click={() => filterCards('all')}>
       <span class="tab-icon">🔥</span>
       <span class="tab-label">전체</span>
@@ -292,8 +293,15 @@
         </div>
       {:else}
         <div class="cards-grid">
-          {#each $filteredCards as card (card.id)}
-            <div class="card-item" on:click={() => handleCardClick(card)} on:keydown={(e) => e.key === 'Enter' && handleCardClick(card)} role="button" tabindex="0">
+          {#each $filteredCards as card, i (card.id)}
+            <div
+              class="card-item"
+              on:click={() => handleCardClick(card)}
+              on:keydown={(e) => e.key === 'Enter' && handleCardClick(card)}
+              role="button"
+              tabindex="0"
+              use:scrollScale={{ duration: 600, delay: Math.min(i * 50, 400) }}
+            >
               <UnifiedCard
                 title={card.title}
                 subtitle={card.subtitle}

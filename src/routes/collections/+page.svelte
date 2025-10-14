@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import UnifiedCard from '$lib/components/v2/UnifiedCard.svelte';
+  import { scrollFadeUp, scrollFadeLeft, scrollScale } from '$lib/transitions/scroll-animations';
 
   // Types
   type TeamId = 'lg' | 'doosan' | 'kt' | 'samsung' | 'nc' | 'kia' | 'lotte' | 'ssg' | 'hanwha' | 'kiwoom';
@@ -243,11 +244,12 @@
     </div>
 
     <nav class="albums-list">
-      {#each albums as album}
+      {#each albums as album, i}
         <button
           class="album-item"
           class:active={selectedAlbum === album.id}
           on:click={() => selectedAlbum = album.id}
+          use:scrollFadeLeft={{ duration: 500, delay: i * 60 }}
         >
           <span class="album-icon">{album.icon}</span>
           <span class="album-name">{album.name}</span>
@@ -265,7 +267,7 @@
         </button>
       {/each}
 
-      <button class="album-item new-album">
+      <button class="album-item new-album" use:scrollFadeLeft={{ duration: 500, delay: albums.length * 60 }}>
         <span class="album-icon">➕</span>
         <span class="album-name">새 앨범</span>
       </button>
@@ -275,7 +277,7 @@
   <!-- Main Content -->
   <main class="main-content">
     <!-- Header -->
-    <header class="content-header">
+    <header class="content-header" use:scrollFadeUp={{ duration: 600 }}>
       <div class="header-left">
         <h1 class="page-title">
           {albums.find(a => a.id === selectedAlbum)?.name || '내 컬렉션'}
@@ -292,7 +294,7 @@
     </header>
 
     <!-- Filters & Sort -->
-    <div class="filter-bar">
+    <div class="filter-bar" use:scrollFadeUp={{ duration: 500, delay: 100 }}>
       <!-- Search -->
       <div class="search-box">
         <span class="search-icon">🔍</span>
@@ -332,8 +334,8 @@
 
     <!-- Cards Grid -->
     <div class="cards-grid">
-      {#each filteredCards as card (card.id)}
-        <div class="card-wrapper">
+      {#each filteredCards as card, i (card.id)}
+        <div class="card-wrapper" use:scrollScale={{ duration: 600, delay: Math.min(i * 50, 400) }}>
           <button
             class="card-container"
             on:click={() => selectedCard = card}
@@ -375,7 +377,7 @@
   <!-- Right Sidebar - Stats -->
   <aside class="stats-sidebar">
     <!-- Collection Stats -->
-    <div class="widget">
+    <div class="widget" use:scrollFadeUp={{ duration: 500, delay: 100 }}>
       <h3 class="widget-title">컬렉션 현황</h3>
       <div class="stats-list">
         <div class="stat-item">
@@ -393,7 +395,7 @@
     </div>
 
     <!-- Rarity Distribution -->
-    <div class="widget">
+    <div class="widget" use:scrollFadeUp={{ duration: 500, delay: 200 }}>
       <h3 class="widget-title">희귀도 분포</h3>
       <div class="rarity-list">
         <div class="rarity-item legendary">
@@ -416,7 +418,7 @@
     </div>
 
     <!-- Team Distribution -->
-    <div class="widget">
+    <div class="widget" use:scrollFadeUp={{ duration: 500, delay: 300 }}>
       <h3 class="widget-title">팀별 현황</h3>
       <div class="team-list">
         {#each teams.slice(0, 5) as team}
