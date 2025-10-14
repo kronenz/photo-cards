@@ -524,10 +524,9 @@
               </div>
             </div>
           </div>
-          {/each}
-        </div>
+        {/each}
       </div>
-    {/if}
+    </div>
   </section>
 
   <!-- Live Activity Section -->
