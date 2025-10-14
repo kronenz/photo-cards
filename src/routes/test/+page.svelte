@@ -256,14 +256,14 @@
 </main>
 
 <section class="promo">
-	<p>
+	<div>
 		<a href="/demo">
 			완전한 데모 페이지 보기<br />
 			<div class="demo-preview">
 				<span>🎴 홀로그래픽 카드 데모</span>
 			</div>
 		</a>
-	</p>
+	</div>
 </section>
 
 <style>

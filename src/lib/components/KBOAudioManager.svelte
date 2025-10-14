@@ -468,14 +468,17 @@
             <div class="sound-name">{sound.name}</div>
             <div class="sound-duration">{formatTime(sound.duration)}</div>
           </div>
-          
-          <button
+
+          <div
+            role="button"
+            tabindex="0"
             class="add-to-playlist-btn"
             on:click|stopPropagation={() => addToPlaylist(sound)}
+            on:keydown={(e) => e.key === 'Enter' && addToPlaylist(sound)}
             title="플레이리스트에 추가"
           >
             ➕
-          </button>
+          </div>
         </button>
       {/each}
     </div>

@@ -66,7 +66,7 @@ export default defineConfig(({mode}) => {
         output: {
           manualChunks: {
             // Separate vendor chunks for better caching
-            'vendor-svelte': ['svelte', '@sveltejs/kit'],
+            'vendor-svelte': ['svelte'],
             'vendor-ui': ['bits-ui']
           }
         }
