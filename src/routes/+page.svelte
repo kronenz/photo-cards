@@ -10,6 +10,7 @@
   import SkipLinks from '$lib/components/SkipLinks.svelte';
   import { dev } from '$app/environment';
   import { fadeScale, flyTransition, bounceIn, staggerDelay } from '$lib/transitions/page-transitions';
+  import { scrollFadeUp, scrollFadeLeft, scrollFadeRight, scrollScale, scrollBlur } from '$lib/transitions/scroll-animations';
 
   // Animation control
   let mounted = false;
@@ -335,60 +336,56 @@
 
   <!-- My Collection Dashboard -->
   <section id="main-collection" class="dashboard-section" tabindex="-1">
-    {#if mounted}
-      <div class="section-header" in:fly={{ y: 30, duration: 600, easing: quintOut, delay: 900 }}>
-        <div class="header-content">
-          <h2 class="section-title">나의 컬렉션 대시보드</h2>
-          <p class="section-subtitle">최근 획득한 카드와 컬렉션 진행 상황을 확인하세요</p>
-        </div>
-        <button class="showoff-btn" on:click={() => showoffModalOpen = true}>
-          ✨ 카드 자랑하기
-        </button>
+    <div class="section-header" use:scrollFadeUp={{ duration: 600 }}>
+      <div class="header-content">
+        <h2 class="section-title">나의 컬렉션 대시보드</h2>
+        <p class="section-subtitle">최근 획득한 카드와 컬렉션 진행 상황을 확인하세요</p>
       </div>
+      <button class="showoff-btn" on:click={() => showoffModalOpen = true}>
+        ✨ 카드 자랑하기
+      </button>
+    </div>
 
-      <div class="dashboard-grid">
-        {#each [
-          { icon: '🎴', value: '147', label: '총 보유 카드' },
-          { icon: '⭐', value: '12', label: '레전더리 카드' },
-          { icon: '🏆', value: '5/8', label: '완성 컬렉션' },
-          { icon: '🔥', value: '7일', label: '연속 수집' }
-        ] as stat, i}
-          <div
-            class="stat-card"
-            in:scale={{ duration: 500, easing: cubicOut, delay: staggerDelay(i, 1000, 80) }}
-          >
-            <div class="stat-icon">{stat.icon}</div>
-            <div class="stat-content">
-              <div class="stat-value">{stat.value}</div>
-              <div class="stat-label">{stat.label}</div>
-            </div>
+    <div class="dashboard-grid">
+      {#each [
+        { icon: '🎴', value: '147', label: '총 보유 카드' },
+        { icon: '⭐', value: '12', label: '레전더리 카드' },
+        { icon: '🏆', value: '5/8', label: '완성 컬렉션' },
+        { icon: '🔥', value: '7일', label: '연속 수집' }
+      ] as stat, i}
+        <div
+          class="stat-card"
+          use:scrollScale={{ duration: 500, delay: i * 100 }}
+        >
+          <div class="stat-icon">{stat.icon}</div>
+          <div class="stat-content">
+            <div class="stat-value">{stat.value}</div>
+            <div class="stat-label">{stat.label}</div>
           </div>
-        {/each}
-      </div>
-    {/if}
+        </div>
+      {/each}
+    </div>
   </section>
 
   <!-- Collections Section -->
   <section id="main-content" class="collections-section" tabindex="-1">
-    {#if mounted}
-      <div class="section-header" in:fly={{ y: 30, duration: 600, easing: quintOut, delay: 1400 }}>
-        <h2 class="section-title">나의 컬렉션</h2>
-        <p class="section-subtitle">카드를 클릭하여 컬렉션을 펼쳐보세요</p>
-      </div>
+    <div class="section-header" use:scrollFadeUp={{ duration: 600 }}>
+      <h2 class="section-title">나의 컬렉션</h2>
+      <p class="section-subtitle">카드를 클릭하여 컬렉션을 펼쳐보세요</p>
+    </div>
 
-      <div class="collections-grid">
-        {#each collections as collection, i}
-          <div in:fly={{ x: -30, duration: 600, easing: cubicOut, delay: staggerDelay(i, 1600, 150) }}>
-            <CollectionStack
-              title={collection.title}
-              description={collection.description}
-              cards={collection.cards}
-              progress={collection.progress}
-            />
-          </div>
-        {/each}
-      </div>
-    {/if}
+    <div class="collections-grid">
+      {#each collections as collection, i}
+        <div use:scrollFadeLeft={{ duration: 600, delay: i * 100 }}>
+          <CollectionStack
+            title={collection.title}
+            description={collection.description}
+            cards={collection.cards}
+            progress={collection.progress}
+          />
+        </div>
+      {/each}
+    </div>
   </section>
 
   <!-- My Created Cards Section -->
@@ -435,50 +432,49 @@
 
   <!-- Community Feed Section -->
   <section id="main-feed" class="community-feed-section" tabindex="-1">
-    {#if mounted}
-      <div class="section-header" in:fly={{ y: 30, duration: 600, easing: quintOut, delay: 2100 }}>
-        <h2 class="section-title">커뮤니티 피드</h2>
-        <p class="section-subtitle">팬들이 자랑하는 특별한 카드들</p>
+    <div class="section-header" use:scrollFadeUp={{ duration: 600 }}>
+      <h2 class="section-title">커뮤니티 피드</h2>
+      <p class="section-subtitle">팬들이 자랑하는 특별한 카드들</p>
+    </div>
+
+    <div class="feed-container">
+      <div class="feed-filters" use:scrollScale={{ duration: 400 }}>
+        <button
+          class="filter-btn"
+          class:active={feedFilter === 'all'}
+          on:click={() => feedFilter = 'all'}
+        >
+          전체
+        </button>
+        <button
+          class="filter-btn"
+          class:active={feedFilter === 'popular'}
+          on:click={() => feedFilter = 'popular'}
+        >
+          인기
+        </button>
+        <button
+          class="filter-btn"
+          class:active={feedFilter === 'recent'}
+          on:click={() => feedFilter = 'recent'}
+        >
+          최신
+        </button>
+        <button
+          class="filter-btn"
+          class:active={feedFilter === 'rare'}
+          on:click={() => feedFilter = 'rare'}
+        >
+          희귀
+        </button>
       </div>
 
-      <div class="feed-container">
-        <div class="feed-filters" in:scale={{ duration: 400, easing: cubicOut, delay: 2300 }}>
-          <button
-            class="filter-btn"
-            class:active={feedFilter === 'all'}
-            on:click={() => feedFilter = 'all'}
+      <div class="feed-grid">
+        {#each filteredPosts as post, i (post.id)}
+          <div
+            class="feed-card"
+            use:scrollBlur={{ duration: 600, delay: Math.min(i * 50, 300) }}
           >
-            전체
-          </button>
-          <button
-            class="filter-btn"
-            class:active={feedFilter === 'popular'}
-            on:click={() => feedFilter = 'popular'}
-          >
-            인기
-          </button>
-          <button
-            class="filter-btn"
-            class:active={feedFilter === 'recent'}
-            on:click={() => feedFilter = 'recent'}
-          >
-            최신
-          </button>
-          <button
-            class="filter-btn"
-            class:active={feedFilter === 'rare'}
-            on:click={() => feedFilter = 'rare'}
-          >
-            희귀
-          </button>
-        </div>
-
-        <div class="feed-grid">
-          {#each filteredPosts as post, i (post.id)}
-            <div
-              class="feed-card"
-              in:fly={{ x: -20, duration: 500, easing: cubicOut, delay: staggerDelay(i, 2500, 100) }}
-            >
             <div class="feed-card-image">
               <UnifiedCard
                 title={post.card.title}
@@ -567,18 +563,19 @@
 
   <!-- KBO Team Selection Section -->
   <section id="main-teams" class="team-selection-section" tabindex="-1">
-    <div class="section-header">
+    <div class="section-header" use:scrollFadeUp={{ duration: 600 }}>
       <h2 class="section-title">나의 팀 선택하기</h2>
       <p class="section-subtitle">좋아하는 구단을 선택하면 구단 테마가 적용됩니다</p>
     </div>
 
     <div class="team-selection-grid">
-      {#each teams as team}
+      {#each teams as team, i}
         <button
           class="team-card"
           class:selected={selectedTeam === team.id}
           style="--team-color: {team.color}; --team-secondary: {team.secondary}"
           on:click={() => selectTeam(team.id)}
+          use:scrollFadeUp={{ duration: 500, delay: i * 50 }}
         >
           <div class="team-logo">
             <span class="team-initial">{team.shortName}</span>
@@ -606,74 +603,62 @@
 
   <!-- Teams Showcase Section -->
   <section class="teams-section">
-    <div class="section-header">
+    <div class="section-header" use:scrollFadeUp={{ duration: 600 }}>
       <h2 class="section-title">KBO 10개 구단 쇼케이스</h2>
       <p class="section-subtitle">각 구단의 고유한 컬러와 홀로그래픽 효과를 확인하세요</p>
     </div>
 
     <div class="teams-grid">
-      {#each showcaseCards as card}
-        <UnifiedCard
-          title={card.player}
-          subtitle={card.subtitle}
-          number={card.number}
-          team={card.team}
-          rarity="legendary"
-          image={card.image}
-          size="medium"
-        />
+      {#each showcaseCards as card, i}
+        <div use:scrollScale={{ duration: 600, delay: i * 80 }}>
+          <UnifiedCard
+            title={card.player}
+            subtitle={card.subtitle}
+            number={card.number}
+            team={card.team}
+            rarity="legendary"
+            image={card.image}
+            size="medium"
+          />
+        </div>
       {/each}
     </div>
   </section>
 
   <!-- Features Section -->
   <section class="features-section">
-    <div class="section-header">
+    <div class="section-header" use:scrollFadeUp={{ duration: 600 }}>
       <h2 class="section-title">포토카드 문화</h2>
       <p class="section-subtitle">KBO 야구 추억을 간직하는 특별한 방법</p>
     </div>
 
     <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">💝</div>
-        <h3>소장의 즐거움</h3>
-        <p>잊지 못할 야구 순간을 프리미엄 홀로그래픽 카드로 영원히 간직하세요</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🏆</div>
-        <h3>컬렉션의 완성</h3>
-        <p>시즌별, 선수별 카드를 모아 나만의 특별한 컬렉션을 완성하세요</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">✨</div>
-        <h3>자랑의 순간</h3>
-        <p>희귀하고 특별한 카드를 커뮤니티에 자랑하고 팬들과 공유하세요</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">⚾</div>
-        <h3>응원의 증표</h3>
-        <p>좋아하는 구단과 선수의 카드로 진정한 팬심을 표현하세요</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🎁</div>
-        <h3>기념품의 가치</h3>
-        <p>홈런, 우승 등 역사적 순간을 담은 카드는 소중한 추억이 됩니다</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🤝</div>
-        <h3>팬 문화의 중심</h3>
-        <p>카드 교환, 자랑하기로 KBO 팬들과 특별한 유대감을 형성하세요</p>
-      </div>
+      {#each [
+        { icon: '💝', title: '소장의 즐거움', text: '잊지 못할 야구 순간을 프리미엄 홀로그래픽 카드로 영원히 간직하세요' },
+        { icon: '🏆', title: '컬렉션의 완성', text: '시즌별, 선수별 카드를 모아 나만의 특별한 컬렉션을 완성하세요' },
+        { icon: '✨', title: '자랑의 순간', text: '희귀하고 특별한 카드를 커뮤니티에 자랑하고 팬들과 공유하세요' },
+        { icon: '⚾', title: '응원의 증표', text: '좋아하는 구단과 선수의 카드로 진정한 팬심을 표현하세요' },
+        { icon: '🎁', title: '기념품의 가치', text: '홈런, 우승 등 역사적 순간을 담은 카드는 소중한 추억이 됩니다' },
+        { icon: '🤝', title: '팬 문화의 중심', text: '카드 교환, 자랑하기로 KBO 팬들과 특별한 유대감을 형성하세요' }
+      ] as feature, i}
+        <div class="feature-card" use:scrollFadeUp={{ duration: 600, delay: i * 80 }}>
+          <div class="feature-icon">{feature.icon}</div>
+          <h3>{feature.title}</h3>
+          <p>{feature.text}</p>
+        </div>
+      {/each}
     </div>
   </section>
 
   <!-- CTA Section -->
   <section class="cta-section">
-    <h2>지금 시작하세요</h2>
-    <p>KBO 야구의 감동적인 순간들을 홀로그래픽 카드로 경험해보세요</p>
-    <div class="cta-buttons">
-      <a href="/v2-prototype" class="cta-btn primary">프로토타입 보기</a>
-      <a href="/gallery" class="cta-btn secondary">갤러리 둘러보기</a>
+    <div use:scrollScale={{ duration: 800 }}>
+      <h2>지금 시작하세요</h2>
+      <p>KBO 야구의 감동적인 순간들을 홀로그래픽 카드로 경험해보세요</p>
+      <div class="cta-buttons">
+        <a href="/v2-prototype" class="cta-btn primary">프로토타입 보기</a>
+        <a href="/gallery" class="cta-btn secondary">갤러리 둘러보기</a>
+      </div>
     </div>
   </section>
 </div>
