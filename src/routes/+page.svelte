@@ -8,6 +8,9 @@
   import CreateCardModal from '$lib/components/CreateCardModal.svelte';
   import FPSCounterOverlay from '$lib/components/FPSCounterOverlay.svelte';
   import SkipLinks from '$lib/components/SkipLinks.svelte';
+  import CivitaiCommunityFeed from '$lib/components/CivitaiCommunityFeed.svelte';
+  import KBOTeamsShowcase from '$lib/components/KBOTeamsShowcase.svelte';
+  import PersonalizedRecommendations from '$lib/components/PersonalizedRecommendations.svelte';
   import { dev } from '$app/environment';
   import { fadeScale, flyTransition, bounceIn, staggerDelay } from '$lib/transitions/page-transitions';
   import { scrollFadeUp, scrollFadeLeft, scrollFadeRight, scrollScale, scrollBlur } from '$lib/transitions/scroll-animations';
@@ -430,102 +433,41 @@
     </section>
   {/if}
 
-  <!-- Community Feed Section -->
+  <!-- Civitai-Style Community Feed Section -->
   <section id="main-feed" class="community-feed-section" tabindex="-1">
     <div class="section-header" use:scrollFadeUp={{ duration: 600 }}>
-      <h2 class="section-title">커뮤니티 피드</h2>
-      <p class="section-subtitle">팬들이 자랑하는 특별한 카드들</p>
+      <h2 class="section-title">커뮤니티 갤러리</h2>
+      <p class="section-subtitle">Civitai 스타일 마소네리 그리드로 최고의 카드들을 발견하세요</p>
     </div>
 
-    <div class="feed-container">
-      <div class="feed-filters" use:scrollScale={{ duration: 400 }}>
-        <button
-          class="filter-btn"
-          class:active={feedFilter === 'all'}
-          on:click={() => feedFilter = 'all'}
-        >
-          전체
-        </button>
-        <button
-          class="filter-btn"
-          class:active={feedFilter === 'popular'}
-          on:click={() => feedFilter = 'popular'}
-        >
-          인기
-        </button>
-        <button
-          class="filter-btn"
-          class:active={feedFilter === 'recent'}
-          on:click={() => feedFilter = 'recent'}
-        >
-          최신
-        </button>
-        <button
-          class="filter-btn"
-          class:active={feedFilter === 'rare'}
-          on:click={() => feedFilter = 'rare'}
-        >
-          희귀
-        </button>
-      </div>
+    <div class="civitai-feed-container" use:scrollScale={{ duration: 400 }}>
+      <CivitaiCommunityFeed
+        filter="trending"
+        teamFilter={selectedTeam}
+        columns={4}
+      />
+    </div>
+  </section>
 
-      <div class="feed-grid">
-        {#each filteredPosts as post, i (post.id)}
-          <div
-            class="feed-card"
-            use:scrollBlur={{ duration: 600, delay: Math.min(i * 50, 300) }}
-          >
-            <div class="feed-card-image">
-              <UnifiedCard
-                title={post.card.title}
-                subtitle={post.card.subtitle}
-                number={post.card.number}
-                team={post.card.team}
-                rarity={post.card.rarity}
-                image={post.card.image}
-                size="small"
-              />
+  <!-- Personalized Recommendations Section -->
+  <section id="main-recommendations" class="recommendations-section" tabindex="-1">
+    <div class="section-header" use:scrollFadeUp={{ duration: 600 }}>
+      <h2 class="section-title">AI 추천</h2>
+      <p class="section-subtitle">당신의 취향과 컬렉션을 분석한 맞춤 추천</p>
+    </div>
 
-              <!-- 호버 시 상세 정보 오버레이 -->
-              <div class="card-hover-overlay">
-                <div class="overlay-stats">
-                  <div class="overlay-stat">
-                    <span class="stat-icon">❤️</span>
-                    <span class="stat-number">{post.stats.likes}</span>
-                  </div>
-                  <div class="overlay-stat">
-                    <span class="stat-icon">💬</span>
-                    <span class="stat-number">{post.stats.comments}</span>
-                  </div>
-                  <div class="overlay-stat">
-                    <span class="stat-icon">😍</span>
-                    <span class="stat-number">{post.stats.reactions}</span>
-                  </div>
-                </div>
-                <div class="overlay-tags">
-                  {#each post.tags as tag}
-                    <span class="overlay-tag">{tag}</span>
-                  {/each}
-                </div>
-                <div class="overlay-time">{post.createdAt}</div>
-              </div>
-            </div>
-
-            <div class="feed-card-content">
-              <div class="feed-user">
-                <div class="feed-avatar">{post.author.avatar}</div>
-                <div class="feed-username">{post.author.username}</div>
-              </div>
-              <p class="feed-text">{post.message}</p>
-              <div class="feed-actions">
-                <button class="feed-action">❤️ {post.stats.likes}</button>
-                <button class="feed-action">💬 {post.stats.comments}</button>
-                <button class="feed-action">😍 {post.stats.reactions}</button>
-              </div>
-            </div>
-          </div>
-        {/each}
-      </div>
+    <div class="recommendations-container" use:scrollScale={{ duration: 400 }}>
+      <PersonalizedRecommendations
+        userActivity={{
+          favoriteTeams: selectedTeam ? [selectedTeam] : ['lg', 'kia'],
+          collectedRarities: { common: 45, rare: 12, epic: 5, legendary: 2 },
+          viewedCards: [],
+          likedCards: [],
+          completedSets: []
+        }}
+        showReturningUser={false}
+        compact={false}
+      />
     </div>
   </section>
 
@@ -560,38 +502,24 @@
     </div>
   </section>
 
-  <!-- KBO Team Selection Section -->
+  <!-- KBO Teams Showcase Section with Real-time Games -->
   <section id="main-teams" class="team-selection-section" tabindex="-1">
     <div class="section-header" use:scrollFadeUp={{ duration: 600 }}>
-      <h2 class="section-title">나의 팀 선택하기</h2>
-      <p class="section-subtitle">좋아하는 구단을 선택하면 구단 테마가 적용됩니다</p>
+      <h2 class="section-title">KBO 구단 & 오늘의 경기</h2>
+      <p class="section-subtitle">실시간 경기 정보와 구단 테마를 확인하세요</p>
     </div>
 
-    <div class="team-selection-grid">
-      {#each teams as team, i}
-        <button
-          class="team-card"
-          class:selected={selectedTeam === team.id}
-          style="--team-color: {team.color}; --team-secondary: {team.secondary}"
-          on:click={() => selectTeam(team.id)}
-          use:scrollFadeUp={{ duration: 500, delay: i * 50 }}
-        >
-          <div class="team-logo">
-            <span class="team-initial">{team.shortName}</span>
-          </div>
-          <div class="team-info">
-            <h3 class="team-name">{team.name}</h3>
-            <p class="team-description">{team.description}</p>
-          </div>
-          {#if selectedTeam === team.id}
-            <div class="selected-badge">✓</div>
-          {/if}
-        </button>
-      {/each}
+    <div class="kbo-showcase-wrapper" use:scrollScale={{ duration: 400 }}>
+      <KBOTeamsShowcase
+        selectedTeam={selectedTeam}
+        onTeamSelect={(teamId) => selectTeam(teamId)}
+        showGames={true}
+        showEvents={true}
+      />
     </div>
 
     {#if selectedTeamData}
-      <div class="selected-team-banner" style="background: linear-gradient(135deg, {selectedTeamData.color} 0%, {selectedTeamData.secondary} 100%);">
+      <div class="selected-team-banner" style="background: linear-gradient(135deg, {selectedTeamData.color} 0%, {selectedTeamData.secondary} 100%);" in:fly={{ y: 20, duration: 400 }}>
         <div class="banner-content">
           <h3>{selectedTeamData.name} 팬클럽에 오신 것을 환영합니다!</h3>
           <p>구단 테마가 활성화되었습니다. 메인 화면에서 {selectedTeamData.shortName} 컬러를 확인하세요.</p>

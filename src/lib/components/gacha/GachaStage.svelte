@@ -91,7 +91,8 @@
     align-items: center;
     justify-content: center;
     padding: 40px;
-    min-height: 500px;
+    height: 100%;
+    width: 100%;
   }
 
   .stage-content {
@@ -100,6 +101,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex: 1;
+    min-height: 0; /* Allow flex item to shrink */
   }
 
   /* Idle State */
@@ -162,7 +165,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 40px;
+    /* Remove height: 100% to allow natural sizing */
   }
 
   .cards-grid {
@@ -172,6 +177,8 @@
     margin: 0 auto;
     width: 100%;
     perspective: 1500px;
+    align-items: center;
+    justify-items: center;
   }
 
   .cards-grid.single-pull {
@@ -241,7 +248,6 @@
   @media (max-width: 768px) {
     .gacha-stage {
       padding: 20px;
-      min-height: 400px;
     }
 
     .idle-text h2 {

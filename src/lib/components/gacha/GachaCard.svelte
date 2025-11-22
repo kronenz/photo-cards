@@ -295,31 +295,30 @@
   .card-back {
     transform: rotateY(180deg);
     position: relative;
-  }
-
-  .unified-card-wrapper {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  .unified-card-wrapper :global(.unified-card) {
-    width: 100% !important;
-    height: 100% !important;
-    max-width: none !important;
-    max-height: none !important;
+  .unified-card-wrapper {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .unified-card-wrapper :global(.card-container) {
+  .unified-card-wrapper :global(.card) {
     width: 100% !important;
     height: 100% !important;
   }
 
-  .unified-card-wrapper :global(.holographic-card) {
+  .unified-card-wrapper :global(.card__translater) {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .unified-card-wrapper :global(.card__rotator) {
     width: 100% !important;
     height: 100% !important;
   }

@@ -66,7 +66,8 @@
   .gacha-page {
     display: grid;
     grid-template-rows: auto 1fr auto;
-    min-height: 100vh;
+    height: 100%;
+    min-height: calc(100vh - 72px);
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
     position: relative;
     overflow: hidden;
@@ -106,6 +107,7 @@
   @media (max-width: 768px) {
     .gacha-page {
       grid-template-rows: auto 1fr 140px;
+      min-height: calc(100vh - 64px);
     }
   }
 </style>
