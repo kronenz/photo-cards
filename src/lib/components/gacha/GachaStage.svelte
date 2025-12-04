@@ -32,7 +32,7 @@
   }
 </script>
 
-<main class="gacha-stage">
+<main class="gacha-stage {stage}">
   <div class="stage-content">
     {#if stage === 'idle'}
       <!-- Idle State: Show summon circle -->
@@ -90,9 +90,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 40px;
-    height: 100%;
+    padding: 40px 20px;
+    min-height: 100%;
     width: 100%;
+    box-sizing: border-box;
+    transition: align-items 0.3s ease;
+  }
+
+  /* When revealing or complete, align to top to prevent cards from being too low */
+  .gacha-stage.revealing,
+  .gacha-stage.complete {
+    align-items: flex-start;
+    padding-top: 60px; /* Add some top spacing */
   }
 
   .stage-content {
@@ -101,8 +110,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex: 1;
-    min-height: 0; /* Allow flex item to shrink */
   }
 
   /* Idle State */
@@ -172,13 +179,13 @@
 
   .cards-grid {
     display: grid;
-    gap: 24px;
-    max-width: 1200px;
+    gap: 16px;
     margin: 0 auto;
     width: 100%;
     perspective: 1500px;
-    align-items: center;
+    align-items: start;
     justify-items: center;
+    justify-content: center;
   }
 
   .cards-grid.single-pull {
@@ -188,8 +195,11 @@
   }
 
   .cards-grid.multi-pull {
-    grid-template-columns: repeat(5, 1fr);
-    max-width: 1400px;
+    /* 10개 카드: 5열 x 2행으로 균등 배치 */
+    grid-template-columns: repeat(5, minmax(120px, 180px));
+    max-width: 1000px;
+    gap: 12px;
+    row-gap: 20px;
   }
 
   .complete-actions {
@@ -244,10 +254,20 @@
     transform: translateY(-2px);
   }
 
-  /* Responsive */
+  /* Responsive - Tablet */
+  @media (max-width: 1024px) {
+    .cards-grid.multi-pull {
+      grid-template-columns: repeat(5, minmax(100px, 150px));
+      gap: 10px;
+      row-gap: 16px;
+      max-width: 850px;
+    }
+  }
+
+  /* Responsive - Mobile */
   @media (max-width: 768px) {
     .gacha-stage {
-      padding: 20px;
+      padding: 16px;
     }
 
     .idle-text h2 {
@@ -259,8 +279,11 @@
     }
 
     .cards-grid.multi-pull {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
+      /* 모바일에서 2열 x 5행 */
+      grid-template-columns: repeat(2, minmax(130px, 160px));
+      gap: 12px;
+      row-gap: 16px;
+      max-width: 350px;
     }
 
     .complete-actions {
@@ -272,6 +295,20 @@
     .action-btn {
       padding: 12px 24px;
       font-size: 14px;
+    }
+  }
+
+  /* Responsive - Small Mobile */
+  @media (max-width: 400px) {
+    .gacha-stage {
+      padding: 12px;
+    }
+
+    .cards-grid.multi-pull {
+      grid-template-columns: repeat(2, minmax(110px, 140px));
+      gap: 8px;
+      row-gap: 12px;
+      max-width: 300px;
     }
   }
 </style>

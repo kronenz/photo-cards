@@ -1,37 +1,43 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { supabase } from '$lib/supabase';
-	import { supabaseAuthService } from '$lib/services/supabaseAuthService';
+	import { pb } from '$lib/pocketbase';
 
 	let isLoading = true;
 	let error: string | null = null;
 
 	onMount(async () => {
 		try {
-			// Supabase OAuth callback 처리
-			const { data, error: authError } = await supabase.auth.exchangeCodeForSession(
-				window.location.search
-			);
+			// PocketBase OAuth callback is handled automatically by the SDK
+			// The authStore should already be populated from the OAuth flow
 
-			if (authError) {
-				throw authError;
-			}
-
-			if (data.session) {
-				// 세션이 설정되면 사용자 프로필 로드
-				await new Promise((resolve) => setTimeout(resolve, 500));
-
-				// 홈페이지로 리다이렉트
+			if (pb.authStore.isValid) {
+				// Session is valid, redirect to home
 				await goto('/');
 			} else {
+				// Try to get auth data from URL if present (for manual OAuth flows)
+				const params = new URLSearchParams(window.location.search);
+				const code = params.get('code');
+				const state = params.get('state');
+
+				if (code && state) {
+					// If we have OAuth params, the auth might still be in progress
+					// Wait a moment for PocketBase to process
+					await new Promise((resolve) => setTimeout(resolve, 1000));
+
+					if (pb.authStore.isValid) {
+						await goto('/');
+						return;
+					}
+				}
+
 				error = '인증에 실패했습니다. 다시 시도해주세요.';
-				setTimeout(() => goto('/login'), 3000);
+				setTimeout(() => goto('/auth/signin'), 3000);
 			}
 		} catch (err: any) {
 			error = '인증 처리 중 오류가 발생했습니다.';
 			console.error('OAuth callback error:', err);
-			setTimeout(() => goto('/login'), 3000);
+			setTimeout(() => goto('/auth/signin'), 3000);
 		} finally {
 			isLoading = false;
 		}

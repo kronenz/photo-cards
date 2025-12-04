@@ -1,0 +1,460 @@
+# Cards API Contract
+# Feature: 004-production-service-integration
+# Requirements: FR-006 to FR-012
+
+openapi: 3.0.3
+info:
+  title: Cards API
+  version: 1.0.0
+  description: 카드 CRUD 및 이미지 업로드 API
+
+servers:
+  - url: /api
+    description: Card management endpoints
+
+paths:
+  /cards:
+    get:
+      summary: 카드 목록 조회
+      description: 공유된 카드 목록 조회 (갤러리)
+      operationId: listCards
+      tags:
+        - Cards
+      parameters:
+        - name: team
+          in: query
+          schema:
+            type: string
+            enum: [lg, doosan, kt, samsung, nc, kia, lotte, ssg, hanwha, kiwoom]
+          description: 팀 필터
+        - name: rarity
+          in: query
+          schema:
+            type: string
+            enum: [common, rare, epic, legendary]
+          description: 등급 필터
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [created, likes, comments]
+            default: created
+          description: 정렬 기준
+        - name: order
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: perPage
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      responses:
+        '200':
+          description: 카드 목록
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardListResponse'
+
+    post:
+      summary: 카드 생성
+      description: 새 카드 생성 (FR-011, FR-012)
+      operationId: createCard
+      tags:
+        - Cards
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCardRequest'
+      responses:
+        '201':
+          description: 카드 생성 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        '400':
+          description: 유효성 검사 실패
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 인증 필요
+
+  /cards/{id}:
+    get:
+      summary: 카드 상세 조회
+      operationId: getCard
+      tags:
+        - Cards
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 카드 상세
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardDetail'
+        '404':
+          description: 카드 없음
+
+    patch:
+      summary: 카드 수정
+      operationId: updateCard
+      tags:
+        - Cards
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCardRequest'
+      responses:
+        '200':
+          description: 수정 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        '403':
+          description: 권한 없음
+        '404':
+          description: 카드 없음
+
+    delete:
+      summary: 카드 삭제
+      operationId: deleteCard
+      tags:
+        - Cards
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 삭제 성공
+        '403':
+          description: 권한 없음
+        '404':
+          description: 카드 없음
+
+  /cards/{id}/share:
+    post:
+      summary: 카드 공유
+      description: 갤러리에 카드 공유 (FR-016)
+      operationId: shareCard
+      tags:
+        - Cards
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 공유 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        '403':
+          description: 권한 없음
+
+    delete:
+      summary: 카드 공유 취소
+      operationId: unshareCard
+      tags:
+        - Cards
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 공유 취소 성공
+
+  /upload/presign:
+    post:
+      summary: 업로드 URL 생성
+      description: MinIO 프리사인 URL 생성 (FR-006, FR-007)
+      operationId: getPresignedUrl
+      tags:
+        - Upload
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PresignRequest'
+      responses:
+        '200':
+          description: 프리사인 URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PresignResponse'
+        '400':
+          description: 파일 형식/크기 오류
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 'file_too_large'
+                message: '파일 크기가 10MB를 초과합니다.'
+
+  /upload/confirm:
+    post:
+      summary: 업로드 완료 확인
+      description: 업로드 완료 후 썸네일 생성 (FR-008)
+      operationId: confirmUpload
+      tags:
+        - Upload
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmUploadRequest'
+      responses:
+        '200':
+          description: 썸네일 생성 완료
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessedImageResponse'
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: pb_auth
+
+  schemas:
+    Card:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        subtitle:
+          type: string
+        team:
+          type: string
+          enum: [lg, doosan, kt, samsung, nc, kia, lotte, ssg, hanwha, kiwoom]
+        number:
+          type: string
+        rarity:
+          type: string
+          enum: [common, rare, epic, legendary]
+        image_url:
+          type: string
+          format: uri
+        thumb_url:
+          type: string
+          format: uri
+        medium_url:
+          type: string
+          format: uri
+        creator:
+          type: string
+        is_shared:
+          type: boolean
+        like_count:
+          type: integer
+        comment_count:
+          type: integer
+        created:
+          type: string
+          format: date-time
+
+    CardDetail:
+      allOf:
+        - $ref: '#/components/schemas/Card'
+        - type: object
+          properties:
+            stats:
+              type: object
+              description: 선수 스탯
+            expand:
+              type: object
+              properties:
+                creator:
+                  $ref: '#/components/schemas/User'
+
+    CardListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Card'
+        page:
+          type: integer
+        perPage:
+          type: integer
+        totalItems:
+          type: integer
+        totalPages:
+          type: integer
+
+    CreateCardRequest:
+      type: object
+      required:
+        - title
+        - team
+        - rarity
+        - image_url
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 50
+        subtitle:
+          type: string
+          maxLength: 30
+        team:
+          type: string
+          enum: [lg, doosan, kt, samsung, nc, kia, lotte, ssg, hanwha, kiwoom]
+        number:
+          type: string
+        rarity:
+          type: string
+          enum: [common, rare, epic, legendary]
+        image_url:
+          type: string
+          format: uri
+        thumb_url:
+          type: string
+          format: uri
+        medium_url:
+          type: string
+          format: uri
+        stats:
+          type: object
+
+    UpdateCardRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        subtitle:
+          type: string
+        is_shared:
+          type: boolean
+
+    PresignRequest:
+      type: object
+      required:
+        - filename
+        - contentType
+      properties:
+        filename:
+          type: string
+          description: 원본 파일명
+        contentType:
+          type: string
+          enum: [image/jpeg, image/png, image/webp]
+        fileSize:
+          type: integer
+          maximum: 10485760
+          description: 파일 크기 (bytes, max 10MB)
+
+    PresignResponse:
+      type: object
+      properties:
+        uploadUrl:
+          type: string
+          format: uri
+          description: MinIO 프리사인 PUT URL
+        key:
+          type: string
+          description: 저장될 파일 키
+        expiresIn:
+          type: integer
+          description: URL 만료 시간 (초)
+
+    ConfirmUploadRequest:
+      type: object
+      required:
+        - key
+      properties:
+        key:
+          type: string
+          description: 업로드된 파일 키
+
+    ProcessedImageResponse:
+      type: object
+      properties:
+        original:
+          type: string
+          format: uri
+        thumbnail:
+          type: string
+          format: uri
+        medium:
+          type: string
+          format: uri
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        avatar:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string

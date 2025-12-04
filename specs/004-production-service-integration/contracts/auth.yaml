@@ -1,0 +1,306 @@
+# Authentication API Contract
+# Feature: 004-production-service-integration
+# Requirements: FR-001 to FR-005
+
+openapi: 3.0.3
+info:
+  title: Authentication API
+  version: 1.0.0
+  description: 사용자 인증 및 세션 관리 API
+
+servers:
+  - url: /api/auth
+    description: Authentication endpoints
+
+paths:
+  /register:
+    post:
+      summary: 회원가입
+      description: 이메일과 비밀번호로 새 계정 생성 (FR-001)
+      operationId: register
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: 계정 생성 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+          headers:
+            Set-Cookie:
+              description: 세션 쿠키 (httpOnly)
+              schema:
+                type: string
+        '400':
+          description: 유효성 검사 실패
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 'validation_email'
+                message: '유효한 이메일 주소를 입력해주세요.'
+        '409':
+          description: 이메일 중복
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 'auth_email_exists'
+                message: '이미 등록된 이메일입니다.'
+
+  /login:
+    post:
+      summary: 로그인
+      description: 이메일/비밀번호로 로그인 (FR-002)
+      operationId: login
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: 로그인 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+          headers:
+            Set-Cookie:
+              description: 세션 쿠키 (httpOnly, 24시간)
+              schema:
+                type: string
+        '401':
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 'auth_invalid_credentials'
+                message: '이메일 또는 비밀번호가 올바르지 않습니다.'
+
+  /oauth/{provider}:
+    get:
+      summary: OAuth 로그인 시작
+      description: Google 또는 GitHub OAuth 인증 시작 (FR-002)
+      operationId: oauthStart
+      tags:
+        - Authentication
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [google, github]
+          description: OAuth 제공자
+        - name: redirect
+          in: query
+          schema:
+            type: string
+          description: 인증 후 리다이렉트 URL
+      responses:
+        '302':
+          description: OAuth 제공자로 리다이렉트
+
+  /oauth/callback:
+    get:
+      summary: OAuth 콜백
+      description: OAuth 인증 완료 후 콜백 처리
+      operationId: oauthCallback
+      tags:
+        - Authentication
+      parameters:
+        - name: code
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '302':
+          description: 성공 시 홈으로 리다이렉트
+          headers:
+            Set-Cookie:
+              description: 세션 쿠키
+              schema:
+                type: string
+
+  /logout:
+    post:
+      summary: 로그아웃
+      description: 세션 종료 및 쿠키 삭제 (FR-005)
+      operationId: logout
+      tags:
+        - Authentication
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: 로그아웃 성공
+          headers:
+            Set-Cookie:
+              description: 빈 쿠키 (삭제)
+              schema:
+                type: string
+
+  /refresh:
+    post:
+      summary: 토큰 갱신
+      description: 세션 토큰 갱신 (FR-003)
+      operationId: refreshToken
+      tags:
+        - Authentication
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: 토큰 갱신 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+          headers:
+            Set-Cookie:
+              description: 새 세션 쿠키
+              schema:
+                type: string
+        '401':
+          description: 세션 만료
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /me:
+    get:
+      summary: 현재 사용자 정보
+      description: 로그인한 사용자 정보 조회
+      operationId: getCurrentUser
+      tags:
+        - Authentication
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: 사용자 정보
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: 인증 필요
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: pb_auth
+      description: PocketBase 세션 쿠키 (httpOnly)
+
+  schemas:
+    RegisterRequest:
+      type: object
+      required:
+        - email
+        - password
+        - name
+      properties:
+        email:
+          type: string
+          format: email
+          description: 이메일 주소
+          example: user@example.com
+        password:
+          type: string
+          format: password
+          minLength: 8
+          description: 비밀번호 (8자 이상)
+        passwordConfirm:
+          type: string
+          format: password
+          description: 비밀번호 확인
+        name:
+          type: string
+          minLength: 2
+          maxLength: 50
+          description: 표시 이름
+          example: 홍길동
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: 이메일 주소
+        password:
+          type: string
+          format: password
+          description: 비밀번호
+
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: JWT 토큰 (쿠키에도 설정됨)
+        user:
+          $ref: '#/components/schemas/User'
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 사용자 ID (15자)
+          example: abc123def456ghi
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        avatar:
+          type: string
+          nullable: true
+          description: 프로필 이미지 URL
+        verified:
+          type: boolean
+          description: 이메일 인증 여부
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 에러 코드
+        message:
+          type: string
+          description: 한국어 에러 메시지

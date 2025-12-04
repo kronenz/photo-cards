@@ -1,0 +1,323 @@
+# Collections API Contract
+# Feature: 004-production-service-integration
+# Requirements: FR-013 to FR-015
+
+openapi: 3.0.3
+info:
+  title: Collections API
+  version: 1.0.0
+  description: 사용자 카드 컬렉션 관리 API
+
+servers:
+  - url: /api
+    description: Collection management endpoints
+
+paths:
+  /collections:
+    get:
+      summary: 내 컬렉션 조회
+      description: 로그인한 사용자의 카드 컬렉션 조회 (FR-013)
+      operationId: getMyCollection
+      tags:
+        - Collections
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: team
+          in: query
+          schema:
+            type: string
+            enum: [lg, doosan, kt, samsung, nc, kia, lotte, ssg, hanwha, kiwoom]
+          description: 팀 필터 (FR-013)
+        - name: rarity
+          in: query
+          schema:
+            type: string
+            enum: [common, rare, epic, legendary]
+          description: 등급 필터
+        - name: favorite
+          in: query
+          schema:
+            type: boolean
+          description: 즐겨찾기만 표시
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [obtained_at, rarity, title, count]
+            default: obtained_at
+          description: 정렬 기준 (FR-014)
+        - name: order
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: perPage
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 30
+      responses:
+        '200':
+          description: 컬렉션 목록
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionListResponse'
+        '401':
+          description: 인증 필요
+
+  /collections/stats:
+    get:
+      summary: 컬렉션 통계
+      description: 사용자 컬렉션 통계 정보
+      operationId: getCollectionStats
+      tags:
+        - Collections
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: 컬렉션 통계
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionStats'
+
+  /collections/{id}:
+    get:
+      summary: 컬렉션 항목 상세
+      operationId: getCollectionItem
+      tags:
+        - Collections
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: user_cards ID
+      responses:
+        '200':
+          description: 컬렉션 항목 상세
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCard'
+        '404':
+          description: 항목 없음
+
+  /collections/{id}/favorite:
+    post:
+      summary: 즐겨찾기 추가
+      description: 카드를 즐겨찾기에 추가 (FR-015)
+      operationId: addToFavorites
+      tags:
+        - Collections
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: user_cards ID
+      responses:
+        '200':
+          description: 즐겨찾기 추가 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCard'
+        '404':
+          description: 항목 없음
+
+    delete:
+      summary: 즐겨찾기 제거
+      description: 카드를 즐겨찾기에서 제거 (FR-015)
+      operationId: removeFromFavorites
+      tags:
+        - Collections
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 즐겨찾기 제거 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCard'
+
+  /users/{userId}/collections:
+    get:
+      summary: 다른 사용자 컬렉션 조회
+      description: 공개된 컬렉션만 조회 가능
+      operationId: getUserCollection
+      tags:
+        - Collections
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: perPage
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: 사용자 컬렉션
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionListResponse'
+        '404':
+          description: 사용자 없음
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: pb_auth
+
+  schemas:
+    UserCard:
+      type: object
+      properties:
+        id:
+          type: string
+          description: user_cards ID
+        user:
+          type: string
+          description: 사용자 ID
+        card:
+          type: string
+          description: 카드 ID
+        count:
+          type: integer
+          minimum: 1
+          description: 보유 수량 (중복)
+        is_favorite:
+          type: boolean
+          description: 즐겨찾기 여부
+        obtained_at:
+          type: string
+          format: date-time
+          description: 획득 시간
+        obtained_via:
+          type: string
+          enum: [create, gacha, trade]
+          description: 획득 경로
+        expand:
+          type: object
+          properties:
+            card:
+              $ref: '#/components/schemas/Card'
+
+    Card:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        subtitle:
+          type: string
+        team:
+          type: string
+        number:
+          type: string
+        rarity:
+          type: string
+        image_url:
+          type: string
+        thumb_url:
+          type: string
+
+    CollectionListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserCard'
+        page:
+          type: integer
+        perPage:
+          type: integer
+        totalItems:
+          type: integer
+        totalPages:
+          type: integer
+
+    CollectionStats:
+      type: object
+      properties:
+        totalCards:
+          type: integer
+          description: 총 카드 종류 수
+        totalCount:
+          type: integer
+          description: 총 카드 수 (중복 포함)
+        byTeam:
+          type: object
+          additionalProperties:
+            type: integer
+          description: 팀별 카드 수
+          example:
+            lg: 15
+            doosan: 12
+            kt: 8
+        byRarity:
+          type: object
+          additionalProperties:
+            type: integer
+          description: 등급별 카드 수
+          example:
+            common: 20
+            rare: 10
+            epic: 3
+            legendary: 1
+        favorites:
+          type: integer
+          description: 즐겨찾기 수
+        recentObtained:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserCard'
+          maxItems: 5
+          description: 최근 획득 카드 (5개)
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string

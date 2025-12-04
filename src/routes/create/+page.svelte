@@ -1,7 +1,15 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
+  import { goto } from '$app/navigation';
   import UnifiedCard from '$lib/components/v2/UnifiedCard.svelte';
+  import UploadProgress from '$lib/components/UploadProgress.svelte';
+  import {
+    uploadCardWithPresign,
+    validateCardImage,
+    type CardData,
+    type CardUploadProgress
+  } from '$lib/services/uploadService';
+  import type { Team, Rarity } from '$lib/types/models';
 
   type TeamId = 'lg' | 'doosan' | 'kt' | 'samsung' | 'nc' | 'kia' | 'lotte' | 'ssg' | 'hanwha' | 'kiwoom';
   type RarityType = 'common' | 'rare' | 'epic' | 'legendary';
@@ -35,6 +43,11 @@
   let allowCollect = true;
   let autoPost = false;
 
+  // 업로드 상태
+  let uploadProgress: CardUploadProgress = { status: 'idle', progress: 0, message: '' };
+  let isSubmitting = false;
+  let submitError = '';
+
   // 팀 목록
   const teams = [
     { id: 'lg', name: 'LG 트윈스', color: '#C30452' },
@@ -49,6 +62,9 @@
     { id: 'kiwoom', name: '키움 히어로즈', color: '#570514' }
   ];
 
+  // TeamId와 Team 타입은 동일한 값을 사용 (lowercase)
+  // RarityType과 Rarity 타입도 동일한 값을 사용
+
   // 파일 업로드 처리
   function handleFileSelect(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -60,16 +76,14 @@
   function handleFile(file: File) {
     if (!browser) return;
 
-    if (file.size > 10 * 1024 * 1024) {
-      alert('파일 크기는 10MB를 초과할 수 없습니다.');
+    // 파일 검증
+    const validation = validateCardImage(file);
+    if (!validation.valid) {
+      submitError = validation.error || '파일 검증에 실패했습니다.';
       return;
     }
 
-    if (!file.type.startsWith('image/')) {
-      alert('이미지 파일만 업로드할 수 있습니다.');
-      return;
-    }
-
+    submitError = '';
     imageFile = file;
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -118,35 +132,58 @@
 
   // 제출
   async function handleSubmit() {
-    if (!uploadedImage) {
-      alert('이미지를 업로드해주세요.');
+    if (!imageFile) {
+      submitError = '이미지를 업로드해주세요.';
       return;
     }
     if (!playerName.trim()) {
-      alert('선수 이름을 입력해주세요.');
+      submitError = '선수 이름을 입력해주세요.';
       return;
     }
 
-    const cardData = {
-      image: uploadedImage,
+    submitError = '';
+    isSubmitting = true;
+
+    // CardData 구성 (TeamId와 Team 타입은 동일)
+    const cardData: CardData = {
       title: playerName,
       subtitle: position || '선수',
-      number: number || '0',
       team: selectedTeam,
       rarity: selectedRarity,
-      effect: {
-        type: effectType,
-        intensity: effectIntensity
-      },
-      description,
-      tags,
-      visibility,
-      allowCollect,
-      autoPost
+      number: number || undefined,
+      is_shared: visibility === 'public'
     };
 
-    console.log('카드 생성:', cardData);
-    alert('카드가 성공적으로 생성되었습니다! (백엔드 연동 예정)');
+    try {
+      const result = await uploadCardWithPresign(
+        imageFile,
+        cardData,
+        (progress) => {
+          uploadProgress = progress;
+        }
+      );
+
+      if (result.success && result.card) {
+        // 성공 시 컬렉션 페이지로 이동
+        setTimeout(() => {
+          goto('/collections');
+        }, 1500);
+      } else {
+        submitError = result.error || '카드 생성에 실패했습니다.';
+        uploadProgress = { status: 'error', progress: 0, message: submitError };
+      }
+    } catch (err: any) {
+      submitError = err.message || '알 수 없는 오류가 발생했습니다.';
+      uploadProgress = { status: 'error', progress: 0, message: submitError };
+    } finally {
+      isSubmitting = false;
+    }
+  }
+
+  // 업로드 상태 리셋
+  function resetUpload() {
+    uploadProgress = { status: 'idle', progress: 0, message: '' };
+    submitError = '';
   }
 
   // 단계별 유효성 검사
@@ -156,6 +193,9 @@
     3: true,
     4: true
   };
+
+  // 제출 버튼 비활성화 조건
+  $: isSubmitDisabled = isSubmitting || uploadProgress.status === 'uploading' || uploadProgress.status === 'processing';
 </script>
 
 <svelte:head>
@@ -333,18 +373,35 @@
                 <span>생성 즉시 커뮤니티에 자동 게시</span>
               </label>
             </div>
+
+            <!-- Upload Progress -->
+            <UploadProgress bind:progress={uploadProgress} />
+
+            <!-- Error Message -->
+            {#if submitError}
+              <div class="error-message">
+                <span class="error-icon">⚠️</span>
+                <span>{submitError}</span>
+              </div>
+            {/if}
           </section>
         {/if}
 
         <!-- Navigation -->
         <div class="step-actions">
           {#if currentStep > 1}
-            <button type="button" on:click={prevStep} class="btn-secondary">← 이전</button>
+            <button type="button" on:click={prevStep} class="btn-secondary" disabled={isSubmitDisabled}>← 이전</button>
           {/if}
           {#if currentStep < totalSteps}
             <button type="button" on:click={nextStep} class="btn-primary" disabled={!canProceed[currentStep]}>다음 →</button>
           {:else}
-            <button type="button" on:click={handleSubmit} class="btn-submit">✨ 카드 생성하기</button>
+            <button type="button" on:click={handleSubmit} class="btn-submit" disabled={isSubmitDisabled}>
+              {#if isSubmitting}
+                <span class="spinner"></span> 생성 중...
+              {:else}
+                ✨ 카드 생성하기
+              {/if}
+            </button>
           {/if}
         </div>
       </div>
@@ -538,8 +595,31 @@
   .btn-submit {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: #fff; width: 100%; font-size: 18px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
   }
-  .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4); }
+  .btn-submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4); }
+  .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+  .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .error-message {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 16px; margin-top: 16px;
+    background: rgba(255, 59, 48, 0.1);
+    border: 1px solid rgba(255, 59, 48, 0.3);
+    border-radius: 8px; color: #ff3b30; font-size: 14px;
+  }
+  .error-icon { font-size: 16px; }
+
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
 
   .preview-section { position: relative; }
   .preview-sticky {

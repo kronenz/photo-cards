@@ -423,3 +423,216 @@ export const dragDropHelpers = {
     });
   }
 };
+
+// ============================================
+// Presigned URL Upload (MinIO Direct)
+// Feature: 004-production-service-integration
+// ============================================
+
+import type { Team, Rarity } from '$lib/types/models';
+
+export interface CardData {
+  title: string;
+  subtitle?: string;
+  team: Team;
+  rarity: Rarity;
+  number?: string;
+  stats?: Record<string, number>;
+  is_shared?: boolean;
+}
+
+export interface CardUploadProgress {
+  status: 'idle' | 'uploading' | 'processing' | 'complete' | 'error';
+  progress: number;
+  message: string;
+}
+
+export interface CardUploadResult {
+  success: boolean;
+  card?: {
+    id: string;
+    title: string;
+    image_url: string;
+    team: string;
+    rarity: string;
+  };
+  error?: string;
+}
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+/**
+ * Validate card image file
+ */
+export function validateCardImage(file: File): { valid: boolean; error?: string } {
+  if (!file) {
+    return { valid: false, error: '파일을 선택해주세요.' };
+  }
+
+  if (file.size > MAX_FILE_SIZE) {
+    return { valid: false, error: '파일 크기는 10MB를 초과할 수 없습니다.' };
+  }
+
+  if (!ALLOWED_TYPES.includes(file.type)) {
+    return { valid: false, error: 'JPEG, PNG, WebP 이미지만 업로드할 수 있습니다.' };
+  }
+
+  return { valid: true };
+}
+
+/**
+ * Get presigned URL for direct upload to MinIO
+ */
+async function getPresignedUploadUrl(
+  filename: string,
+  contentType: string,
+  fileSize: number,
+  folder: string = 'cards'
+): Promise<{ uploadUrl: string; objectKey: string; publicUrl: string } | null> {
+  try {
+    const response = await fetch('/api/upload/presign', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename, contentType, fileSize, folder })
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || '업로드 URL 생성에 실패했습니다.');
+    }
+
+    const data = await response.json();
+    return {
+      uploadUrl: data.uploadUrl,
+      objectKey: data.objectKey,
+      publicUrl: data.publicUrl
+    };
+  } catch (err: any) {
+    console.error('Get presigned URL error:', err);
+    return null;
+  }
+}
+
+/**
+ * Upload file directly to MinIO using presigned URL
+ */
+async function uploadToMinIODirect(
+  file: File,
+  uploadUrl: string,
+  onProgress?: (progress: number) => void
+): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+
+    xhr.upload.addEventListener('progress', (event) => {
+      if (event.lengthComputable && onProgress) {
+        const progress = Math.round((event.loaded / event.total) * 100);
+        onProgress(progress);
+      }
+    });
+
+    xhr.addEventListener('load', () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(true);
+      } else {
+        reject(new Error(`Upload failed with status ${xhr.status}`));
+      }
+    });
+
+    xhr.addEventListener('error', () => reject(new Error('네트워크 오류가 발생했습니다.')));
+    xhr.addEventListener('abort', () => reject(new Error('업로드가 취소되었습니다.')));
+
+    xhr.open('PUT', uploadUrl);
+    xhr.setRequestHeader('Content-Type', file.type);
+    xhr.send(file);
+  });
+}
+
+/**
+ * Confirm upload and create card record
+ */
+async function confirmCardUpload(
+  objectKey: string,
+  cardData: CardData
+): Promise<CardUploadResult> {
+  try {
+    const response = await fetch('/api/upload/confirm', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ objectKey, cardData })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return { success: false, error: data.error || '카드 생성에 실패했습니다.' };
+    }
+
+    return { success: true, card: data.card };
+  } catch (err: any) {
+    console.error('Confirm upload error:', err);
+    return { success: false, error: err.message || '카드 생성에 실패했습니다.' };
+  }
+}
+
+/**
+ * Complete card upload flow with presigned URL
+ * 1. Validate file
+ * 2. Get presigned URL
+ * 3. Upload directly to MinIO
+ * 4. Confirm upload and create card record
+ */
+export async function uploadCardWithPresign(
+  file: File,
+  cardData: CardData,
+  onProgress?: (progress: CardUploadProgress) => void
+): Promise<CardUploadResult> {
+  const updateProgress = (status: CardUploadProgress['status'], progress: number, message: string) => {
+    if (onProgress) onProgress({ status, progress, message });
+  };
+
+  try {
+    // Step 1: Validate
+    updateProgress('uploading', 0, '파일 검증 중...');
+    const validation = validateCardImage(file);
+    if (!validation.valid) {
+      updateProgress('error', 0, validation.error!);
+      return { success: false, error: validation.error };
+    }
+
+    // Step 2: Get presigned URL
+    updateProgress('uploading', 10, '업로드 준비 중...');
+    const presigned = await getPresignedUploadUrl(file.name, file.type, file.size);
+    if (!presigned) {
+      updateProgress('error', 10, '업로드 URL 생성에 실패했습니다.');
+      return { success: false, error: '업로드 URL 생성에 실패했습니다.' };
+    }
+
+    // Step 3: Upload to MinIO
+    updateProgress('uploading', 20, '이미지 업로드 중...');
+    try {
+      await uploadToMinIODirect(file, presigned.uploadUrl, (progress) => {
+        updateProgress('uploading', 20 + (progress * 0.6), `이미지 업로드 중... ${progress}%`);
+      });
+    } catch (uploadError: any) {
+      updateProgress('error', 0, uploadError.message);
+      return { success: false, error: uploadError.message };
+    }
+
+    // Step 4: Confirm and create card
+    updateProgress('processing', 85, '카드 생성 중...');
+    const result = await confirmCardUpload(presigned.objectKey, cardData);
+
+    if (result.success) {
+      updateProgress('complete', 100, '카드가 생성되었습니다!');
+    } else {
+      updateProgress('error', 85, result.error || '카드 생성에 실패했습니다.');
+    }
+
+    return result;
+  } catch (err: any) {
+    updateProgress('error', 0, err.message || '알 수 없는 오류가 발생했습니다.');
+    return { success: false, error: err.message || '알 수 없는 오류가 발생했습니다.' };
+  }
+}

@@ -1,19 +1,23 @@
 <!--
 Sync Impact Report:
-- Version change: Initial → 1.0.0
-- New constitution created for KBO Holographic Card Platform
-- Principles established:
-  1. Spec-Driven Development (requirements → design → tasks)
-  2. Phase-Based Architecture (modular, incremental development)
-  3. 60fps Performance Standard (non-negotiable UX requirement)
-  4. Component Reusability (DRY across phases)
-  5. User-Centric Design (Apple-level UX, Korean baseball culture)
+- Version change: 1.0.0 → 1.1.0
+- Modified principles: None (existing 5 principles preserved)
+- Added sections:
+  1. Principle VI: Backend Integration (PocketBase + MinIO)
+  2. Principle VII: Production Readiness
+  3. Frontend Page Architecture (service status table)
+  4. Service Layer Architecture
+  5. Backend Integration Checklist
+- Removed sections: None
 - Templates requiring updates:
-  ✅ plan-template.md (Constitution Check section aligns)
-  ✅ spec-template.md (User Story format aligns)
-  ✅ tasks-template.md (Phase-based organization aligns)
-- Follow-up TODOs: None
-- Ratification date set to project start: 2024-10-01
+  ✅ plan-template.md (Backend integration check added)
+  ✅ spec-template.md (API requirements section added)
+  ✅ tasks-template.md (Backend tasks category added)
+- Follow-up TODOs:
+  - TODO(PRODUCTION_URL): Production domain not yet configured
+  - TODO(MONITORING): APM solution selection pending
+- Ratification date: 2024-10-01
+- Last amended: 2025-12-01
 -->
 
 # KBO Holographic Card Platform Constitution
@@ -90,6 +94,137 @@ All features MUST prioritize the Korean baseball fan experience:
 
 **Validation**: Usability testing with actual KBO fans, accessibility audits with axe-core.
 
+### VI. Backend Integration (NON-NEGOTIABLE)
+
+All data operations MUST use the established backend architecture:
+
+**Primary Backend: PocketBase**
+- User authentication and session management
+- Card metadata and collections
+- Social features (likes, comments, follows)
+- Real-time subscriptions for notifications
+
+**File Storage: MinIO (S3-compatible)**
+- Card images and thumbnails
+- User avatars and uploads
+- Template files and exports
+
+**Service Layer Pattern:**
+```
+Frontend Component → Service Layer → PocketBase/MinIO → Response
+```
+
+All API calls MUST:
+- Go through typed service functions in `src/lib/services/`
+- Handle errors with user-friendly Korean messages
+- Include loading states in UI
+- Cache responses where appropriate
+
+**Rationale**: Consistent data layer prevents scattered API calls, enables centralized error handling, and simplifies testing.
+
+### VII. Production Readiness
+
+All features MUST be production-ready before merge:
+
+**Required Checks:**
+- TypeScript strict mode passes
+- No console errors in browser
+- Mobile responsive (320px - 1920px)
+- Error boundaries for graceful failures
+- Loading states for async operations
+- Empty states for lists/grids
+
+**Prohibited in Production:**
+- `console.log` statements (use proper logging)
+- Hardcoded test data
+- Disabled security features
+- Unhandled promise rejections
+- Memory leaks from subscriptions
+
+**Rationale**: Technical debt compounds quickly. Ship quality from day one.
+
+## Frontend Page Architecture
+
+### Core Service Pages (Production Ready)
+
+| Route | Status | Backend Integration |
+|-------|--------|---------------------|
+| `/` | ✅ Active | PocketBase (cards, users) |
+| `/gallery` | ✅ Active | PocketBase (cards, filters) |
+| `/create` | ✅ Active | MinIO (upload), PocketBase (save) |
+| `/collections` | ✅ Active | PocketBase (user cards) |
+| `/community` | ✅ Active | PocketBase (social) |
+| `/gacha2` | ✅ Active | PocketBase (gacha results) |
+| `/marketplace` | 🔄 In Progress | PocketBase (templates) |
+
+### Authentication Pages
+
+| Route | Status | Backend Integration |
+|-------|--------|---------------------|
+| `/auth/login` | ✅ Active | PocketBase Auth |
+| `/auth/signup` | ✅ Active | PocketBase Auth |
+| `/auth/callback` | ✅ Active | OAuth Provider |
+
+### Informational Pages (Static)
+
+| Route | Status | Backend Integration |
+|-------|--------|---------------------|
+| `/help` | ✅ Active | None (static) |
+| `/contact` | ✅ Active | Email Service |
+| `/privacy` | ✅ Active | None (static) |
+| `/terms` | ✅ Active | None (static) |
+
+### Demo/Test Pages (Development Only)
+
+These pages MUST NOT be deployed to production:
+- All routes ending in `-demo`, `-test`
+- `/v2-prototype`, `/integrated`
+- Temporary feature testing routes
+
+## Service Layer Architecture
+
+### Service Structure
+
+```
+src/lib/services/
+├── auth.ts                 # Authentication logic
+├── authService.ts          # Auth state management
+├── cards.ts                # Card CRUD operations
+├── collections.ts          # Collection management
+├── communityService.ts     # Social features
+├── gradeService.ts         # Fan grade system
+├── messagingService.ts     # Real-time chat
+├── notificationService.ts  # Push notifications
+├── socialService.ts        # Likes, follows, shares
+├── uploadService.ts        # File upload handling
+├── upload.ts               # MinIO integration
+└── pocketbase-extended.ts  # Extended PB services
+```
+
+### Service Requirements
+
+Every service MUST:
+1. Export typed interfaces for all data structures
+2. Handle authentication state checks
+3. Provide error messages in Korean
+4. Support optimistic updates where appropriate
+5. Include JSDoc documentation
+
+### API Endpoints
+
+```
+src/routes/api/
+├── upload/                 # File upload endpoints
+│   ├── image/+server.ts    # Direct image upload
+│   ├── base64/+server.ts   # Base64 image upload
+│   └── presign/+server.ts  # Presigned URL generation
+├── templates/              # Template marketplace
+│   ├── +server.ts          # CRUD operations
+│   ├── search/+server.ts   # Search functionality
+│   └── trending/+server.ts # Trending templates
+└── send-email/+server.ts   # Email notifications
+```
+
 ## Performance Standards
 
 ### Mandatory Performance Requirements
@@ -164,6 +299,19 @@ All features MUST prioritize the Korean baseball fan experience:
 4. Update design.md if implementation differs from spec
 5. Request code review with requirement ID in PR description
 
+### Backend Integration Checklist
+
+Before merging any feature with backend integration:
+
+- [ ] PocketBase schema exists and is documented
+- [ ] Service layer function created and typed
+- [ ] Error handling with user-friendly Korean messages
+- [ ] Loading states implemented in UI
+- [ ] Empty states handled gracefully
+- [ ] Optimistic updates where appropriate
+- [ ] Real-time subscriptions cleanup on unmount
+- [ ] File uploads use MinIO through API routes
+
 ### Phase Integration
 
 When integrating phases (e.g., Phase 3 unifying 1+2):
@@ -180,8 +328,9 @@ When integrating phases (e.g., Phase 3 unifying 1+2):
 
 - **Frontend**: SvelteKit 4.x, TypeScript, Tailwind CSS 3.x
 - **Backend**: PocketBase (SQLite → PostgreSQL for production)
-- **Auth**: @auth/sveltekit with Google/GitHub OAuth
-- **Deployment**: Vercel with edge functions
+- **File Storage**: MinIO (S3-compatible object storage)
+- **Auth**: PocketBase Auth + OAuth (Google/GitHub)
+- **Deployment**: Vercel (frontend) + Railway/Fly.io (PocketBase)
 - **Testing**: Vitest, Playwright, axe-core, Chrome DevTools MCP
 
 ### Prohibited Patterns
@@ -192,6 +341,8 @@ When integrating phases (e.g., Phase 3 unifying 1+2):
 - ❌ Untyped props in Svelte components
 - ❌ Direct DOM queries (use Svelte bindings)
 - ❌ `any` types without explicit justification comment
+- ❌ Direct PocketBase calls from components (use service layer)
+- ❌ Storing sensitive data in localStorage
 
 ## Legal & Compliance
 
@@ -251,4 +402,4 @@ For day-to-day development guidance beyond governance, refer to:
 - `.kiro/PROJECT_OVERVIEW.md` - Phase structure and progress tracking
 - `CLAUDE.md` - Quick reference and project summary
 
-**Version**: 1.0.0 | **Ratified**: 2024-10-01 | **Last Amended**: 2025-10-07
+**Version**: 1.1.0 | **Ratified**: 2024-10-01 | **Last Amended**: 2025-12-01

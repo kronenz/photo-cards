@@ -82,7 +82,7 @@
           image={card.image || 'https://picsum.photos/400/560?random=1'}
           title={card.title}
           subtitle={card.subtitle || '선수'}
-          team={card.teamId || 'lg'}
+          team={card.team || 'lg'}
           number={card.number || '0'}
           rarity={card.rarity}
           size="medium"
@@ -108,7 +108,7 @@
     position: relative;
     width: 100%;
     aspect-ratio: 2.5 / 3.5;
-    max-width: 280px;
+    max-width: 180px;
   }
 
   .gacha-card {
@@ -117,23 +117,28 @@
     height: 100%;
     transform-style: preserve-3d;
     transition: transform 0.8s cubic-bezier(0.33, 1, 0.68, 1);
-    animation: cardEntrance 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+    animation: cardEntrance 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     animation-delay: var(--reveal-delay);
+    /* 초기 상태 설정 */
+    opacity: 0;
+    transform: scale(0.8) translateY(30px);
   }
 
   @keyframes cardEntrance {
-    from {
+    0% {
       opacity: 0;
       transform: scale(0.8) translateY(30px);
     }
-    to {
+    100% {
       opacity: 1;
-      transform: scale(1) translateY(0);
+      transform: scale(1) translateY(0) rotateY(0deg);
     }
   }
 
   .gacha-card.flipped {
-    transform: rotateY(180deg);
+    animation: none;
+    opacity: 1;
+    transform: scale(1) translateY(0) rotateY(180deg);
   }
 
   .card-face {
@@ -222,7 +227,7 @@
   }
 
   .mystery-icon {
-    font-size: 120px;
+    font-size: 80px;
     font-weight: bold;
     color: rgba(255, 255, 255, 0.9);
     text-shadow: 0 0 40px rgba(102, 126, 234, 0.8), 0 0 80px rgba(118, 75, 162, 0.6);
@@ -298,6 +303,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
   }
 
   .unified-card-wrapper {
@@ -308,9 +314,13 @@
     justify-content: center;
   }
 
+  /* UnifiedCard 크기를 wrapper에 맞게 완전히 오버라이드 */
   .unified-card-wrapper :global(.card) {
     width: 100% !important;
     height: 100% !important;
+    max-width: 100% !important;
+    position: absolute !important;
+    inset: 0 !important;
   }
 
   .unified-card-wrapper :global(.card__translater) {
@@ -318,7 +328,19 @@
     height: 100% !important;
   }
 
-  .unified-card-wrapper :global(.card__rotator) {
+  /* 핵심: data-size 속성에 관계없이 크기 강제 */
+  .unified-card-wrapper :global(.card__rotator),
+  .unified-card-wrapper :global(.card[data-size="small"] .card__rotator),
+  .unified-card-wrapper :global(.card[data-size="medium"] .card__rotator),
+  .unified-card-wrapper :global(.card[data-size="large"] .card__rotator),
+  .unified-card-wrapper :global(.card[data-size="featured"] .card__rotator) {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  /* CardFront와 CardBack도 맞춤 */
+  .unified-card-wrapper :global(.card-front),
+  .unified-card-wrapper :global(.card-back-face) {
     width: 100% !important;
     height: 100% !important;
   }
@@ -381,30 +403,60 @@
     }
   }
 
-  /* Responsive */
+  /* Responsive - Tablet */
+  @media (max-width: 1024px) {
+    .gacha-card-wrapper {
+      max-width: 150px;
+    }
+
+    .mystery-icon {
+      font-size: 70px;
+    }
+
+    .rarity-indicator {
+      font-size: 10px;
+      padding: 5px 12px;
+      bottom: 10px;
+    }
+  }
+
+  /* Responsive - Mobile */
   @media (max-width: 768px) {
     .gacha-card-wrapper {
       max-width: 160px;
     }
 
     .mystery-icon {
-      font-size: 80px;
+      font-size: 60px;
     }
 
     .rarity-indicator {
-      font-size: 11px;
-      padding: 6px 14px;
-      bottom: 12px;
+      font-size: 9px;
+      padding: 4px 10px;
+      bottom: 8px;
+    }
+
+    .new-badge,
+    .guarantee-badge {
+      font-size: 9px;
+      padding: 4px 8px;
     }
   }
 
-  @media (max-width: 480px) {
+  /* Responsive - Small Mobile */
+  @media (max-width: 400px) {
     .gacha-card-wrapper {
       max-width: 140px;
     }
 
     .mystery-icon {
-      font-size: 60px;
+      font-size: 50px;
+    }
+
+    .rarity-indicator {
+      font-size: 8px;
+      padding: 3px 8px;
+      bottom: 6px;
     }
   }
 </style>

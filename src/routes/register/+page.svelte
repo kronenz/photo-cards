@@ -2,7 +2,8 @@
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
 	import UnifiedCard from '$lib/components/v2/UnifiedCard.svelte';
-	import { supabaseAuthService } from '$lib/services/supabaseAuthService';
+	import { signup, loginWithGoogle, loginWithGitHub } from '$lib/services/auth';
+	import { pb } from '$lib/pocketbase';
 	import { scrollFadeUp, scrollFadeLeft, scrollScale } from '$lib/transitions/scroll-animations';
 
 	type TeamId = 'lg' | 'doosan' | 'kt' | 'samsung' | 'nc' | 'kia' | 'lotte' | 'ssg' | 'hanwha' | 'kiwoom';
@@ -137,64 +138,50 @@
 
 		error = '';
 		loading = true;
-		console.log('[Register] Starting handleSubmit, loading:', loading);
 
 		try {
-			// Step 1: Create Supabase auth user
-			console.log('[Register] Starting signup with email:', email);
-			const user = await supabaseAuthService.signUpWithEmail(email, password, name);
-			console.log('[Register] Signup result:', user);
+			// Step 1: Create PocketBase user
+			const authResult = await signup(email, password, passwordConfirm, name);
 
-			if (!user) {
-				// Get detailed error from service
-				let errorMsg = '회원가입에 실패했습니다.';
-				supabaseAuthService.error.subscribe(err => {
-					if (err) {
-						console.error('[Register] Signup error details:', err);
-						errorMsg = err.message || errorMsg;
-					}
-				})();
-				throw new Error(errorMsg);
+			if (!authResult) {
+				throw new Error('회원가입에 실패했습니다.');
 			}
 
-			// Step 2: Update profile with additional data (optional, don't fail signup if this fails)
+			// Step 2: Update profile with additional data (optional)
 			if (favoriteTeam || bio) {
-				console.log('[Register] Updating profile with additional data');
 				try {
-					// Wait a bit more for the profile to be fully created
-					await new Promise(resolve => setTimeout(resolve, 1000));
-
-					await supabaseAuthService.updateProfile({
+					await pb.collection('users').update(authResult.record.id, {
+						favoriteTeam: favoriteTeam || undefined,
 						bio: bio || undefined,
-						favorite_team: favoriteTeam || undefined
+						agreedToMarketing: agreedToMarketing
 					});
-					console.log('[Register] Profile updated successfully');
 				} catch (updateError: any) {
-					console.error('[Register] Failed to update profile, but signup succeeded:', updateError);
+					console.error('Failed to update profile, but signup succeeded:', updateError);
 					// Don't fail the signup even if profile update fails
 				}
 			}
 
-			console.log('[Register] Signup successful, redirecting to home');
 			goto('/');
 		} catch (err: any) {
-			console.error('[Register] Signup error:', err);
+			console.error('Signup error:', err);
 			error = err.message || '회원가입에 실패했습니다.';
 			currentStep = 1;
 		} finally {
-			console.log('[Register] Finally block - setting loading to false');
 			loading = false;
-			console.log('[Register] Loading state after finally:', loading);
 		}
 	}
 
-	async function handleOAuth(provider: 'google' | 'kakao' | 'naver') {
+	async function handleOAuth(provider: 'google' | 'github') {
 		error = '';
 		loading = true;
 
 		try {
-			await supabaseAuthService.signInWithOAuth(provider);
-			// OAuth는 리다이렉트되므로 loading은 계속 유지
+			if (provider === 'google') {
+				await loginWithGoogle();
+			} else {
+				await loginWithGitHub();
+			}
+			// OAuth will redirect
 		} catch (err: any) {
 			error = `${provider} 회원가입에 실패했습니다.`;
 			loading = false;
@@ -274,28 +261,14 @@
 
 						<button
 							type="button"
-							class="oauth-button kakao"
-							on:click={() => handleOAuth('kakao')}
+							class="oauth-button github"
+							on:click={() => handleOAuth('github')}
 							disabled={loading}
 						>
 							<svg class="oauth-icon" viewBox="0 0 24 24" fill="currentColor">
-								<path
-									d="M12 3c-5.799 0-10.5 3.664-10.5 8.185 0 2.868 1.912 5.389 4.785 6.825-.203.746-.765 2.814-.88 3.24-.14.525.192.518.403.376.174-.117 2.808-1.904 3.877-2.629.766.107 1.55.162 2.315.162 5.799 0 10.5-3.664 10.5-8.185S17.799 3 12 3z"
-								/>
+								<path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
 							</svg>
-							<span>Kakao로 빠른 가입</span>
-						</button>
-
-						<button
-							type="button"
-							class="oauth-button naver"
-							on:click={() => handleOAuth('naver')}
-							disabled={loading}
-						>
-							<svg class="oauth-icon" viewBox="0 0 24 24" fill="currentColor">
-								<path d="M16.273 12.845L7.376 0H0v24h7.726V11.156L16.624 24H24V0h-7.727v12.845z" />
-							</svg>
-							<span>Naver로 빠른 가입</span>
+							<span>GitHub로 빠른 가입</span>
 						</button>
 					</div>
 
@@ -519,7 +492,7 @@
 			<div class="form-footer">
 				<p class="footer-text">
 					이미 계정이 있으신가요?
-					<a href="/login" class="footer-link">로그인</a>
+					<a href="/auth/signin" class="footer-link">로그인</a>
 				</p>
 			</div>
 		</div>
@@ -689,24 +662,13 @@
 		cursor: not-allowed;
 	}
 
-	.oauth-button.kakao {
-		background: #fee500;
-		color: #000000;
-		border-color: #fee500;
+	.oauth-button.github {
+		background: #24292e;
+		border-color: #24292e;
 	}
 
-	.oauth-button.kakao:hover:not(:disabled) {
-		background: #fada0a;
-	}
-
-	.oauth-button.naver {
-		background: #03c75a;
-		color: white;
-		border-color: #03c75a;
-	}
-
-	.oauth-button.naver:hover:not(:disabled) {
-		background: #02b350;
+	.oauth-button.github:hover:not(:disabled) {
+		background: #2f363d;
 	}
 
 	.oauth-icon {

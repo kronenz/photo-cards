@@ -1,0 +1,414 @@
+# Gacha API Contract
+# Feature: 004-production-service-integration
+# Requirements: FR-021 to FR-023
+
+openapi: 3.0.3
+info:
+  title: Gacha API
+  version: 1.0.0
+  description: 가챠(뽑기) 시스템 API
+
+servers:
+  - url: /api
+    description: Gacha system endpoints
+
+paths:
+  /gacha/pull:
+    post:
+      summary: 가챠 뽑기
+      description: 1회 또는 10회 카드 뽑기 실행
+      operationId: pullGacha
+      tags:
+        - Gacha
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PullRequest'
+      responses:
+        '200':
+          description: 뽑기 결과
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PullResponse'
+        '401':
+          description: 인증 필요
+        '429':
+          description: 요청 제한 초과
+
+  /gacha/save:
+    post:
+      summary: 가챠 결과 저장
+      description: 뽑기 결과를 컬렉션에 저장 (FR-021, FR-022)
+      operationId: saveGachaResults
+      tags:
+        - Gacha
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveGachaRequest'
+      responses:
+        '200':
+          description: 저장 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaveGachaResponse'
+        '400':
+          description: 잘못된 요청
+        '401':
+          description: 인증 필요
+
+  /gacha/history:
+    get:
+      summary: 가챠 이력 조회
+      description: 사용자의 뽑기 이력 조회 (FR-023)
+      operationId: getGachaHistory
+      tags:
+        - Gacha
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: perPage
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: 시작 날짜
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: 종료 날짜
+      responses:
+        '200':
+          description: 가챠 이력
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GachaHistoryResponse'
+        '401':
+          description: 인증 필요
+
+  /gacha/history/{id}:
+    get:
+      summary: 가챠 이력 상세
+      description: 특정 뽑기 이력 상세 조회
+      operationId: getGachaHistoryDetail
+      tags:
+        - Gacha
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 가챠 이력 상세
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GachaHistoryDetail'
+        '404':
+          description: 이력 없음
+
+  /gacha/stats:
+    get:
+      summary: 가챠 통계
+      description: 사용자의 뽑기 통계
+      operationId: getGachaStats
+      tags:
+        - Gacha
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: 가챠 통계
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GachaStats'
+
+  /gacha/rates:
+    get:
+      summary: 확률표 조회
+      description: 현재 가챠 확률표 (공개)
+      operationId: getGachaRates
+      tags:
+        - Gacha
+      responses:
+        '200':
+          description: 확률표
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GachaRates'
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: pb_auth
+
+  schemas:
+    PullRequest:
+      type: object
+      required:
+        - count
+      properties:
+        count:
+          type: integer
+          enum: [1, 10]
+          description: 뽑기 횟수 (1회 또는 10회)
+
+    PullResponse:
+      type: object
+      properties:
+        cards:
+          type: array
+          items:
+            $ref: '#/components/schemas/GachaCard'
+          description: 뽑은 카드 목록
+        pullId:
+          type: string
+          description: 뽑기 세션 ID (저장 시 사용)
+
+    GachaCard:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 임시 ID (저장 전)
+        title:
+          type: string
+        subtitle:
+          type: string
+        team:
+          type: string
+          enum: [lg, doosan, kt, samsung, nc, kia, lotte, ssg, hanwha, kiwoom]
+        number:
+          type: string
+        rarity:
+          type: string
+          enum: [common, rare, epic, legendary]
+        image:
+          type: string
+          format: uri
+        isNew:
+          type: boolean
+          description: 신규 카드 여부
+
+    SaveGachaRequest:
+      type: object
+      required:
+        - pullId
+        - cards
+      properties:
+        pullId:
+          type: string
+          description: 뽑기 세션 ID
+        cards:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              rarity:
+                type: string
+
+    SaveGachaResponse:
+      type: object
+      properties:
+        saved:
+          type: array
+          items:
+            $ref: '#/components/schemas/SavedCard'
+        newCards:
+          type: integer
+          description: 신규 카드 수
+        duplicates:
+          type: integer
+          description: 중복 카드 수
+        historyId:
+          type: string
+          description: 저장된 이력 ID
+
+    SavedCard:
+      type: object
+      properties:
+        cardId:
+          type: string
+          description: cards 테이블 ID
+        userCardId:
+          type: string
+          description: user_cards 테이블 ID
+        isDuplicate:
+          type: boolean
+        newCount:
+          type: integer
+          description: 현재 보유 수량
+
+    GachaHistoryResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GachaHistory'
+        page:
+          type: integer
+        perPage:
+          type: integer
+        totalItems:
+          type: integer
+        totalPages:
+          type: integer
+
+    GachaHistory:
+      type: object
+      properties:
+        id:
+          type: string
+        pullCount:
+          type: integer
+          description: 1 또는 10
+        timestamp:
+          type: string
+          format: date-time
+        summary:
+          type: object
+          properties:
+            legendary:
+              type: integer
+            epic:
+              type: integer
+            rare:
+              type: integer
+            common:
+              type: integer
+
+    GachaHistoryDetail:
+      allOf:
+        - $ref: '#/components/schemas/GachaHistory'
+        - type: object
+          properties:
+            cards:
+              type: array
+              items:
+                $ref: '#/components/schemas/GachaResultCard'
+
+    GachaResultCard:
+      type: object
+      properties:
+        cardId:
+          type: string
+        title:
+          type: string
+        team:
+          type: string
+        rarity:
+          type: string
+        isDuplicate:
+          type: boolean
+        thumb_url:
+          type: string
+
+    GachaStats:
+      type: object
+      properties:
+        totalPulls:
+          type: integer
+          description: 총 뽑기 횟수
+        byRarity:
+          type: object
+          properties:
+            legendary:
+              type: integer
+            epic:
+              type: integer
+            rare:
+              type: integer
+            common:
+              type: integer
+        legendaryRate:
+          type: number
+          format: float
+          description: 실제 레전더리 확률 (%)
+        pityCounter:
+          type: integer
+          description: 천장 카운터 (레전더리 미출현 횟수)
+        lastLegendary:
+          type: string
+          format: date-time
+          nullable: true
+          description: 마지막 레전더리 획득 시간
+
+    GachaRates:
+      type: object
+      properties:
+        rates:
+          type: object
+          properties:
+            legendary:
+              type: number
+              format: float
+              example: 3.0
+              description: 레전더리 확률 (%)
+            epic:
+              type: number
+              format: float
+              example: 12.0
+              description: 에픽 확률 (%)
+            rare:
+              type: number
+              format: float
+              example: 25.0
+              description: 레어 확률 (%)
+            common:
+              type: number
+              format: float
+              example: 60.0
+              description: 커먼 확률 (%)
+        pitySystem:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            threshold:
+              type: integer
+              description: 천장 도달 횟수
+            guaranteedRarity:
+              type: string
+              description: 천장 보장 등급
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string

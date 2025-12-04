@@ -102,7 +102,7 @@
         <a href="/create" class="nav-link">카드 제작</a>
         <a href="/community" class="nav-link">커뮤니티</a>
         <a href="/collections" class="nav-link">컬렉션</a>
-        <a href="/gacha" class="nav-link">뽑기</a>
+        <a href="/gacha2" class="nav-link">뽑기</a>
       </div>
       
       <!-- Mobile Menu Button -->
@@ -159,7 +159,7 @@
           <a href="/create" class="mobile-nav-link" on:click={closeMobileMenu}>카드 제작</a>
           <a href="/community" class="mobile-nav-link" on:click={closeMobileMenu}>커뮤니티</a>
           <a href="/collections" class="mobile-nav-link" on:click={closeMobileMenu}>컬렉션</a>
-          <a href="/gacha" class="mobile-nav-link" on:click={closeMobileMenu}>뽑기</a>
+          <a href="/gacha2" class="mobile-nav-link" on:click={closeMobileMenu}>뽑기</a>
           
           <div class="mobile-auth-section">
             <a href="/auth/login" class="mobile-auth-btn login-btn" on:click={closeMobileMenu}>로그인</a>

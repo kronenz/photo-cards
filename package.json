@@ -61,6 +61,7 @@
     "@tanstack/svelte-virtual": "^3.13.12",
     "bits-ui": "^0.22.0",
     "jszip": "^3.10.1",
+    "minio": "^8.0.6",
     "phash-js": "^0.3.0",
     "pocketbase": "^0.21.4",
     "sharp": "^0.33.0",
